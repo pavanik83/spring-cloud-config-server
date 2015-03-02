@@ -1,4 +1,4 @@
-nixon-poc
+Security-Filter
 =========
 	Cusomer order: POC rest service for client implementation
 	wdpr-authz :POC for Auth Filtering
