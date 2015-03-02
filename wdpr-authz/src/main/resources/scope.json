@@ -1,0 +1,31 @@
+{
+  "authorization": [
+    {
+      "authType": "pattern",
+      "urlPattern": "/profile*",
+      "id": 2,
+      "authToken":false,
+      "scopesRequired": [
+        "authenticated"
+      ]
+    },
+    {
+      "authType": "pattern",
+      "urlPattern": "/profile*",
+      "id": 2,
+      "authToken":true,
+      "scopesRequired": [
+        "authenticated"
+      ]
+    },
+	    {
+      "authType": "pattern",
+      "urlPattern": "/CustomerOrder*",
+      "id": 3,
+      "authToken":true,
+      "scopesRequired": ["AUTHZ_PUBLIC-INSECURE"
+            ]
+    },
+    null
+  ]
+}
