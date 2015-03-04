@@ -78,6 +78,7 @@
 		<java.required.version>1.7</java.required.version>
 		<java.source.version>1.7</java.source.version>
 		<java.version>1.7</java.version>
+        <compiler.argument>-proc:none -Xlint:cast,unchecked,fallthrough,finally,serial</compiler.argument>
 		<generateSitemap>true</generateSitemap>
 		<dependencyConvergence>true</dependencyConvergence>
 		<jacoco.skip>false</jacoco.skip>
@@ -93,7 +94,7 @@
 						<source>${java.source.version}</source>
 						<target>${java.version}</target>
 						<encoding>${project.build.sourceEncoding}</encoding>
-						<compilerArgument>-proc:none</compilerArgument>
+						<compilerArgument>${compiler.argument}</compilerArgument>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -112,5 +113,11 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+        <plugins>
+            <!-- Create -sources jar when building -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+        </plugins>
 	</build>
 </project>

@@ -219,7 +219,7 @@
                     <source>${java.source.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
-                    <compilerArgument>-proc:none</compilerArgument>
+                    <compilerArgument>${compiler.argument}</compilerArgument>
                 </configuration>
 			</plugin>
 			<plugin>
@@ -265,7 +265,6 @@
 							<groupId>org.apache.httpcomponents</groupId>
 							<artifactId>httpclient</artifactId>
 						</weaveDependency>
-
 						<weaveDependency>
 							<groupId>org.apache.cxf</groupId>
 							<artifactId>cxf-rt-transports-http</artifactId>
