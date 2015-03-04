@@ -30,30 +30,36 @@ import org.apache.logging.log4j.Logger;
  */
 public class SampleRestClient
 {
-    private static final Logger logger = LogManager.getLogger(SampleRestClient.class);
+    private static final Logger LOG = LogManager.getLogger(SampleRestClient.class);
+    /** 8080 */
     private static final int PORT = 8080;
+    /** localhost */
     public static final String HOST = "localhost";
+    /** /CustomerOrder/customer-services/customer-create */
     public static final String PATH1 = "/CustomerOrder/customer-services/customer-create";
+    /** /CustomerOrder/customer-services/customer-order */
     public static final String PATH2 = "/CustomerOrder/customer-services/customer-order";
+    /** null */
     public static BufferedReader nameReader = null;
+    /** null */
     public static BufferedReader addressReader = null;
 
+    /** 3 */
     public static int COUNTOFCUSTOMER = 3;
+    /** 5 */
     public static int COUNTOFORDER = 5;
 
     /**
-     * @param argss
+     * @param args
      */
     public static void main(String[] args)
     {
-
         try
         {
             nameReader = new BufferedReader(new FileReader("src/main/resources/names.txt"));
             String line = null;
             while ((line = nameReader.readLine()) != null)
             {
-
                 String[] names = line.split(",");
                 firstName.add(names[0]);
                 lastName.add(names[1]);
@@ -76,23 +82,19 @@ public class SampleRestClient
         }
         catch (FileNotFoundException e)
         {
-            logger.error(e);
-
+            LOG.error(e);
         }
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e);
         }
         catch (ClassNotFoundException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e);
         }
         catch (SQLException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e);
         }
         createCust();
         createOrder();
@@ -100,12 +102,10 @@ public class SampleRestClient
 
     public static void createCust()
     {
-
         for (int i = 0; i < COUNTOFCUSTOMER; i++)
         {
             try
             {
-
                 CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
                 URIBuilder builder = new URIBuilder();
@@ -131,10 +131,10 @@ public class SampleRestClient
 
                 HttpGet getRequest = new HttpGet(builder.build());
 
-                // TODO : to set approprate headder
+                // TODO : to set appropriate header
                 loadHeader(getRequest);
 
-                System.out.println(i + ">>> uri" + getRequest.getURI());
+                LOG.info(i + ">>> uri" + getRequest.getURI());
                 HttpResponse response = httpClient.execute(getRequest);
 
                 if (response.getStatusLine().getStatusCode() != 200)
@@ -146,51 +146,44 @@ public class SampleRestClient
                 BufferedReader br = new BufferedReader(new InputStreamReader(
                         (response.getEntity().getContent())));
 
-                System.out.println("br --" + br.toString());
+                LOG.info("br --" + br.toString());
 
                 String output;
 
                 StringBuffer sb = new StringBuffer();
-                System.out.println(i + ">>> Output from Server .... \n");
+                LOG.info(i + ">>> Output from Server .... \n");
                 while ((output = br.readLine()) != null)
                 {
-                    System.out.println(output);
+                    LOG.info(output);
                     sb.append(output);
 
                 }
 
-                System.out.println(" SB---" + sb.toString());
+                LOG.info(" SB---" + sb.toString());
 
                 httpClient.close();
-
             }
             catch (URISyntaxException ex)
             {
-                ex.printStackTrace();
-
+                LOG.error(ex);
             }
             catch (ClientProtocolException e)
             {
-
-                e.printStackTrace();
-
+                LOG.error(e);
             }
             catch (IOException e)
             {
-
-                e.printStackTrace();
+                LOG.error(e);
             }
         }
     }
 
     public static void createOrder()
     {
-
         for (int i = 0; i < COUNTOFORDER; i++)
         {
             try
             {
-
                 CloseableHttpClient httpClient = HttpClientBuilder.create().build();
                 URIBuilder builder = new URIBuilder();
                 String[] ids = customerIdShippingId.get(i).split(";");
@@ -204,7 +197,7 @@ public class SampleRestClient
                 HttpGet getRequest = new HttpGet(builder.build());
 
                 loadHeader(getRequest);
-                System.out.println(i + ">>>createOrder uri" + getRequest.getURI());
+                LOG.info(i + ">>>createOrder uri" + getRequest.getURI());
                 HttpResponse response = httpClient.execute(getRequest);
 
                 if (response.getStatusLine().getStatusCode() != 200)
@@ -218,31 +211,26 @@ public class SampleRestClient
 
                 String output;
 
-                System.out.println(i + ">>> Output from Server .... \n");
+                LOG.info(i + ">>> Output from Server .... \n");
                 while ((output = br.readLine()) != null)
                 {
-                    System.out.println(output);
-
+                    LOG.info(output);
                 }
 
-                System.out.println("\n output Br" + br.toString());
+                LOG.info("\n output Br" + br.toString());
                 httpClient.close();
-
             }
             catch (URISyntaxException ex)
             {
-                ex.printStackTrace();
+                LOG.error(ex);
             }
             catch (ClientProtocolException e)
             {
-
-                e.printStackTrace();
-
+                LOG.error(e);
             }
             catch (IOException e)
             {
-
-                e.printStackTrace();
+                LOG.error(e);
             }
         }
     }
@@ -254,7 +242,7 @@ public class SampleRestClient
         getRequest.setHeader("x-disney-internal-conversation-id", UUID.randomUUID().toString());
         String corrid = UUID.randomUUID().toString();
         getRequest.setHeader("Correlation-Id", corrid);
-        System.out.println("Correlation id is " + corrid);
+        LOG.info("Correlation id is " + corrid);
         getRequest.setHeader("X-CorrelationId", corrid);
         getRequest.setHeader("x-disney-internal-correlation-id", corrid);
         getRequest.setHeader("x-disney-internal-page-id",
@@ -262,7 +250,7 @@ public class SampleRestClient
         getRequest.setHeader("x-disney-internal-client-id",
                 new Integer(StringUtil.generateRandomInt(3)).toString());
         String tranId = UUID.randomUUID().toString();
-        System.out.println("tranId is " + tranId);
+        LOG.info("tranId is " + tranId);
         getRequest.setHeader("x-disney-internal-transaction-id", tranId);
         getRequest.setHeader("Transaction-Id", tranId);
 
@@ -277,7 +265,6 @@ public class SampleRestClient
 
         try
         {
-
             DBConnectionFactory dbFactory = DBConnectionFactory.getInstance();
             conn = dbFactory.getConnection();
             String sql = "select id, customerid from " + "(select * "
@@ -293,7 +280,6 @@ public class SampleRestClient
                 custshippingid = custshippingid + ";" + rs.getString("customerid");
                 customerIdShippingId.add(custshippingid);
             }
-
         }
         finally
         {
@@ -315,7 +301,6 @@ public class SampleRestClient
 
         try
         {
-
             DBConnectionFactory dbFactory = DBConnectionFactory.getInstance();
             conn = dbFactory.getConnection();
 
@@ -325,7 +310,6 @@ public class SampleRestClient
             rs = statement.executeQuery();
             while (rs.next())
             {
-
                 inventory.add(rs.getString("SLNO"));
             }
 
@@ -341,15 +325,14 @@ public class SampleRestClient
         }
     }
 
-    public static ArrayList<String> firstName = new ArrayList<String>();
-    public static ArrayList<String> lastName = new ArrayList<String>();
-    public static ArrayList<String> addressLine1 = new ArrayList<String>();
-    public static ArrayList<String> city = new ArrayList<String>();
-    public static ArrayList<String> state = new ArrayList<String>();
-    public static ArrayList<String> zip = new ArrayList<String>();
-    public static ArrayList<String> gender = new ArrayList<String>();
-    public static ArrayList<String> customerIdShippingId = new ArrayList<String>();
-    public static ArrayList<String> inventory = new ArrayList<String>();
+    public static ArrayList<String> firstName = new ArrayList<>();
+    public static ArrayList<String> lastName = new ArrayList<>();
+    public static ArrayList<String> addressLine1 = new ArrayList<>();
+    public static ArrayList<String> city = new ArrayList<>();
+    public static ArrayList<String> state = new ArrayList<>();
+    public static ArrayList<String> zip = new ArrayList<>();
+    public static ArrayList<String> gender = new ArrayList<>();
+    public static ArrayList<String> customerIdShippingId = new ArrayList<>();
+    public static ArrayList<String> inventory = new ArrayList<>();
     private static final Random randomGenerator = new Random();
-
 }

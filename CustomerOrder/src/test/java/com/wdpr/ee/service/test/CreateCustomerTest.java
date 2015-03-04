@@ -19,32 +19,36 @@ import org.junit.Test;
  */
 public class CreateCustomerTest
 {
-
+    /**
+     *
+     */
     CustomerServiceExectuor customerServiceExecutor;
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @Before
     public void setUp() throws Exception
     {
-        customerServiceExecutor = new CustomerServiceExectuor();
+        this.customerServiceExecutor = new CustomerServiceExectuor();
         // DBConnectionFactory dbFactory = DBConnectionFactory.getInstance();
-
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @After
     public void tearDown() throws Exception
     {
+        // No tear down
     }
 
+    /**
+     *
+     */
     @Test
     public void testCustomerservice()
     {
-
         Customer customer = new Customer();
         customer.setFirstName("Nixon-xx");
         customer.setLastName("George-xx");
@@ -58,16 +62,12 @@ public class CreateCustomerTest
 
         try
         {
-
-            customerServiceExecutor.createCustomer(customer);
+            this.customerServiceExecutor.createCustomer(customer);
             assertTrue(" Success", true);
         }
         catch (Exception e)
         {
             assertTrue(" failure", false);
-
         }
-
     }
-
 }

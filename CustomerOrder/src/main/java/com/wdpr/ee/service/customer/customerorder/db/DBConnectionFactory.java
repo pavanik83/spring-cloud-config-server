@@ -18,12 +18,13 @@ public class DBConnectionFactory
 {
     private static final Logger logger = LogManager.getLogger(DBConnectionFactory.class);
     private static final String configFilePath = "db.properties";
+    /** */
     final Properties prop = new Properties();
     private static DataSource dataSource;
 
     /**
      * Private constructor
-     * 
+     *
      * @throws IOException
      * @throws ClassNotFoundException
      * @throws IllegalAccessException
@@ -52,8 +53,7 @@ public class DBConnectionFactory
     }
 
     /**
-     *
-     * @return
+     * @return DBConnectionFactoryHelper.INSTANCE
      */
     public static DBConnectionFactory getInstance()
     {
@@ -79,11 +79,10 @@ public class DBConnectionFactory
     //
     /**
      *
-     * @param dbType
-     * @return
      * @throws SQLException
      * @throws IOException
      * @throws ClassNotFoundException
+     * @return Connection
      */
     public Connection getConnection() throws ClassNotFoundException, IOException, SQLException
     {
@@ -108,7 +107,7 @@ public class DBConnectionFactory
      * the JDBC url info, username and password. Creates a
      * PoolableConnectionFactory that will wraps the connection object created
      * by the ConnectionFactory to add object pooling functionality.
-     * 
+     *
      * @return
      * @throws IOException
      * @throws IllegalAccessException
@@ -121,13 +120,13 @@ public class DBConnectionFactory
             IllegalAccessException, ClassNotFoundException, SQLException
     {
         logger.debug("Inside DBConnectionFactory configureDataSoruce method");
-        prop.load(DBConnectionFactory.class.getClassLoader().getResourceAsStream(configFilePath));
+        this.prop.load(DBConnectionFactory.class.getClassLoader().getResourceAsStream(configFilePath));
         BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(prop.getProperty("DB_DRIVER"));
-        ds.setUsername(prop.getProperty("DB_USER"));
-        ds.setPassword(prop.getProperty("DB_PASSWORD"));
-        ds.setUrl(prop.getProperty("DB_CONNECTION"));
-        ds.setInitialSize(Integer.valueOf(prop.getProperty("maxTotal")));
+        ds.setDriverClassName(this.prop.getProperty("DB_DRIVER"));
+        ds.setUsername(this.prop.getProperty("DB_USER"));
+        ds.setPassword(this.prop.getProperty("DB_PASSWORD"));
+        ds.setUrl(this.prop.getProperty("DB_CONNECTION"));
+        ds.setInitialSize(Integer.valueOf(this.prop.getProperty("maxTotal")).intValue());
         return ds;
 
     }

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /***************************************************************************************************
  * FileName - AuthConfig.java Desc: Authentication Config class to read and
@@ -16,17 +18,23 @@ import java.util.Properties;
  ********************************************************************************************************/
 public class AuthConfig
 {
-
+    private static final Logger LOGGER = LogManager.getLogger(AuthConfig.class);
     private static AuthConfig instance;
-    private static final List<String> propKeys = new ArrayList<String>();
-    private static final Map<String, String> propertyMap = new HashMap<String, String>();
+    private static final List<String> propKeys = new ArrayList<>();
+    private static final Map<String, String> propertyMap = new HashMap<>();
+    /**
+     * auth-config.properties
+     */
     public final String propFileName = "auth-config.properties";
 
     private AuthConfig()
     {
-        loadAppLogEntryValues(propFileName);
+        loadAppLogEntryValues(this.propFileName);
     }
 
+    /**
+     * @return singleton instance of AuthConfig
+     */
     public static AuthConfig getInstance()
     {
         if (instance == null)
@@ -52,16 +60,26 @@ public class AuthConfig
     // propertyMap.put(LoggerConstants.VERSION, "1.0");
     // defaultPropertyMap= propertyMap;
     // }
+    /**
+     * @return property map
+     */
     public Map<String, String> getPropertyMap()
     {
         return propertyMap;
     }
 
+    /**
+     * @param key
+     * @return property value for key
+     */
     public String getPropertyVal(String key)
     {
         return propertyMap.get(key);
     }
 
+    /**
+     * @return all property keys
+     */
     public List<String> getPropkeys()
     {
         return propKeys;
@@ -80,12 +98,11 @@ public class AuthConfig
      *
      */
 
-    private void loadAppLogEntryValues(final String propFileName)
+    private void loadAppLogEntryValues(final String propFileNameParam)
     {
 
         Properties props = new Properties();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
-
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileNameParam);
         try
         {
             if (inputStream != null)
@@ -97,15 +114,28 @@ public class AuthConfig
                     propertyMap.put(key, value);
 
                 }
+                inputStream.close();
             }
-            System.out.println(" property invoked");
+            LOGGER.info(" property invoked");
 
         }
         catch (IOException | NullPointerException | IllegalArgumentException e)
         {
-
+            LOGGER.error(e);
         }
-
+        finally
+        {
+            if (inputStream != null)
+            {
+                try
+                {
+                    inputStream.close();
+                }
+                catch (Exception ex)
+                {
+                    LOGGER.error(ex);
+                }
+            }
+        }
     }
-
 }

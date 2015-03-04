@@ -7,7 +7,7 @@ public class Address
 
     public String getCity()
     {
-        return city;
+        return this.city;
     }
 
     public void setCity(String city)
@@ -17,7 +17,7 @@ public class Address
 
     public String getFirstAddressLine()
     {
-        return firstAddressLine;
+        return this.firstAddressLine;
     }
 
     public void setFirstAddressLine(String firstAddressLine)
@@ -27,7 +27,7 @@ public class Address
 
     public String getSecondAddressLine()
     {
-        return secondAddressLine;
+        return this.secondAddressLine;
     }
 
     public void setSecondAddressLine(String secondAddressLine)
@@ -42,7 +42,7 @@ public class Address
 
     public String getZip()
     {
-        return zip;
+        return this.zip;
     }
 
     public void setZip(String zip)
@@ -57,7 +57,7 @@ public class Address
     {
         if (this.uuid == null)
             this.uuid = UUID.randomUUID().toString();
-        return uuid;
+        return this.uuid;
     }
 
     public void setUuid(String uuid)
@@ -67,7 +67,7 @@ public class Address
 
     public String getState()
     {
-        return state;
+        return this.state;
     }
 
     public void setState(String state)

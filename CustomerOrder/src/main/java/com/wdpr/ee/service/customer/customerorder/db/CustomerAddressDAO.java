@@ -13,8 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CustomerAddressDAO extends CustomerDAO
 {
-
-    private static final Logger logging = LogManager.getLogger(CustomerAddressDAO.class);
+    private static final Logger LOG = LogManager.getLogger(CustomerAddressDAO.class);
 
     public void loadCustomerAddress(Customer customer) throws SQLException, ClassNotFoundException,
             IOException
@@ -27,7 +26,7 @@ public class CustomerAddressDAO extends CustomerDAO
             try
             {
 
-                logging.debug(" Start  of load customerAddres : ");
+                LOG.debug(" Start  of load customerAddres : ");
                 DBConnectionFactory dbFactory = DBConnectionFactory.getInstance();
                 conn = dbFactory.getConnection();
                 long queryStartTime = System.nanoTime();
@@ -36,11 +35,11 @@ public class CustomerAddressDAO extends CustomerDAO
                 statement = populateAddressValues(customer, statement);
                 statement.executeUpdate();
                 long queryEndTime = System.nanoTime();
-                logging.info("Total_time_PS_loadCustomerAddress : Total time taken to execute customerAddres :="
+                LOG.info("Total_time_PS_loadCustomerAddress : Total time taken to execute customerAddres :="
                         + TimeUnit.MILLISECONDS.convert((queryEndTime - queryStartTime),
                                 TimeUnit.NANOSECONDS));
 
-                logging.debug(" End of load customerAddres Query ");
+                LOG.debug(" End of load customerAddres Query ");
             }
             finally
             {
@@ -142,7 +141,7 @@ public class CustomerAddressDAO extends CustomerDAO
         try
         {
 
-            logging.debug(" Start  of validateCustomerAddress : ");
+            LOG.debug(" Start  of validateCustomerAddress : ");
             DBConnectionFactory dbFactory = DBConnectionFactory.getInstance();
             conn = dbFactory.getConnection();
             long queryStartTime = System.nanoTime();
@@ -159,11 +158,11 @@ public class CustomerAddressDAO extends CustomerDAO
                 countOfRows = rs.getInt(1);
             }
             long queryEndTime = System.nanoTime();
-            logging.info("Total_time_PS_val_CustomerAddress taken to process validateCustomerAddress :="
+            LOG.info("Total_time_PS_val_CustomerAddress taken to process validateCustomerAddress :="
                     + TimeUnit.MILLISECONDS.convert((queryEndTime - queryStartTime),
                             TimeUnit.NANOSECONDS));
 
-            logging.debug(" End  of validateCustomerAddress Query : ");
+            LOG.debug(" End  of validateCustomerAddress Query : ");
             if (countOfRows == 1)
                 return true;
             else

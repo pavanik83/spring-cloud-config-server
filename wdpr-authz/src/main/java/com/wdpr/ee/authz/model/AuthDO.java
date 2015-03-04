@@ -1,70 +1,124 @@
 package com.wdpr.ee.authz.model;
 
+/**
+ * Authorization Object with configuration
+ */
 public class AuthDO
 {
+    /**
+     *
+     */
     int id;
+    /**
+     *
+     */
     String authType;
+    /**
+     *
+     */
     String urlPattern;
+    /**
+     *
+     */
     boolean authToken;
+    /**
+     *
+     */
     String[] scopesRequired;
 
+    /**
+     * @return id
+     */
     public int getId()
     {
-        return id;
+        return this.id;
     }
 
-    public void setId(int id)
+    /**
+     * @param idParam
+     */
+    public void setId(int idParam)
     {
-        this.id = id;
+        this.id = idParam;
     }
 
+    /**
+     * @return authType
+     */
     public String getAuthType()
     {
-        return authType;
+        return this.authType;
     }
 
-    public void setAuthType(String authType)
+    /**
+     * @param authTypeParam
+     */
+    public void setAuthType(String authTypeParam)
     {
-        this.authType = authType;
+        this.authType = authTypeParam;
     }
 
+    /**
+     * @return urlPattern
+     */
     public String getUrlPattern()
     {
-        return urlPattern;
+        return this.urlPattern;
     }
 
-    public void setUrlPattern(String urlPattern)
+    /**
+     * @param urlPatternParam
+     */
+    public void setUrlPattern(String urlPatternParam)
     {
-        this.urlPattern = urlPattern;
+        this.urlPattern = urlPatternParam;
     }
 
+    /**
+     * @return authToken
+     */
     public boolean isAuthToken()
     {
-        return authToken;
+        return this.authToken;
     }
 
+    /**
+     * @return authToken
+     */
     public boolean isAuthTokenRequired()
     {
-        return authToken;
+        return this.authToken;
     }
 
-    public void setAuthToken(boolean authToken)
+    /**
+     * @param authTokenParam
+     */
+    public void setAuthToken(boolean authTokenParam)
     {
-        this.authToken = authToken;
+        this.authToken = authTokenParam;
     }
 
+    /**
+     * @return scopesRequired
+     */
     public String[] getScopesRequired()
     {
-        return scopesRequired;
+        return this.scopesRequired;
     }
 
+    /**
+     * @return scopesRequired
+     */
     public String[] getScopesAllowed()
     {
-        return scopesRequired;
+        return this.scopesRequired;
     }
 
-    public void setScopesRequired(String[] scopesRequired)
+    /**
+     * @param scopesRequiredParam
+     */
+    public void setScopesRequired(String[] scopesRequiredParam)
     {
-        this.scopesRequired = scopesRequired;
+        this.scopesRequired = scopesRequiredParam;
     }
 }

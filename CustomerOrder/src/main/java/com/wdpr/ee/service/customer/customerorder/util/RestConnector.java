@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -17,21 +16,32 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ */
 public class RestConnector
 {
-
-    private static final Logger logging = LogManager.getLogger(RestConnector.class);
+    private static final Logger LOG = LogManager.getLogger(RestConnector.class);
 
     private static final int PORT = 8081;
+    /**
+     * localhost
+     */
     public static final String HOST = "localhost";
+    /**
+     * /pricing-services/pricing-service/item-price
+     */
     public static final String PATH1 = "/pricing-services/pricing-service/item-price";
 
+    /**
+     * @param customerOrder
+     * @param hashMap
+     */
     // @WdprMethodLog
     public static void priceItemNumber(CustomerOrder customerOrder, HashMap<String, String> hashMap)
-            throws SQLException, ClassNotFoundException, IOException
     {
 
-        logging.info(" ....................... enter priceItemNumber().................");
+        LOG.info(" ....................... enter priceItemNumber().................");
         HttpGet getRequest = null;
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // HttpClient httpClient = new DefaultHttpClient();
@@ -47,7 +57,7 @@ public class RestConnector
 
             // sample :
             // //http://localhost:8081/pricing-services/pricing-service/item-price?itemnumber=10
-            logging.info(">>> uri" + getRequest.getURI());
+            LOG.info(">>> uri" + getRequest.getURI());
 
             HttpResponse response = httpClient.execute(getRequest);
 
@@ -63,12 +73,11 @@ public class RestConnector
             while ((output = br.readLine()) != null)
             {
                 sb.append(output);
-
             }
 
-            logging.info(" SB---" + sb.toString());
+            LOG.info(" SB---" + sb.toString());
 
-            ItemVO item = (ItemVO) JSONDeserializer.toObject(sb.toString(), ItemVO.class);
+            ItemVO item = JSONDeserializer.toObject(sb.toString(), ItemVO.class);
 
             if (item != null)
             {
@@ -83,25 +92,20 @@ public class RestConnector
         }
         catch (URISyntaxException ex)
         {
-            logging.error(ex);
+            LOG.error(ex);
             throw new RuntimeException("Failed : HTTP error code : " + ex);
-
         }
         catch (ClientProtocolException ex)
         {
-            logging.error(ex);
+            LOG.error(ex);
             throw new RuntimeException("Failed : HTTP error code : " + ex);
-
         }
         catch (IOException ex)
         {
-            logging.error(ex);
+            LOG.error(ex);
             throw new RuntimeException("Failed : HTTP error code : " + ex);
-
         }
 
-        logging.info(" ....................... enter priceItemNumber().................");
-
+        LOG.info(" ....................... enter priceItemNumber().................");
     }
-
 }

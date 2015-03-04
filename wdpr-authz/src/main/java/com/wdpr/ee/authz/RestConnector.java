@@ -29,31 +29,67 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class RestConnector
 {
 
-    private static final Logger logger = LogManager.getLogger(RestConnector.class);
+    private static final Logger LOG = LogManager.getLogger(RestConnector.class);
 
+    /**
+     * @see com.wdpr.ee.authz.RestConnector
+     */
     public static RestConnector restConnector;
+    /**
+     * @see com.wdpr.ee.authz.util.AuthConfig
+     */
     public static AuthConfig config = AuthConfig.getInstance();
 
-    String PROTOCOL, HOST, AUTH_PATH, SCOPE_PATH;
-    int PORT, TIME_OUT;
+    /**
+     * REST protocol
+     */
+    String PROTOCOL;
+    /**
+     * REST host
+     */
+    String HOST;
+    /**
+     * REST auth_path
+     */
+    String AUTH_PATH;
+    /**
+     * REST scope_path
+     */
+    String SCOPE_PATH;
+    /**
+     * REST port
+     */
+    int PORT;
+    /**
+     * REST timeout
+     */
+    int TIME_OUT;
 
+    /**
+     *
+     */
     ObjectMapper mapper = new ObjectMapper();
+    /**
+     *
+     */
     static RequestConfig defaultRequestConfig;
 
     private RestConnector()
     {
-        defaultRequestConfig = RequestConfig.custom().setSocketTimeout(TIME_OUT)
-                .setConnectTimeout(TIME_OUT).setConnectionRequestTimeout(TIME_OUT)
+        defaultRequestConfig = RequestConfig.custom().setSocketTimeout(this.TIME_OUT)
+                .setConnectTimeout(this.TIME_OUT).setConnectionRequestTimeout(this.TIME_OUT)
                 .setStaleConnectionCheckEnabled(true).build();
-        PROTOCOL = config.getPropertyVal(AuthConstants.PROTOCOL);
-        PORT = Integer.parseInt(config.getPropertyVal(AuthConstants.PORT).trim());
-        TIME_OUT = Integer.parseInt(config.getPropertyVal(AuthConstants.TIME_OUT).trim());
-        HOST = config.getPropertyVal(AuthConstants.HOST);
-        AUTH_PATH = config.getPropertyVal(AuthConstants.AUTH_CTX_PATH);
-        SCOPE_PATH = config.getPropertyVal(AuthConstants.SCOPE_CTX_PATH);
-
+        this.PROTOCOL = config.getPropertyVal(AuthConstants.PROTOCOL);
+        this.PORT = Integer.parseInt(config.getPropertyVal(AuthConstants.PORT).trim());
+        this.TIME_OUT = Integer.parseInt(config.getPropertyVal(AuthConstants.TIME_OUT).trim());
+        this.HOST = config.getPropertyVal(AuthConstants.HOST);
+        this.AUTH_PATH = config.getPropertyVal(AuthConstants.AUTH_CTX_PATH);
+        this.SCOPE_PATH = config.getPropertyVal(AuthConstants.SCOPE_CTX_PATH);
     }
 
+    /**
+     * @return Singleton instance of REST connector
+     */
     public static RestConnector getInstance()
     {
         if (restConnector == null)
@@ -63,86 +99,102 @@ public class RestConnector
         return restConnector;
     }
 
+    /**
+     * @param tokenList
+     * @return  http response valid
+     * @throws IOException
+     */
     public boolean callGoDotComValidateToken(Map<String, String> tokenList) throws IOException
     {
-
-        HttpResponse response = callGoDotComGet(tokenList, AUTH_PATH);
-
+        HttpResponse response = callGoDotComGet(tokenList, this.AUTH_PATH);
         int stausCode = response.getStatusLine().getStatusCode();
-
         if (stausCode == HttpServletResponse.SC_OK)
         {
             return true;
         }
         return false;
-
     }
 
+    /**
+     * @param tokenList
+     * @return token object
+     * @throws IOException
+     */
     public TokenDO callGoDotComValidateScope(Map<String, String> tokenList) throws IOException
     {
-
-        TokenDO tokenObj = (TokenDO) callGoDotComPost(tokenList, SCOPE_PATH, TokenDO.class);
+        TokenDO tokenObj = callGoDotComPost(tokenList, this.SCOPE_PATH, TokenDO.class);
         return tokenObj;
-
     }
 
+    /**
+     * @param tokenList
+     * @param ctxPath
+     * @return http response
+     * @throws IOException
+     */
     public HttpResponse callGoDotComGet(Map<String, String> tokenList, String ctxPath)
             throws IOException
     {
-
         HttpGet getRequest = new HttpGet();
         HttpResponse response = null;
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(defaultRequestConfig).build();
         try
         {
-
             URIBuilder builder = new URIBuilder();
-            if (ctxPath == AUTH_PATH)
+            if (ctxPath == this.AUTH_PATH)
             {
                 ctxPath += tokenList.get(AuthConstants.ACCESS_TOKEN);
-
             }
 
-            builder.setScheme(PROTOCOL).setHost(HOST).setPort(PORT).setPath(ctxPath);
-
+            builder.setScheme(this.PROTOCOL).setHost(this.HOST).setPort(this.PORT).setPath(ctxPath);
             getRequest = new HttpGet(builder.build());
-
             response = httpClient.execute(getRequest);
-            logger.info("Response SC:" + response.getStatusLine().getStatusCode() + ", from (GET)"
+            LOG.info("Response SC:" + response.getStatusLine().getStatusCode() + ", from (GET)"
                     + getRequest.getURI().toString());
         }
         catch (URISyntaxException | IOException ex)
         {
-            logger.error(ex);
-
+            LOG.error(ex);
         }
         finally
         {
-            httpClient.close();
+            if (httpClient != null)
+            {
+                try
+                {
+                    httpClient.close();
+                }
+                catch (Exception ex)
+                {
+                    LOG.error(ex);
+                }
+            }
         }
         return response;
-
     }
 
+    /**
+     * @param tokenList
+     * @param ctxPath
+     * @param objectType
+     * @return token response
+     * @throws IOException
+     */
     public <T> T callGoDotComPost(Map<String, String> tokenList, String ctxPath, Class<T> objectType)
             throws IOException
     {
-
         HttpPost postRequest = new HttpPost();
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(defaultRequestConfig).build();
         T tokenResp = null;
         try
         {
-
             URIBuilder builder = new URIBuilder();
-            builder.setScheme(config.getPropertyVal(AuthConstants.PROTOCOL)).setHost(HOST)
-                    .setPort(PORT).setPath(ctxPath);
-
-            if (ctxPath == SCOPE_PATH)
+            builder.setScheme(config.getPropertyVal(AuthConstants.PROTOCOL)).setHost(this.HOST)
+                    .setPort(this.PORT).setPath(ctxPath);
+            if (ctxPath == this.SCOPE_PATH)
             {
-
                 if (tokenList.get(AuthConstants.CLIENT_ID) != null)
                 {
                     builder.setParameter(AuthConstants.CLIENT_ID,
@@ -167,31 +219,37 @@ public class RestConnector
 
             postRequest = new HttpPost(builder.build());
 
+            @SuppressWarnings("resource")
             HttpResponse response = httpClient.execute(postRequest);
             int stausCode = response.getStatusLine().getStatusCode();
 
             if (stausCode == HttpServletResponse.SC_OK)
             {
                 InputStream iStream = response.getEntity().getContent();
-                tokenResp = mapper.readValue(iStream, objectType);
-
+                tokenResp = this.mapper.readValue(iStream, objectType);
+                iStream.close();
             }
-            logger.info("Response SC:" + stausCode + ", from (POST)"
+            LOG.info("Response SC:" + stausCode + ", from (POST)"
                     + postRequest.getURI().toString());
-
         }
         catch (URISyntaxException | IOException ex)
         {
-
-            logger.error(ex);
-
+            LOG.error(ex);
         }
         finally
         {
-            httpClient.close();
+            if (httpClient != null)
+            {
+                try
+                {
+                    httpClient.close();
+                }
+                catch (Exception ex)
+                {
+                    LOG.error(ex);
+                }
+            }
         }
         return tokenResp;
-
     }
-
 }

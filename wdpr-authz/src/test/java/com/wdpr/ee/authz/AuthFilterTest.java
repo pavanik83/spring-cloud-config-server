@@ -5,7 +5,6 @@ package com.wdpr.ee.authz;
 
 import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.FilterChain;
@@ -20,53 +19,58 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+/**
+ * AuthFilterTest
+ */
 public class AuthFilterTest
 {
+    /**
+     * tokenList
+     */
     Map<String, String> tokenList = new HashMap<>();
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
-
+        // No setup
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception
     {
+        // No teardown
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @Before
     public void setUp() throws Exception
     {
-        tokenList.put("access_token", "uz3588_tywiTt0a9l9MROA");
-        tokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
-        tokenList.put("username", "api");
-        tokenList.put("assertion_type", "public");
-        tokenList.put("grant_type", "assertion");
+        this.tokenList.put("access_token", "uz3588_tywiTt0a9l9MROA");
+        this.tokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
+        this.tokenList.put("username", "api");
+        this.tokenList.put("assertion_type", "public");
+        this.tokenList.put("grant_type", "assertion");
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @After
     public void tearDown() throws Exception
     {
+        // No teardown
     }
 
     /**
-     * Tests the utility method for setting a correlation id by the client
-     */
-
-    /**
+     * Tests the utility method for setting a correlation id by the client.
      * Creates an HTTP Filter and check to make sure the thread context
      * variables the filter is responsible for are set
      *
@@ -91,13 +95,16 @@ public class AuthFilterTest
 
         AuthFilter mockFilter = Mockito.mock(AuthFilter.class);
         // Mockito.when(mockFilter.loadHeaders(request)).thenReturn(tokenList);
-        Mockito.doReturn(tokenList).when(mockFilter).loadHeaders(request);
+        Mockito.doReturn(this.tokenList).when(mockFilter).loadHeaders(request);
         Mockito.when(request.getContextPath()).thenReturn("/CustomerOrder");
         filter.doFilter(request, response, chain);
         assertNotNull(response.getStatus());
-
     }
 
+    /**
+     * @throws IOException
+     * @throws ServletException
+     */
     @Test
     public void testDoFilterWithData() throws IOException, ServletException
     {
@@ -110,7 +117,7 @@ public class AuthFilterTest
         Mockito.when(request.getSession()).thenReturn(session);
         Mockito.when(request.getHeader("TOKEN")).thenReturn("Un6LHVsOtTphTEANANz0UQ");
 
-        Enumeration<String> headerNames = Mockito.mock(Enumeration.class);
+        //Enumeration<String> headerNames = Mockito.mock(Enumeration.class);
         AuthFilter filter = new AuthFilter();
 
         // Mockito.when(loadHeaders(request)).thenReturn(tokenList);
@@ -118,7 +125,7 @@ public class AuthFilterTest
         // AuthFilter mockfilter = Mockito.mock(AuthFilter.class);
 
         AuthFilter spy = Mockito.spy(filter);
-        Mockito.doReturn(tokenList).when(spy).loadHeaders(request);
+        Mockito.doReturn(this.tokenList).when(spy).loadHeaders(request);
         // Mockito.when(spy.loadHeaders(request)).thenReturn(tokenList);
         // Mockito.doReturn(tokenList).when(spy).loadHeaders(request);
 
@@ -167,9 +174,11 @@ public class AuthFilterTest
         Mockito.when(request.getContextPath()).thenReturn("/CustomerOrder");
         filter.doFilter(request, response, chain);
         assertNotNull(response.getStatus());
-
     }
 
+    /**
+     *
+     */
     @Test
     public void testLoadHeaders()
     {
@@ -177,15 +186,13 @@ public class AuthFilterTest
         AuthFilter filter = new AuthFilter();
         filter.loadHeaders(request);
         // Map<String,String> map = Mockito.mock(Map.class);
-        Map<String, String> tokenList = Mockito.mock(Map.class);
+        Map<String, String> tokenListMock = Mockito.mock(Map.class);
         // Mockito.when(map.entrySet()).thenReturn(tokenList.entrySet());
-        tokenList.put("access_token", "uz3588_tywiTt0a9l9MROA");
-        tokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
-        tokenList.put("username", "api");
-        tokenList.put("assertion_type", "public");
-        tokenList.put("grant_type", "assertion");
-        assertNotNull(tokenList);
-
+        tokenListMock.put("access_token", "uz3588_tywiTt0a9l9MROA");
+        tokenListMock.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
+        tokenListMock.put("username", "api");
+        tokenListMock.put("assertion_type", "public");
+        tokenListMock.put("grant_type", "assertion");
+        assertNotNull(tokenListMock);
     }
-
 }

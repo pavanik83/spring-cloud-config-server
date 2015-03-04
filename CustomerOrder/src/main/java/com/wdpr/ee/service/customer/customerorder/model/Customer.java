@@ -89,7 +89,7 @@ public class Customer
 
     public String getFirstName()
     {
-        return firstName;
+        return this.firstName;
     }
 
     public void setFirstName(String firstName)
@@ -99,7 +99,7 @@ public class Customer
 
     public String getLastName()
     {
-        return lastName;
+        return this.lastName;
     }
 
     public void setLastName(String lastName)
@@ -109,12 +109,12 @@ public class Customer
 
     public Address getAddress()
     {
-        return Address;
+        return this.Address;
     }
 
     public void setAddress(Address address)
     {
-        Address = address;
+        this.Address = address;
     }
 
     private String firstName;
@@ -123,7 +123,7 @@ public class Customer
 
     public String getNamePrefix()
     {
-        return namePrefix;
+        return this.namePrefix;
     }
 
     public void setNamePrefix(String namePrefix)
@@ -135,7 +135,7 @@ public class Customer
 
     public String getMiddleName()
     {
-        return middleName;
+        return this.middleName;
     }
 
     public void setMiddleName(String middleName)
@@ -147,7 +147,7 @@ public class Customer
 
     public String getCustomerId()
     {
-        return customerId;
+        return this.customerId;
     }
 
     public void setCustomerId(String customerId)
@@ -159,7 +159,7 @@ public class Customer
 
     public String getGender()
     {
-        return gender;
+        return this.gender;
     }
 
     public void setGender(String gender)

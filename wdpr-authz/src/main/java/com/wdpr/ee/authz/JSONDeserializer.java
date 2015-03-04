@@ -22,8 +22,14 @@ public class JSONDeserializer
 {
 
     private static final Logger logger = LogManager.getLogger(JSONDeserializer.class);
+    /**
+     * @see org.codehaus.jackson.map.ObjectMapper
+     */
     public static ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Configure the mapper with deserialization features
+     */
     JSONDeserializer()
     {
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -34,6 +40,11 @@ public class JSONDeserializer
         mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
     }
 
+    /**
+     * @param is
+     * @param obj
+     * @return Object from json
+     */
     public static Object jsonToObject(String is, Object obj)
     {
 
@@ -65,9 +76,14 @@ public class JSONDeserializer
         return dataObj;
     }
 
+    /**
+     * Does not throw any exceptions, it only logs them
+     * @param content
+     * @param objectType
+     * @return the Object
+     */
     public static <T> T toObject(String content, Class<T> objectType)
     {
-
         T theObject = null;
         try
         {

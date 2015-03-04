@@ -4,20 +4,24 @@ import com.wdpr.ee.authz.util.AuthConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+/**
+ * Test class for Security Check
+ */
 public class SecurityCheckMain
 {
+    private static final Logger LOG = LogManager.getLogger(SecurityCheckMain.class);
 
     public static void main(String[] args)
     {
-        // TODO Auto-generated method stub
-
         AuthConfig config = AuthConfig.getInstance();
         RestConnector connector = RestConnector.getInstance();
         for (String key : config.getPropkeys())
-
-            System.out.println("key" + key + ":" + config.getPropertyMap().get(key));
-
+        {
+            LOG.info("key" + key + ":" + config.getPropertyMap().get(key));
+        }
         try
         {
             int i = 0;
@@ -26,21 +30,22 @@ public class SecurityCheckMain
                 Map<String, String> tockenList = new HashMap<>();
                 String token = generateSessionKey();
                 tockenList.put("access_token", token);
-                System.out.println(++i + " " + token);
+                LOG.info(++i + " " + token);
                 if (connector.callGoDotComValidateToken(tockenList))
                 {
-                    System.out.println("Suthenticated");
+                    LOG.info("Suthenticated");
                 }
             }
-
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            LOG.error(e);
         }
-
     }
 
+    /**
+     * @return session key
+     */
     public static String generateSessionKey()
     {
         String alphabet = new String(
@@ -53,8 +58,7 @@ public class SecurityCheckMain
         for (int i = 0; i < length; i++)
             // 12
             result = result + alphabet.charAt(r.nextInt(n)); // 13
-        // System.out.println(result);
+        // LOG.info(result);
         return result;
     }
-
 }

@@ -23,44 +23,52 @@ public class JSONConfigLoader
 {
     private static final Logger logger = LogManager.getLogger(JSONConfigLoader.class);
     private final String JSON_FILE_NAME = "scope.json";
+    /**
+     * File containing JSON configuration
+     */
     File jsonFile;
+    /**
+     * Map of scope key/value
+     */
     Map<String, AuthDO> scopeMap = new HashMap<>();
+    /**
+     * Maps json value to scope
+     */
     ObjectMapper mapper = new ObjectMapper();
 
     private static JSONConfigLoader instance;
 
     private JSONConfigLoader()
     {
-        jsonFile = new File(getClass().getClassLoader().getResource(JSON_FILE_NAME).getFile());
+        this.jsonFile = new File(getClass().getClassLoader().getResource(this.JSON_FILE_NAME).getFile());
         initializeMap();
     }
 
+    /**
+     * @return singleton instance of JSON Config Loader
+     */
     public static JSONConfigLoader getInstance()
     {
         if (instance == null)
         {
             instance = new JSONConfigLoader();
-
         }
         return instance;
     }
 
     private void initializeMap()
     {
-
         try
         {
-            Scope scope = mapper.readValue(this.jsonFile, Scope.class);
+            Scope scope = this.mapper.readValue(this.jsonFile, Scope.class);
 
             for (AuthDO patt : scope.getAuthorization())
             {
                 if (patt != null)
                 {
-                    scopeMap.put(patt.getUrlPattern(), patt);
+                    this.scopeMap.put(patt.getUrlPattern(), patt);
                 }
-
             }
-
         }
         catch (JsonGenerationException ex)
         {
@@ -74,15 +82,14 @@ public class JSONConfigLoader
         {
             logger.error(ex);
         }
-
     }
 
+    /**
+     * @return scopeMap
+     */
     public Map<String, AuthDO> loadScopeData()
     {
-
         // File jsonFile = new File(jsonFilePath);
-        return scopeMap;
-
+        return this.scopeMap;
     }
-
 }

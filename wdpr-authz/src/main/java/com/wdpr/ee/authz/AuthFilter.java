@@ -39,16 +39,28 @@ public class AuthFilter implements Filter
 {
     private static final Logger logger = LogManager.getLogger(AuthFilter.class);
     private ServletContext context;
+    /**
+     * Singleton instance of Resr Connector
+     */
     RestConnector connector = RestConnector.getInstance();
+    /**
+     * Map<String, AuthDO> containing scope data
+     */
     Map<String, AuthDO> scopeMap = JSONConfigLoader.getInstance().loadScopeData();
 
+    /**
+     * Authorization Filter class
+     */
     public AuthFilter()
     {
 
     }
 
+    /**
+     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+     */
     @Override
-    public void init(FilterConfig fConfig) throws ServletException
+    public void init(FilterConfig fConfig)
     {
         this.context = fConfig.getServletContext();
         this.context.log("AuthFilter initialized");
@@ -98,12 +110,10 @@ public class AuthFilter implements Filter
 
         try
         {
-
             // Proceeding with HTTP TOKEN authentication
             if (authRequired)
             {
-                authSuccess = connector.callGoDotComValidateToken(tokenList);
-
+                authSuccess = this.connector.callGoDotComValidateToken(tokenList);
             }
 
             /*
@@ -130,15 +140,13 @@ public class AuthFilter implements Filter
         }
         finally
         {
-
+            // Avoid compiler warning
         }
-
     }
 
     /**
      * @param req
-     * @param tokenList
-     * @return
+     * @return Map of header keys and values
      */
     public Map<String, String> loadHeaders(HttpServletRequest req)
     {
@@ -161,11 +169,11 @@ public class AuthFilter implements Filter
     private AuthDO loadScopeItem(String ctxPath)
     {
         AuthDO scopeItem = null;
-        for (String key : scopeMap.keySet())
+        for (String key : this.scopeMap.keySet())
         {
             if (Pattern.matches(key, ctxPath))
             {
-                scopeItem = scopeMap.get(key);
+                scopeItem = this.scopeMap.get(key);
                 return scopeItem;
             }
         }
@@ -183,7 +191,7 @@ public class AuthFilter implements Filter
             HttpServletResponse res) throws IOException
     {
         boolean isScopeValid = false;
-        TokenDO respObj = connector.callGoDotComValidateScope(tokenList);
+        TokenDO respObj = this.connector.callGoDotComValidateScope(tokenList);
         if (respObj.getScope() != null)
         {
             for (String scope : scopeItem.getScopesRequired())
@@ -255,7 +263,7 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper
         super(request);
     }
 
-    private Map<String, String> headerMap = new HashMap<String, String>();
+    private Map<String, String> headerMap = new HashMap<>();
 
     /**
      * add a header with given name and value
@@ -265,7 +273,7 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper
      */
     public void addHeader(String name, String value)
     {
-        headerMap.put(name, value);
+        this.headerMap.put(name, value);
     }
 
     /**
@@ -275,9 +283,9 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper
     public String getHeader(String name)
     {
         String headerValue = super.getHeader(name);
-        if (headerMap.containsKey(name))
+        if (this.headerMap.containsKey(name))
         {
-            headerValue = headerMap.get(name);
+            headerValue = this.headerMap.get(name);
         }
         return headerValue;
     }
@@ -289,30 +297,33 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper
     public Enumeration<String> getHeaderNames()
     {
         List<String> names = Collections.list(super.getHeaderNames());
-        for (String name : headerMap.keySet())
+        for (String name : this.headerMap.keySet())
         {
             names.add(name);
         }
         return Collections.enumeration(names);
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletRequestWrapper#getHeaders(String)
+     */
     @Override
     public Enumeration<String> getHeaders(String name)
     {
         List<String> values = Collections.list(super.getHeaders(name));
-        if (headerMap.containsKey(name))
+        if (this.headerMap.containsKey(name))
         {
-            values.add(headerMap.get(name));
+            values.add(this.headerMap.get(name));
         }
         return Collections.enumeration(values);
     }
 
     /**
-     * @see java.lang.Object#toString()
+     * @see Object#toString()
      */
     @Override
     public String toString()
     {
-        return "HeaderMapRequestWrapper [headerMap=" + headerMap + "]";
+        return "HeaderMapRequestWrapper [headerMap=" + this.headerMap + "]";
     }
 }

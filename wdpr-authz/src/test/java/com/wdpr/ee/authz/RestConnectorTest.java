@@ -21,47 +21,57 @@ import org.mockito.Mockito;
  */
 public class RestConnectorTest
 {
+    /**
+     * token list
+     */
     Map<String, String> tokenList = new HashMap<>();
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
+        // No setup required
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @Before
     public void setUp() throws Exception
     {
-        tokenList.put("access_token", "uz3588_tywiTt0a9l9MROA");
-        tokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
-        tokenList.put("username", "api");
-        tokenList.put("assertion_type", "public");
+        this.tokenList.put("access_token", "uz3588_tywiTt0a9l9MROA");
+        this.tokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
+        this.tokenList.put("username", "api");
+        this.tokenList.put("assertion_type", "public");
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @After
     public void tearDown() throws Exception
     {
     }
 
+    /**
+     * @throws IOException
+     */
     // @Test
     public void testcallGoDotComPost() throws IOException
     {
         RestConnector connector = Mockito.mock(RestConnector.class);
-        CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
+        //CloseableHttpClient httpClient =
+            Mockito.mock(CloseableHttpClient.class);
 
         Mockito.doThrow(new RuntimeException()).when(connector)
-                .callGoDotComValidateScope(tokenList);
-
+                .callGoDotComValidateScope(this.tokenList);
     }
 
+    /**
+     * @throws IOException
+     */
     @Test
     public void testcallGoDotCom() throws IOException
     {
@@ -75,11 +85,12 @@ public class RestConnectorTest
 
         Mockito.when(httpClient.execute(getRequest)).thenReturn(response);
         // HttpResponse response = httpClient.execute(postRequest);
-        connector.callGoDotComValidateScope(tokenList);
+        connector.callGoDotComValidateScope(this.tokenList);
 
         // Mockito.doThrow(new
         // RuntimeException()).when(connector).callGoDotComValidateScope(tokenList);
-
+        httpClient.close();
+        response.close();
     }
 
 }

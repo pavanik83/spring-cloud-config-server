@@ -19,22 +19,36 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
+/**
+ * Customer Service Implementation
+ */
 public class CustomerServiceImpl
 {
     private static final Logger logger = LogManager.getLogger(CustomerServiceImpl.class);
 
     private CustomerServiceExectuor customerServiceExecutor = new CustomerServiceExectuor();
 
+    /**
+     * @return customerServiceExecutor
+     */
     public CustomerServiceExectuor getCustomerServiceExecutor()
     {
-        return customerServiceExecutor;
+        return this.customerServiceExecutor;
     }
 
+    /**
+     * @param customerServiceExecutor
+     */
     public void setCustomerServiceExecutor(CustomerServiceExectuor customerServiceExecutor)
     {
         this.customerServiceExecutor = customerServiceExecutor;
     }
 
+    /**
+     * @param ui
+     * @param header
+     * @return Customer
+     */
     /*
      * //sample:
      * http://localhost:8080/CustomerOrder/customer-services/customer-create
@@ -42,7 +56,6 @@ public class CustomerServiceImpl
      * =DDDion&lastName=Forward&gender=M&firstAddressLine=9414+Easy+Subdivision
      * &city=Fort+Dix&state=Mississippi&zip=39956-1447&namePrefix=Mr
      */
-
     @GET
     @Path("/customer-create")
     @Produces(
@@ -50,7 +63,6 @@ public class CustomerServiceImpl
     // @WdprMethodLog
     public Response createCustomer(@Context UriInfo ui, @Context HttpHeaders header)
     {
-
         long serviceStartTime = System.nanoTime();
 
         logger.info("Create Customer service begins");
@@ -58,20 +70,17 @@ public class CustomerServiceImpl
 
         if (ui != null)
         {
-
             MultivaluedMap<String, String> params = ui.getQueryParameters();
             try
             {
                 customer = new Customer(params);
-
-                customerServiceExecutor.createCustomer(customer);
+                this.customerServiceExecutor.createCustomer(customer);
             }
             catch (IllegalArgumentException e)
             {
                 logger.error("Exception in validating request ", e);
                 ErrorResponse error = new ErrorResponse(400, "Mandatory param missing",
                         e.getMessage());
-
                 return generateErrorResponse(error);
             }
             catch (Exception e)
@@ -79,7 +88,6 @@ public class CustomerServiceImpl
                 logger.error("Unknown runtime Exception ", e);
                 ErrorResponse error = new ErrorResponse(500, "Internal server error",
                         "unknown error");
-
                 return generateErrorResponse(error);
             }
         }
@@ -96,6 +104,11 @@ public class CustomerServiceImpl
         return Response.ok(customer, MediaType.APPLICATION_JSON).build();
     }
 
+    /**
+     * @param ui
+     * @param header
+     * @return CustomerOrder
+     */
     /*
      * http://localhost:8080/CustomerOrder/customer-services/customer-order?
      * customerId
@@ -116,7 +129,6 @@ public class CustomerServiceImpl
             {
                 if (headername.toUpperCase().startsWith("X-"))
                 {
-
                     LocalHeader.put(headername, header.getRequestHeader(headername).get(0));
                 }
             }
@@ -131,15 +143,13 @@ public class CustomerServiceImpl
             try
             {
                 customerOrder = new CustomerOrder(params);
-
-                customerServiceExecutor.createCustomerOrder(customerOrder);
+                this.customerServiceExecutor.createCustomerOrder(customerOrder);
             }
             catch (IllegalArgumentException e)
             {
                 logger.error("Exception in validating request ", e);
                 ErrorResponse error = new ErrorResponse(400, "Mandatory param missing",
                         e.getMessage());
-
                 return generateErrorResponse(error);
             }
             catch (Exception e)
@@ -147,7 +157,6 @@ public class CustomerServiceImpl
                 logger.error("Unknown runtime Exception  ", e);
                 ErrorResponse error = new ErrorResponse(500, "Internal server error",
                         "unknown error");
-
                 return generateErrorResponse(error);
             }
         }
@@ -164,19 +173,25 @@ public class CustomerServiceImpl
         return Response.ok(customerOrder, MediaType.APPLICATION_JSON).build();
     }
 
+    /**
+     * @param ui
+     * @param header
+     * @return Response
+     */
     @GET
     @Path("/log-test")
     @Produces(
     { MediaType.APPLICATION_JSON })
     public Response logTest(@Context UriInfo ui, @Context HttpHeaders header)
     {
-
         return Response.ok("pass", MediaType.APPLICATION_JSON).build();
-
     }
 
+    /**
+     * @param errorResponse
+     * @return Error Response
+     */
     public static Response generateErrorResponse(ErrorResponse errorResponse)
-
     {
         ThreadContext.clearAll();
         return Response.status(errorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON)

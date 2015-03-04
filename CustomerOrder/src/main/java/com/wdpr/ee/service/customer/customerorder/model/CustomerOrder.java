@@ -4,15 +4,18 @@ import com.wdpr.ee.service.customer.customerorder.model.CustomerServiceOption.or
 import java.util.UUID;
 import javax.ws.rs.core.MultivaluedMap;
 
+/**
+ *
+ */
 public class CustomerOrder extends Order
 {
-
+    /**
+     * @param params
+     */
     public CustomerOrder(MultivaluedMap<String, String> params)
     {
-
         if (params != null)
         {
-
             for (orderOption paramName : CustomerServiceOption.orderOption.values())
             {
                 this.setOrderNumber(UUID.randomUUID().toString());
@@ -25,7 +28,6 @@ public class CustomerOrder extends Order
                 if (paramName.toString().equals("itemNumber")
                         && params.getFirst(paramName.toString()) != null)
                     this.setItemNumber(params.getFirst(paramName.toString()));
-
                 try
                 {
                     if (paramName.toString().equals("itemQuantity")
@@ -40,12 +42,10 @@ public class CustomerOrder extends Order
                     throw new IllegalArgumentException("Illegal values for item quantity",
                             new Exception("Invalid Params"));
                 }
-
             }
             if (this.getCustomerId() == null || this.shippingAddressId == null
                     || this.getItemNumber() == null)
             {
-
                 throw new IllegalArgumentException(
                         "Illegal values passed for customerid/shippingid/itemnumber",
                         new Exception("Invalid Params"));
@@ -56,31 +56,49 @@ public class CustomerOrder extends Order
     private String CustomerId;
     private String shippingAddressId;
 
+    /**
+     * @return shippingAddressId
+     */
     public String getShippingAddressId()
     {
-        return shippingAddressId;
+        return this.shippingAddressId;
     }
 
+    /**
+     * @param shippingAddressId
+     */
     public void setShippingAddressId(String shippingAddressId)
     {
         this.shippingAddressId = shippingAddressId;
     }
 
+    /**
+     * @return CustomerId
+     */
     public String getCustomerId()
     {
-        return CustomerId;
+        return this.CustomerId;
     }
 
+    /**
+     * @param customerId
+     */
     public void setCustomerId(String customerId)
     {
-        CustomerId = customerId;
+        this.CustomerId = customerId;
     }
 
+    /**
+     * @return order
+     */
     public Order getOrder()
     {
-        return order;
+        return this.order;
     }
 
+    /**
+     * @param order
+     */
     public void setOrder(Order order)
     {
         this.order = order;
@@ -178,5 +196,4 @@ public class CustomerOrder extends Order
     // CustomerId = customerId;
     // }
     //
-
 }

@@ -2,9 +2,17 @@ package com.wdpr.ee.service.customer.customerorder.exception;
 
 import java.io.Serializable;
 
+/**
+ *
+ */
 public class ErrorResponse implements Serializable
 {
 
+    /**
+     * @param statusCode
+     * @param errorType
+     * @param errorDescription
+     */
     public ErrorResponse(int statusCode, String errorType, String errorDescription)
     {
         super();
@@ -21,31 +29,49 @@ public class ErrorResponse implements Serializable
     private String errorType;
     private String errorDescription;
 
+    /**
+     * @return statusCode
+     */
     public int getStatusCode()
     {
-        return statusCode;
+        return this.statusCode;
     }
 
+    /**
+     * @param statusCode
+     */
     public void setStatusCode(int statusCode)
     {
         this.statusCode = statusCode;
     }
 
+    /**
+     * @return errorType
+     */
     public String getErrorType()
     {
-        return errorType;
+        return this.errorType;
     }
 
+    /**
+     * @param errorType
+     */
     public void setErrorType(String errorType)
     {
         this.errorType = errorType;
     }
 
+    /**
+     * @return errorDescription
+     */
     public String getErrorDescription()
     {
-        return errorDescription;
+        return this.errorDescription;
     }
 
+    /**
+     * @param errorDescription
+     */
     public void setErrorDescription(String errorDescription)
     {
         this.errorDescription = errorDescription;

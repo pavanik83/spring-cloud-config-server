@@ -9,19 +9,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+/**
+ * Scope Test
+ */
 public class ScopeTest
 {
+    private static final Logger LOG = LogManager.getLogger(ScopeTest.class);
     private static final String jsonFilePath = "C:\\Users\\georn021\\Desktop\\scope.json";
     private static final String jsonFilePath2 = "C:\\Users\\georn021\\Desktop\\scope-out.json";
+    /**
+     *
+     */
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("scope.json");
 
     public static void main(String[] args)
     {
-
         ScopeTest sc = new ScopeTest();
 
         sc.met();
@@ -57,7 +65,6 @@ public class ScopeTest
 
         try
         {
-
             File jsonFile = new File(jsonFilePath);
             File jsonFile2 = new File(jsonFilePath2);
 
@@ -70,43 +77,32 @@ public class ScopeTest
                 if (patt != null)
                 {
                     scopeMAp.put(patt.getUrlPattern(), patt);
-
+                    LOG.info("patt  :" + patt.getUrlPattern());
                 }
-                System.out.println("patt  :" + patt.getUrlPattern());
             }
 
             mapper.writeValue(jsonFile2, scope);
 
-            // System.out.println(mapper.writeValueAsString(student));
-
+            // LOG.info(mapper.writeValueAsString(student));
         }
         catch (JsonGenerationException ex)
         {
-
-            ex.printStackTrace();
-
+            LOG.error(ex);
         }
         catch (JsonMappingException ex)
         {
-
-            ex.printStackTrace();
-
+            LOG.error(ex);
         }
         catch (IOException ex)
         {
-
-            ex.printStackTrace();
-
+            LOG.error(ex);
         }
-
     }
 
     public void met()
     {
-
         try
         {
-
             ObjectMapper mapper = new ObjectMapper();
             File jsonFile = new File(getClass().getClassLoader().getResource("scope.json")
                     .getFile());
@@ -115,7 +111,7 @@ public class ScopeTest
 
             Scope scope = mapper.readValue(jsonFile, Scope.class);
 
-            System.out.println(" path :" + jsonFile.getAbsolutePath());
+            LOG.info(" path :" + jsonFile.getAbsolutePath());
 
             for (AuthDO patt : scope.getAuthorization())
             {
@@ -123,37 +119,26 @@ public class ScopeTest
                 {
                     scopeMAp.put(patt.getUrlPattern(), patt);
                 }
-
             }
 
-            System.out.println(" path :" + jsonFile.getCanonicalPath());
-            System.out.println(" path :" + jsonFile.getAbsolutePath());
-
+            LOG.info(" path :" + jsonFile.getCanonicalPath());
+            LOG.info(" path :" + jsonFile.getAbsolutePath());
         }
         catch (JsonGenerationException ex)
         {
-
-            ex.printStackTrace();
-
+            LOG.error(ex);
         }
         catch (JsonMappingException ex)
         {
-
-            ex.printStackTrace();
-            // logger.error(ex);
+            LOG.error(ex);
         }
         catch (IOException ex)
         {
-
-            ex.printStackTrace();
-            // logger.error(ex);
-
+            LOG.error(ex);
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            LOG.info(e);
         }
-
     }
-
 }
