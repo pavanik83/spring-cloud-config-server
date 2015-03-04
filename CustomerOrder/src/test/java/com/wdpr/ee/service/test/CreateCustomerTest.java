@@ -17,7 +17,8 @@ import org.junit.Test;
  *
  *
  */
-public class CreateCustomerTest  {
+public class CreateCustomerTest
+{
 
     CustomerServiceExectuor customerServiceExecutor;
 
@@ -25,9 +26,10 @@ public class CreateCustomerTest  {
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
-         customerServiceExecutor = new CustomerServiceExectuor();
-//         DBConnectionFactory dbFactory = DBConnectionFactory.getInstance();
+    public void setUp() throws Exception
+    {
+        customerServiceExecutor = new CustomerServiceExectuor();
+        // DBConnectionFactory dbFactory = DBConnectionFactory.getInstance();
 
     }
 
@@ -35,13 +37,15 @@ public class CreateCustomerTest  {
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception
+    {
     }
 
     @Test
-    public void testCustomerservice() {
+    public void testCustomerservice()
+    {
 
-        Customer customer= new Customer();
+        Customer customer = new Customer();
         customer.setFirstName("Nixon-xx");
         customer.setLastName("George-xx");
         customer.setCustomerId(UUID.randomUUID().toString());
@@ -52,16 +56,17 @@ public class CreateCustomerTest  {
         address.setZip("28464-4045");
         customer.setAddress(address);
 
-        try{
+        try
+        {
 
             customerServiceExecutor.createCustomer(customer);
             assertTrue(" Success", true);
-        }catch(Exception e){
+        }
+        catch (Exception e)
+        {
             assertTrue(" failure", false);
 
         }
-
-
 
     }
 

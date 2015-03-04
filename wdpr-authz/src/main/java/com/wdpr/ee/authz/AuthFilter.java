@@ -28,91 +28,108 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /***************************************************************************************************
-* FileName - AuthFilter.java
-* Desc:  Security filter servlet class to validate header parameters , Client app can directly plug-in
-*  filter-mapping in their web.xml
-* (c) Disney. All rights reserved.
-*
-* $Author:  $nixon
-* $Revision:  $
-* $Change:  $
-* $Date: $
-********************************************************************************************************/
+ * FileName - AuthFilter.java Desc: Security filter servlet class to validate
+ * header parameters , Client app can directly plug-in filter-mapping in their
+ * web.xml (c) Disney. All rights reserved.
+ *
+ * $Author: $nixon $Revision: $ $Change: $ $Date: $
+ ********************************************************************************************************/
 @WebFilter("/AuthFilter")
-public class AuthFilter implements Filter {
+public class AuthFilter implements Filter
+{
     private static final Logger logger = LogManager.getLogger(AuthFilter.class);
     private ServletContext context;
     RestConnector connector = RestConnector.getInstance();
     Map<String, AuthDO> scopeMap = JSONConfigLoader.getInstance().loadScopeData();
 
-    public AuthFilter() {
+    public AuthFilter()
+    {
 
     }
 
     @Override
-    public void init(FilterConfig fConfig) throws ServletException {
+    public void init(FilterConfig fConfig) throws ServletException
+    {
         this.context = fConfig.getServletContext();
         this.context.log("AuthFilter initialized");
     }
 
     /**
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException
+    {
 
-
-        boolean authRequired = false, authSuccess=false, scopeRequired = false, scopeValid = false;
+        boolean authRequired = false, authSuccess = false, scopeRequired = false, scopeValid = false;
         Map<String, String> cookieMap = new ConcurrentHashMap<>();
-        Map<String, String> tokenList = new  HashMap<>();
+        Map<String, String> tokenList = new HashMap<>();
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
         AuthDO scopeItem = loadScopeItem(req.getContextPath());
-        if  (scopeItem != null ){
+        if (scopeItem != null)
+        {
             authRequired = scopeItem.isAuthTokenRequired();
             scopeRequired = scopeItem.getScopesAllowed().length > 0;
         }
 
-        if (req.getHeader(AuthConstants.ACCESS_TOKEN) == null && authRequired == true ) {
-            loadCookieData(req,cookieMap);//TODO: TBD if the request params through cookie (UI apps)
-            if(cookieMap.get(AuthConstants.ACCESS_TOKEN) != null){
-                tokenList.put(AuthConstants.ACCESS_TOKEN, cookieMap.get(AuthConstants.ACCESS_TOKEN));
+        if (req.getHeader(AuthConstants.ACCESS_TOKEN) == null && authRequired == true)
+        {
+            loadCookieData(req, cookieMap);// TODO: TBD if the request params
+                                           // through cookie (UI apps)
+            if (cookieMap.get(AuthConstants.ACCESS_TOKEN) != null)
+            {
+                tokenList
+                        .put(AuthConstants.ACCESS_TOKEN, cookieMap.get(AuthConstants.ACCESS_TOKEN));
             }
         }
 
         tokenList = loadHeaders(req);
 
-        if (tokenList.size() == 0 && (authRequired || scopeRequired)) {
+        if (tokenList.size() == 0 && (authRequired || scopeRequired))
+        {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ;
+            return;
         }
 
-        try {
+        try
+        {
 
-            // Proceeding with  HTTP TOKEN authentication
-            if (authRequired){
+            // Proceeding with HTTP TOKEN authentication
+            if (authRequired)
+            {
                 authSuccess = connector.callGoDotComValidateToken(tokenList);
 
             }
 
             /*
-             * Assumptions made that  API(URI) & its required scope will be defined in scope.json. If the incoming
-             * URI has entry in scope.json the filter will get uses scope and check uses has all required scope.
+             * Assumptions made that API(URI) & its required scope will be
+             * defined in scope.json. If the incoming URI has entry in
+             * scope.json the filter will get uses scope and check uses has all
+             * required scope.
              */
-            if (scopeRequired){
-                scopeValid = validateScope(tokenList,scopeItem,res);
+            if (scopeRequired)
+            {
+                scopeValid = validateScope(tokenList, scopeItem, res);
             }
 
-            if ((authSuccess &&(!scopeRequired || scopeValid) ) || (scopeItem == null) ){
-                logger.info("Success- Auth/Scope : scopeRequired"+scopeRequired);//TODO:TBR
+            if ((authSuccess && (!scopeRequired || scopeValid)) || (scopeItem == null))
+            {
+                logger.info("Success- Auth/Scope : scopeRequired" + scopeRequired);// TODO:TBR
                 chain.doFilter(request, response);
-            }else{
-                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return ;
             }
-        } finally {
+            else
+            {
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+        }
+        finally
+        {
 
         }
 
@@ -123,10 +140,12 @@ public class AuthFilter implements Filter {
      * @param tokenList
      * @return
      */
-    public Map<String, String> loadHeaders(HttpServletRequest req){
-        Map<String, String> tokenList = new  HashMap<>();
+    public Map<String, String> loadHeaders(HttpServletRequest req)
+    {
+        Map<String, String> tokenList = new HashMap<>();
         Enumeration<String> headerNames = req.getHeaderNames();
-        while (headerNames != null &&headerNames.hasMoreElements()) {
+        while (headerNames != null && headerNames.hasMoreElements())
+        {
             String key = headerNames.nextElement();
             String value = req.getHeader(key);
             tokenList.put(key, value);
@@ -134,20 +153,25 @@ public class AuthFilter implements Filter {
         return tokenList;
 
     }
+
     /**
      * @param ctxPath
      * @return
      */
-    private AuthDO loadScopeItem(String ctxPath){
+    private AuthDO loadScopeItem(String ctxPath)
+    {
         AuthDO scopeItem = null;
-        for (String key : scopeMap.keySet()) {
-            if (Pattern.matches(key, ctxPath)){
+        for (String key : scopeMap.keySet())
+        {
+            if (Pattern.matches(key, ctxPath))
+            {
                 scopeItem = scopeMap.get(key);
                 return scopeItem;
             }
         }
         return scopeItem;
     }
+
     /**
      * @param tokenList
      * @param scopeItem
@@ -155,14 +179,21 @@ public class AuthFilter implements Filter {
      * @return
      * @throws IOException
      */
-    private boolean validateScope(Map<String, String> tokenList, AuthDO scopeItem, HttpServletResponse res) throws IOException {
+    private boolean validateScope(Map<String, String> tokenList, AuthDO scopeItem,
+            HttpServletResponse res) throws IOException
+    {
         boolean isScopeValid = false;
         TokenDO respObj = connector.callGoDotComValidateScope(tokenList);
-        if (respObj.getScope() != null) {
-            for (String scope : scopeItem.getScopesRequired()) {
-                if (respObj.getScope().contains(scope)) {
+        if (respObj.getScope() != null)
+        {
+            for (String scope : scopeItem.getScopesRequired())
+            {
+                if (respObj.getScope().contains(scope))
+                {
                     isScopeValid = true;
-                } else {
+                }
+                else
+                {
                     return false;
                 }
 
@@ -175,28 +206,34 @@ public class AuthFilter implements Filter {
      * @param request
      * @param cookieMap
      */
-    public void loadCookieData(HttpServletRequest request, Map<String, String> cookieMap ){
-          Cookie cookie = null;
-          Cookie[] cookies = null;
-          // Get an array of Cookies associated with this domain
-          cookies = request.getCookies();
+    public void loadCookieData(HttpServletRequest request, Map<String, String> cookieMap)
+    {
+        Cookie cookie = null;
+        Cookie[] cookies = null;
+        // Get an array of Cookies associated with this domain
+        cookies = request.getCookies();
 
-          if( cookies != null ){
+        if (cookies != null)
+        {
 
-             for (int i = 0; i < cookies.length; i++){
+            for (int i = 0; i < cookies.length; i++)
+            {
                 cookie = cookies[i];
                 cookieMap.put(cookie.getName(), cookie.getValue());
-             }
-          }else{
-              logger.info("No cookies found");
-          }
+            }
+        }
+        else
+        {
+            logger.info("No cookies found");
+        }
     }
 
     /**
      * @see javax.servlet.Filter#destroy()
      */
     @Override
-    public void destroy() {
+    public void destroy()
+    {
         // we can close resources here
     }
 }
@@ -206,13 +243,15 @@ public class AuthFilter implements Filter {
  * have an HttpServletReuest, not needed for now
  *
  */
-class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
+class HeaderMapRequestWrapper extends HttpServletRequestWrapper
+{
     /**
      * construct a wrapper for this request
      *
      * @param request
      */
-    public HeaderMapRequestWrapper(HttpServletRequest request) {
+    public HeaderMapRequestWrapper(HttpServletRequest request)
+    {
         super(request);
     }
 
@@ -224,7 +263,8 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
      * @param name
      * @param value
      */
-    public void addHeader(String name, String value) {
+    public void addHeader(String name, String value)
+    {
         headerMap.put(name, value);
     }
 
@@ -232,9 +272,11 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
      * replace the normal get header
      */
     @Override
-    public String getHeader(String name) {
+    public String getHeader(String name)
+    {
         String headerValue = super.getHeader(name);
-        if (headerMap.containsKey(name)) {
+        if (headerMap.containsKey(name))
+        {
             headerValue = headerMap.get(name);
         }
         return headerValue;
@@ -244,28 +286,33 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
      * get the Header names
      */
     @Override
-    public Enumeration<String> getHeaderNames() {
+    public Enumeration<String> getHeaderNames()
+    {
         List<String> names = Collections.list(super.getHeaderNames());
-        for (String name : headerMap.keySet()) {
+        for (String name : headerMap.keySet())
+        {
             names.add(name);
         }
         return Collections.enumeration(names);
     }
 
     @Override
-    public Enumeration<String> getHeaders(String name) {
+    public Enumeration<String> getHeaders(String name)
+    {
         List<String> values = Collections.list(super.getHeaders(name));
-        if (headerMap.containsKey(name)) {
+        if (headerMap.containsKey(name))
+        {
             values.add(headerMap.get(name));
         }
         return Collections.enumeration(values);
     }
 
     /**
-     *  @see java.lang.Object#toString()
+     * @see java.lang.Object#toString()
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "HeaderMapRequestWrapper [headerMap=" + headerMap + "]";
     }
 }

@@ -7,35 +7,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-/***************************************************************************************************
-* FileName - AuthConfig.java
-* Desc: Authentication Config class to read and populate ip,host, context path etc.
-* (c) Disney. All rights reserved.
-*
-* $Author:  $nixon
-* $Revision:  $
-* $Change:  $
-* $Date: $
-********************************************************************************************************/
-public class AuthConfig {
 
-    private static AuthConfig instance ;
+/***************************************************************************************************
+ * FileName - AuthConfig.java Desc: Authentication Config class to read and
+ * populate ip,host, context path etc. (c) Disney. All rights reserved.
+ *
+ * $Author: $nixon $Revision: $ $Change: $ $Date: $
+ ********************************************************************************************************/
+public class AuthConfig
+{
+
+    private static AuthConfig instance;
     private static final List<String> propKeys = new ArrayList<String>();
     private static final Map<String, String> propertyMap = new HashMap<String, String>();
     public final String propFileName = "auth-config.properties";
 
-    private AuthConfig() {
+    private AuthConfig()
+    {
         loadAppLogEntryValues(propFileName);
     }
 
-    public static AuthConfig getInstance() {
-        if (instance == null) {
+    public static AuthConfig getInstance()
+    {
+        if (instance == null)
+        {
             instance = new AuthConfig();
         }
         return instance;
     }
 
-    static {
+    static
+    {
         propKeys.add(AuthConstants.PROTOCOL);
         propKeys.add(AuthConstants.HOST);
         propKeys.add(AuthConstants.PORT);
@@ -50,15 +52,18 @@ public class AuthConfig {
     // propertyMap.put(LoggerConstants.VERSION, "1.0");
     // defaultPropertyMap= propertyMap;
     // }
-    public Map<String, String> getPropertyMap() {
+    public Map<String, String> getPropertyMap()
+    {
         return propertyMap;
     }
 
-    public String getPropertyVal(String key) {
+    public String getPropertyVal(String key)
+    {
         return propertyMap.get(key);
     }
 
-    public List<String> getPropkeys() {
+    public List<String> getPropkeys()
+    {
         return propKeys;
     }
 
@@ -75,16 +80,19 @@ public class AuthConfig {
      *
      */
 
-    private void loadAppLogEntryValues(final String propFileName) {
+    private void loadAppLogEntryValues(final String propFileName)
+    {
 
         Properties props = new Properties();
-        InputStream inputStream = getClass().getClassLoader()
-                .getResourceAsStream(propFileName);
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
 
-        try {
-            if (inputStream != null) {
+        try
+        {
+            if (inputStream != null)
+            {
                 props.load(inputStream);
-                for (String key : propKeys) {
+                for (String key : propKeys)
+                {
                     String value = props.getProperty(key);
                     propertyMap.put(key, value);
 
@@ -92,7 +100,9 @@ public class AuthConfig {
             }
             System.out.println(" property invoked");
 
-        } catch (IOException | NullPointerException | IllegalArgumentException e) {
+        }
+        catch (IOException | NullPointerException | IllegalArgumentException e)
+        {
 
         }
 

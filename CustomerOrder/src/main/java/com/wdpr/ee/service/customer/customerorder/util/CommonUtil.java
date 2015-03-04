@@ -7,57 +7,57 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
+public class CommonUtil
+{
 
+    private static final Logger logger = LogManager.getLogger(CommonUtil.class);
 
-
-public class CommonUtil {
-
-    private static final Logger logger = LogManager    .getLogger(CommonUtil.class);
-    public static void loadHeader(HttpGet getRequest, HashMap<String, String> hashMap){
-        for (String keys :hashMap.keySet())
+    public static void loadHeader(HttpGet getRequest, HashMap<String, String> hashMap)
+    {
+        for (String keys : hashMap.keySet())
         {
-            logger.info("Received: key "+keys +":"+hashMap.get(keys).toString());
+            logger.info("Received: key " + keys + ":" + hashMap.get(keys).toString());
 
             getRequest.setHeader(keys, hashMap.get(keys));
 
         }
 
-        logger.info("CorrelationId in TC:  "+ThreadContext.get("Correlation-Id"));
+        logger.info("CorrelationId in TC:  " + ThreadContext.get("Correlation-Id"));
 
+        // Nixon: ATTN
 
-        //Nixon: ATTN
+        // Below code should be uncommneted when no aspect X-CorrelationId is
+        // available
 
-        //Below code should be uncommneted when no aspect X-CorrelationId is available
-
-//        if (hashMap.get("X-CorrelationId")== null){
-//
-//            logger.info("CorrelationId in TC (ma- null):  "+ThreadContext.get("Correlation-Id"));
-//
+        // if (hashMap.get("X-CorrelationId")== null){
+        //
+        // logger.info("CorrelationId in TC (ma- null):  "+ThreadContext.get("Correlation-Id"));
+        //
         HttpGet httpget
-//            httpget.setHeader("X-CorrelationId", ThreadContext.get("Correlation-Id"));
-//
-//
-//
-//        }
+        // httpget.setHeader("X-CorrelationId",
+        // ThreadContext.get("Correlation-Id"));
+        //
+        //
+        //
+        // }
 
-
-        //Aspect check
+        // Aspect check
         ;
-
-
 
         Header[] headers = getRequest.getAllHeaders();
         logger.info("AllHeaders>>.............................");
-        for (Header header : headers) {
+        for (Header header : headers)
+        {
             logger.info("AllHeaders>>" + header.getName() + ":" + header.getValue());
 
         }
         logger.info("headers x-corr_id........................");
         Header[] crr_ids = getRequest.getHeaders("X-CorrelationId");
-        if (crr_ids != null) {
-            for (Header crr_id : crr_ids) {
-                logger.info("crr_id>>" + crr_id.getName() + ":"
-                        + crr_id.getValue());
+        if (crr_ids != null)
+        {
+            for (Header crr_id : crr_ids)
+            {
+                logger.info("crr_id>>" + crr_id.getName() + ":" + crr_id.getValue());
 
             }
             logger.info(" header size -" + crr_ids.length);
@@ -65,15 +65,17 @@ public class CommonUtil {
                     + getRequest.getHeaders("X-CorrelationId").toString());
         }
 
-        if (crr_ids != null) {
-            logger.info(" header size -"+crr_ids.length);
+        if (crr_ids != null)
+        {
+            logger.info(" header size -" + crr_ids.length);
             logger.info(" Aspect -X-CorrelationId "
                     + getRequest.getHeaders("X-CorrelationId").toString());
 
-        } else {
+        }
+        else
+        {
             logger.error(" Aspect -X-CorrelationId null");
         }
-
 
     }
 

@@ -1,56 +1,70 @@
 package com.wdpr.ee.authz.model;
 
-public class AuthDO {
+public class AuthDO
+{
     int id;
     String authType;
     String urlPattern;
     boolean authToken;
     String[] scopesRequired;
 
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id)
+    {
         this.id = id;
     }
 
-    public String getAuthType() {
+    public String getAuthType()
+    {
         return authType;
     }
 
-    public void setAuthType(String authType) {
+    public void setAuthType(String authType)
+    {
         this.authType = authType;
     }
 
-    public String getUrlPattern() {
+    public String getUrlPattern()
+    {
         return urlPattern;
     }
 
-    public void setUrlPattern(String urlPattern) {
+    public void setUrlPattern(String urlPattern)
+    {
         this.urlPattern = urlPattern;
     }
 
-    public boolean isAuthToken() {
+    public boolean isAuthToken()
+    {
         return authToken;
     }
 
-    public boolean isAuthTokenRequired() {
+    public boolean isAuthTokenRequired()
+    {
         return authToken;
     }
-    public void setAuthToken(boolean authToken) {
+
+    public void setAuthToken(boolean authToken)
+    {
         this.authToken = authToken;
     }
 
-    public String[] getScopesRequired() {
+    public String[] getScopesRequired()
+    {
         return scopesRequired;
     }
 
-    public String[] getScopesAllowed() {
+    public String[] getScopesAllowed()
+    {
         return scopesRequired;
     }
 
-    public void setScopesRequired(String[] scopesRequired) {
+    public void setScopesRequired(String[] scopesRequired)
+    {
         this.scopesRequired = scopesRequired;
     }
 }
