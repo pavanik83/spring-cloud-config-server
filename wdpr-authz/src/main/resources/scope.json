@@ -18,7 +18,7 @@
         "authenticated"
       ]
     },
-	    {
+        {
       "authType": "pattern",
       "urlPattern": "/CustomerOrder*",
       "id": 3,

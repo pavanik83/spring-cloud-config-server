@@ -1,285 +1,286 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>CustomerOrder</groupId>
-	<artifactId>CustomerOrder</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<parent>
-		<groupId>com.wdpr.maven</groupId>
-		<artifactId>wdpr-parent</artifactId>
-		<version>1.1-SNAPSHOT</version>
-		<relativePath></relativePath>
-	</parent>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>CustomerOrder</groupId>
+    <artifactId>CustomerOrder</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <parent>
+        <groupId>com.wdpr.maven</groupId>
+        <artifactId>wdpr-parent</artifactId>
+        <version>1.1-SNAPSHOT</version>
+        <relativePath></relativePath>
+    </parent>
 
-	<properties>
-		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+    <properties>
+        <project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
         <java.runtime.version>1.7</java.runtime.version>
         <java.required.version>1.7</java.required.version>
         <java.source.version>1.7</java.source.version>
         <java.version>1.7</java.version>
         <generateSitemap>true</generateSitemap>
         <dependencyConvergence>true</dependencyConvergence>
-		<jacoco.skip>false</jacoco.skip>
-		<!-- Test dependency version -->
-		<easymock.version>3.2</easymock.version>
-		<powermock.version>1.5.5</powermock.version>
+        <jacoco.skip>false</jacoco.skip>
+        <!-- Test dependency version -->
+        <easymock.version>3.2</easymock.version>
+        <powermock.version>1.5.5</powermock.version>
         <cxf.version>3.0.4</cxf.version>
         <spring.version>4.1.5.RELEASE</spring.version>
         <jackson.version>1.9.13</jackson.version>
-	</properties>
-	<dependencies>
-		<dependency>
-		  <groupId>com.oracle</groupId>
-		  <artifactId>ojdbc6</artifactId>
-		  <version>11.2.0.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http-jetty</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-jaxrs</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
+    </properties>
+    <dependencies>
+        <dependency>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc6</artifactId>
+          <version>11.2.0.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-jaxrs</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-			<version>1.1.1</version>
-		</dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-dbcp2</artifactId>
-			<version>2.1</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.1</version>
+        </dependency>
 
-		<!-- log4j -->
+        <!-- log4j -->
 
-	    <!-- fasterXML to be used if log4j jsonLayout is used -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.5.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.5.1</version>
-		</dependency>
-		<!-- WDPRO logging framework-->
-		<dependency>
-			<groupId>com.wdpr.ee</groupId>
-			<artifactId>wdpr-loggingapi</artifactId>
+        <!-- fasterXML to be used if log4j jsonLayout is used -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+        <!-- WDPRO logging framework-->
+        <dependency>
+            <groupId>com.wdpr.ee</groupId>
+            <artifactId>wdpr-loggingapi</artifactId>
             <!-- Later updates give NullPointerException - missing property file -->
-			<version>1.7</version>
-		</dependency>
+            <version>1.7</version>
+        </dependency>
 
-		<dependency>
-			<groupId>com.wdpr.ee</groupId>
-			<artifactId>wdpr-aspectjapi</artifactId>
-			<version>1.7</version>
-		</dependency>
+        <dependency>
+            <groupId>com.wdpr.ee</groupId>
+            <artifactId>wdpr-aspectjapi</artifactId>
+            <version>1.7</version>
+        </dependency>
 
-		<dependency>
-			<groupId>com.wdpr.ee</groupId>
-			<artifactId>wdpr-authz</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
-		</dependency>
+        <dependency>
+            <groupId>com.wdpr.ee</groupId>
+            <artifactId>wdpr-authz</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
 
-		<!-- <dependency> <groupId>org.apache.logging.log4j</groupId> <artifactId>log4j-api</artifactId>
-			<version>2.1</version> </dependency> <dependency> <groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId> <version>2.1</version> </dependency> -->
-		<!-- unit testing -->
-		<!-- Test utilities related dependencies  -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-<!-- 		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymockclassextension</artifactId>
-			<version>${easymock.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>${powermock.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-easymock</artifactId>
-			<version>${powermock.version}</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- <dependency> <groupId>org.apache.logging.log4j</groupId> <artifactId>log4j-api</artifactId>
+            <version>2.1</version> </dependency> <dependency> <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId> <version>2.1</version> </dependency> -->
+        <!-- unit testing -->
+        <!-- Test utilities related dependencies  -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+<!--         <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>${easymock.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-easymock</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.3.6</version>
-		</dependency>
-		-->
-			<!-- AspectJ dependencies -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.6</version>
+        </dependency>
+        -->
+            <!-- AspectJ dependencies -->
 
-		 <!--  <dependency>
-		     <groupId>com.disney.logging.aspectj</groupId>
-			  <artifactId>AspectJ</artifactId>
-			  <version>0.0.1-SNAPSHOT</version>
-		  </dependency>  -->
-		  <dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>1.8.5</version>
-		  </dependency>
-<!-- 		  <dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>1.8.2</version>
-		  </dependency> -->
+         <!--  <dependency>
+             <groupId>com.disney.logging.aspectj</groupId>
+              <artifactId>AspectJ</artifactId>
+              <version>0.0.1-SNAPSHOT</version>
+          </dependency>  -->
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.5</version>
+          </dependency>
+<!--           <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.8.2</version>
+          </dependency> -->
 
-	</dependencies>
+    </dependencies>
 
 
-	<packaging>war</packaging>
-	<build>
-		<finalName>customer-service</finalName>
+    <packaging>war</packaging>
+    <build>
+        <finalName>customer-service</finalName>
 
-		<!-- integrating test suit -->
-		<pluginManagement>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
+        <!-- integrating test suit -->
+        <pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.source.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <proc>none</proc>
                     <compilerArgument>${compiler.argument}</compilerArgument>
                 </configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin.version}</version>
-				<configuration>
-					<forkMode>once</forkMode>
-					<argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
-					<includes>
-						<include>**/*Test1.java</include>
-					</includes>
-					<excludes>
-						<exclude>**/*XXTest.java</exclude>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+                    <includes>
+                        <include>**/*Test1.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*XXTest.java</exclude>
 
-					</excludes>
-					<systemProperties>
-						<property>
-							<name>log4j.configuration</name>
-							<value>log4j2.xml</value>
-						</property>
-					</systemProperties>
-				</configuration>
-			</plugin>
+                    </excludes>
+                    <systemProperties>
+                        <property>
+                            <name>log4j.configuration</name>
+                            <value>log4j2.xml</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
             <!-- AspectJ maven plugin -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.7</version>
-				<configuration>
-					<complianceLevel>${java.source.version}</complianceLevel>
-					<source>${java.source.version}</source>
-					<target>${java.version}</target>
-					<Xlint>ignore</Xlint>
-					<aspectLibraries>
-						<aspectLibrary>
-							<groupId>com.wdpr.ee</groupId>
-							<artifactId>wdpr-aspectjapi</artifactId>
-						</aspectLibrary>
-					</aspectLibraries>
-					<weaveDependencies>
-						<weaveDependency>
-							<groupId>org.apache.httpcomponents</groupId>
-							<artifactId>httpclient</artifactId>
-						</weaveDependency>
-						<weaveDependency>
-							<groupId>org.apache.cxf</groupId>
-							<artifactId>cxf-rt-transports-http</artifactId>
-						</weaveDependency>
-					</weaveDependencies>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-		</pluginManagement>
-	</build>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.7</version>
+                <configuration>
+                    <complianceLevel>${java.source.version}</complianceLevel>
+                    <source>${java.source.version}</source>
+                    <target>${java.version}</target>
+                    <Xlint>ignore</Xlint>
+                    <aspectLibraries>
+                        <aspectLibrary>
+                            <groupId>com.wdpr.ee</groupId>
+                            <artifactId>wdpr-aspectjapi</artifactId>
+                        </aspectLibrary>
+                    </aspectLibraries>
+                    <weaveDependencies>
+                        <weaveDependency>
+                            <groupId>org.apache.httpcomponents</groupId>
+                            <artifactId>httpclient</artifactId>
+                        </weaveDependency>
+                        <weaveDependency>
+                            <groupId>org.apache.cxf</groupId>
+                            <artifactId>cxf-rt-transports-http</artifactId>
+                        </weaveDependency>
+                    </weaveDependencies>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        </pluginManagement>
+    </build>
 </project>

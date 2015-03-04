@@ -17,7 +17,7 @@
       <servlet-name>CXFServlet</servlet-name>
       <url-pattern>/*</url-pattern>
    </servlet-mapping>
-   
+
    <filter>
       <filter-name>HttpLoggingFilter</filter-name>
       <filter-class>com.wdpr.ee.loggingapi.filter.HttpLoggingFilter</filter-class>
@@ -30,7 +30,7 @@
       <filter-name>HttpLoggingFilter</filter-name>
       <url-pattern>/*</url-pattern>
    </filter-mapping>
-   
+
    <filter>
       <filter-name>AuthFilter</filter-name>
       <filter-class>com.wdpr.ee.authz.AuthFilter</filter-class>
@@ -39,5 +39,5 @@
       <filter-name>AuthFilter</filter-name>
       <url-pattern>/*</url-pattern>
    </filter-mapping>
-   
+
 </web-app>
