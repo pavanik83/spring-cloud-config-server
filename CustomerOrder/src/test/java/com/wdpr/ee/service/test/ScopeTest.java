@@ -12,15 +12,21 @@ import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+//import org.junit.Test;
 
+/**
+ * Scope Test
+ */
 public class ScopeTest
 {
     private static final Logger LOG = LogManager.getLogger(ScopeTest.class);
-    private static final String jsonFilePath = "C:\\Users\\georn021\\Desktop\\scope.json";
     private static final String jsonFilePath2 = "C:\\Users\\georn021\\Desktop\\scope-out.json";
-    InputStream inputStream = getClass().getClassLoader().getResourceAsStream("scope.json");
 
-    public static void main(String[] args)
+    /**
+     *
+     */
+    //@Test
+    public void testScope()
     {
         // TODO Auto-generated method stub
         ScopeData sd = new ScopeData();
@@ -52,19 +58,19 @@ public class ScopeTest
 
         try
         {
-
-            File jsonFile = new File(jsonFilePath);
+            InputStream scopeStream = ScopeTest.class.getClassLoader().getResourceAsStream("scope.json");
             File jsonFile2 = new File(jsonFilePath2);
 
-            ScopeData scope = mapper.readValue(jsonFile, ScopeData.class);
+            // TODO Unrecognized field "authType"
+            ScopeData scope = mapper.readValue(scopeStream, ScopeData.class);
 
-            Map<String, Pattern> scopeMAp = new HashMap<>();
+            Map<String, Pattern> scopeMap = new HashMap<>();
 
             for (Pattern patt : scope.getAuthorization())
             {
                 if (patt != null)
                 {
-                    scopeMAp.put(patt.getUrl_pattern(), patt);
+                    scopeMap.put(patt.getUrl_pattern(), patt);
                     LOG.info("patt  :" + patt.getUrl_pattern());
                 }
             }

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Test;
 
 /**
  * Scope Test
@@ -21,14 +22,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class ScopeTest
 {
     private static final Logger LOG = LogManager.getLogger(ScopeTest.class);
-    private static final String jsonFilePath = "C:\\Users\\georn021\\Desktop\\scope.json";
-    private static final String jsonFilePath2 = "C:\\Users\\georn021\\Desktop\\scope-out.json";
+    //private static final String jsonFilePath = "C:\\Users\\georn021\\Desktop\\scope.json";
+    private static final String jsonFilePath2 = "scope-out.json";
+
     /**
      *
      */
-    InputStream inputStream = getClass().getClassLoader().getResourceAsStream("scope.json");
-
-    public static void main(String[] args)
+    @Test
+    public void testScope()
     {
         ScopeTest sc = new ScopeTest();
 
@@ -65,10 +66,11 @@ public class ScopeTest
 
         try
         {
-            File jsonFile = new File(jsonFilePath);
+            InputStream scopeStream = ScopeTest.class.getClassLoader().getResourceAsStream("scope.json");
+            //File jsonFile = new File(jsonFilePath);
             File jsonFile2 = new File(jsonFilePath2);
 
-            Scope scope = mapper.readValue(jsonFile, Scope.class);
+            Scope scope = mapper.readValue(scopeStream, Scope.class);
 
             Map<String, AuthDO> scopeMAp = new HashMap<>();
 
@@ -82,6 +84,7 @@ public class ScopeTest
             }
 
             mapper.writeValue(jsonFile2, scope);
+            scopeStream.close();
 
             // LOG.info(mapper.writeValueAsString(student));
         }
@@ -99,6 +102,9 @@ public class ScopeTest
         }
     }
 
+    /**
+     *
+     */
     public void met()
     {
         try

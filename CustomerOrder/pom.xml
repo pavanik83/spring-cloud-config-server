@@ -47,6 +47,7 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http-jetty</artifactId>
             <version>${cxf.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -186,32 +187,29 @@
         -->
             <!-- AspectJ dependencies -->
 
-         <!--  <dependency>
-             <groupId>com.disney.logging.aspectj</groupId>
-              <artifactId>AspectJ</artifactId>
-              <version>0.0.1-SNAPSHOT</version>
-          </dependency>  -->
-          <dependency>
+        <!--dependency>
+            <groupId>com.disney.logging.aspectj</groupId>
+            <artifactId>AspectJ</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency-->
+        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>1.8.5</version>
-          </dependency>
-<!--           <dependency>
+        </dependency>
+        <!--dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>1.8.2</version>
-          </dependency> -->
-
+        </dependency> -->
     </dependencies>
-
 
     <packaging>war</packaging>
     <build>
         <finalName>customer-service</finalName>
-
-        <!-- integrating test suit -->
+        <!-- integrating test suite -->
         <pluginManagement>
-        <plugins>
+          <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
@@ -280,7 +278,7 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
+          </plugins>
         </pluginManagement>
     </build>
 </project>

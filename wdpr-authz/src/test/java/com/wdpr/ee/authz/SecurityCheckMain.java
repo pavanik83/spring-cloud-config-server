@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 
 /**
  * Test class for Security Check
@@ -14,7 +15,11 @@ public class SecurityCheckMain
 {
     private static final Logger LOG = LogManager.getLogger(SecurityCheckMain.class);
 
-    public static void main(String[] args)
+    /**
+     *
+     */
+    @Test
+    public void testAuthConfig()
     {
         AuthConfig config = AuthConfig.getInstance();
         RestConnector connector = RestConnector.getInstance();
@@ -25,16 +30,17 @@ public class SecurityCheckMain
         try
         {
             int i = 0;
-            while (true)
+            while (i<20)
             {
-                Map<String, String> tockenList = new HashMap<>();
+                Map<String, String> tokenList = new HashMap<>();
                 String token = generateSessionKey();
-                tockenList.put("access_token", token);
+                tokenList.put("access_token", token);
                 LOG.info(++i + " " + token);
-                if (connector.callGoDotComValidateToken(tockenList))
+                if (connector.callGoDotComValidateToken(tokenList))
                 {
                     LOG.info("Suthenticated");
                 }
+                i++;
             }
         }
         catch (Exception e)

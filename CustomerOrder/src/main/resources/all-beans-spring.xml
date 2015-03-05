@@ -10,13 +10,11 @@
     default-lazy-init="false">
 
     <import resource="classpath:META-INF/cxf/cxf.xml" />
-    <import resource="classpath:META-INF/cxf/cxf-extension-xml.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+    <!--import resource="classpath:META-INF/cxf/cxf-extension-xml.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" /-->
 
     <context:component-scan base-package="com.wdpr.ee.service.customer.customerorder" />
-
-
-<bean id="customerServiceImpl" class="com.wdpr.ee.service.customer.customerorder.rest.impl.CustomerServiceImpl"/>
+    <bean id="customerServiceImpl" class="com.wdpr.ee.service.customer.customerorder.rest.impl.CustomerServiceImpl"/>
 
     <jaxrs:server id="customerServices" address="/customer-services">
         <jaxrs:providers>
@@ -29,6 +27,4 @@
             <entry key="json" value="application/json" />
         </jaxrs:extensionMappings>
     </jaxrs:server>
-
-
 </beans>

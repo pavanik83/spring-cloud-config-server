@@ -58,7 +58,7 @@ public class RestConnectorTest
     /**
      * @throws IOException
      */
-    // @Test
+    @Test
     public void testcallGoDotComPost() throws IOException
     {
         RestConnector connector = Mockito.mock(RestConnector.class);
@@ -92,5 +92,4 @@ public class RestConnectorTest
         httpClient.close();
         response.close();
     }
-
 }
