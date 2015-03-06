@@ -43,6 +43,14 @@ public final class AuthConstants
      * access_token
      */
     public static final String ACCESS_TOKEN = "access_token";
+    /**
+     * authorization header value containing "BEARER <access token>"
+     */
+    public static final String AUTHORIZATION = "authorization";
+    /**
+     * BEARER part of access token value: "BEARER <access token>"
+     */
+    public static final String BEARER = "BEARER";
 
     /**
      * grant_type

@@ -145,7 +145,18 @@ public class RestConnector
             if (ctxPath == this.AUTH_PATH)
             {
                 LOG.info(tokenList);
+                // Some confusion between header value access_token and authorization
                 String accessToken = tokenList.get(AuthConstants.ACCESS_TOKEN);
+                if (accessToken == null)
+                {
+                    accessToken = tokenList.get(AuthConstants.AUTHORIZATION);
+                    if (accessToken != null && accessToken.indexOf(AuthConstants.BEARER)>-1)
+                    {
+                        // Authorization value: 'BEARER <access token>'
+                        accessToken = accessToken.substring(accessToken.indexOf(AuthConstants.BEARER)+7);
+                        tokenList.put(AuthConstants.ACCESS_TOKEN, accessToken);
+                    }
+                }
                 if (accessToken != null)
                 {
                     ctxPath += tokenList.get(AuthConstants.ACCESS_TOKEN);

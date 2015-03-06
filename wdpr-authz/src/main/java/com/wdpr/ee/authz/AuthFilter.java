@@ -89,8 +89,20 @@ public class AuthFilter implements Filter
             scopeRequired = scopeItem.getScopesAllowed().length > 0;
         }
 
+        tokenList = loadHeaders(req);
         LOG.info(req.getHeaderNames());
-        if (req.getHeader(AuthConstants.ACCESS_TOKEN) == null && authRequired == true)
+        String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
+        if (token == null)
+        {
+            token = req.getHeader(AuthConstants.AUTHORIZATION);
+            if (token != null && token.indexOf(AuthConstants.BEARER)>-1)
+            {
+                // Authorization value: 'BEARER <access token>'
+                token = token.substring(token.indexOf(AuthConstants.BEARER)+7);
+                tokenList.put(AuthConstants.ACCESS_TOKEN, token);
+            }
+        }
+        if (token == null && authRequired == true)
         {
             loadCookieData(req, cookieMap);// TODO: TBD if the request params
                                            // through cookie (UI apps)
@@ -101,8 +113,6 @@ public class AuthFilter implements Filter
             }
         }
 
-        tokenList = loadHeaders(req);
-
         if (tokenList.size() == 0 && (authRequired || scopeRequired))
         {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -111,9 +121,9 @@ public class AuthFilter implements Filter
 
         try
         {
-            // Proceeding with HTTP TOKEN authentication
             if (authRequired)
             {
+                // HTTP TOKEN authentication: External OAuth call to URL /validate
                 authSuccess = this.connector.callGoDotComValidateToken(tokenList);
             }
 
@@ -125,6 +135,7 @@ public class AuthFilter implements Filter
              */
             if (scopeRequired)
             {
+                // TODO Validate returned scopes from /validate against required scopes in configuration
                 scopeValid = validateScope(tokenList, scopeItem, res);
             }
 
@@ -192,6 +203,7 @@ public class AuthFilter implements Filter
             HttpServletResponse res) throws IOException
     {
         boolean isScopeValid = false;
+        //TODO This is only needed if token has not been validated
         TokenDO respObj = this.connector.callGoDotComValidateScope(tokenList);
         if (respObj != null && respObj.getScope() != null)
         {

@@ -3,29 +3,31 @@ Security-Filter
 	Cusomer order: POC rest service for client implementation
 	wdpr-authz :POC for Auth Filtering
 
-Introduction
+###Introduction
 
 [Security : Auth filter Architecture](https://github.disney.com/WDPR-RA-UI/Security-Filter/blob/master/Auth-Filter.png)
 
 [Demo: UI snaps with header & params](https://github.disney.com/WDPR-RA-UI/Security-Filter/blob/master/Snaps.png)
 
-wdpr-authz is the maven Filter project which is being  plugged into CustomerOrder (Rest service ) . 
+wdpr-authz is the maven ServletFilter project which is  plugged into the CustomerOrder (Rest service) sample. 
 
-During service invocation Filter will be invoked and based on the Auth & scope status (ref: scope.json), the appropriate go.authentication  service will be invoked 
+During the service invocation, the Filter is invoked, and based on the Auth & scope status (ref: scope.json), the appropriate go.authentication service will be invoked 
 
-Token Validation is being done against authorization.go.com which is configured through auth-config.properties. The client can configure the appropriate Auth URL in /resources/auth-config.properties
+Token Validation is being done against authorization.go.com, configured through /resources/auth-config.properties.
 
-REST service invocation URI: 
+###REST service invocation URI: 
 
-http://localhost:8080/CustomerOrder/customer-services/customer-create?firstName=NixonDion&lastName=Forward&gender=M&firstAddressLine=9414+Easy+Subdivision&city=Fort+Dix&state=Mississippi&zip=39956-1447
+Example customer creation which requires an existing valid token:
 
-Client Dependency(pom.xml)
+    http://localhost:8080/customer-service/customer-services/customer-create?firstName=NixonDion&lastName=Forward&gender=M&firstAddressLine=9414+Easy+Subdivision&city=Fort+Dix&state=Mississippi&zip=39956-1447
+
+###Client Dependency
+(pom.xml)
 
 		<dependency>
 			<groupId>com.wdpr.ee</groupId>
 			<artifactId>wdpr-authz</artifactId>
-			<version>1.0.0</version>	
-			<scope>compile</scope>		
+			<version>1.0.1-SNAPSHOT</version>	
 		</dependency> 
 
 Client (web.xml)
@@ -42,7 +44,7 @@ Client (web.xml)
        </filter-mapping>
      </web-app #
 
-Note: Rest service(CustomerOrder) Client should pass necessary headers as part of request 
+Note: Rest service(customer-service) Client should pass necessary headers as part of request for new token 
 eg: access_token, client_id etc.
 
 Sample logs from Client:
