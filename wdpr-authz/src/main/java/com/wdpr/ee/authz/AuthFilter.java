@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 @WebFilter("/AuthFilter")
 public class AuthFilter implements Filter
 {
-    private static final Logger logger = LogManager.getLogger(AuthFilter.class);
+    private static final Logger LOG = LogManager.getLogger(AuthFilter.class);
     private ServletContext context;
     /**
      * Singleton instance of Resr Connector
@@ -89,6 +89,7 @@ public class AuthFilter implements Filter
             scopeRequired = scopeItem.getScopesAllowed().length > 0;
         }
 
+        LOG.info(req.getHeaderNames());
         if (req.getHeader(AuthConstants.ACCESS_TOKEN) == null && authRequired == true)
         {
             loadCookieData(req, cookieMap);// TODO: TBD if the request params
@@ -129,7 +130,7 @@ public class AuthFilter implements Filter
 
             if ((authSuccess && (!scopeRequired || scopeValid)) || (scopeItem == null))
             {
-                logger.info("Success- Auth/Scope : scopeRequired" + scopeRequired);// TODO:TBR
+                LOG.info("Success- Auth/Scope : scopeRequired=" + scopeRequired);// TODO:TBR
                 chain.doFilter(request, response);
             }
             else
@@ -192,7 +193,7 @@ public class AuthFilter implements Filter
     {
         boolean isScopeValid = false;
         TokenDO respObj = this.connector.callGoDotComValidateScope(tokenList);
-        if (respObj.getScope() != null)
+        if (respObj != null && respObj.getScope() != null)
         {
             for (String scope : scopeItem.getScopesRequired())
             {
@@ -232,7 +233,7 @@ public class AuthFilter implements Filter
         }
         else
         {
-            logger.info("No cookies found");
+            LOG.info("No cookies found");
         }
     }
 

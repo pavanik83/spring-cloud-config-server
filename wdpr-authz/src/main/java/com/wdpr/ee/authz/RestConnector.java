@@ -144,7 +144,16 @@ public class RestConnector
             URIBuilder builder = new URIBuilder();
             if (ctxPath == this.AUTH_PATH)
             {
-                ctxPath += tokenList.get(AuthConstants.ACCESS_TOKEN);
+                LOG.info(tokenList);
+                String accessToken = tokenList.get(AuthConstants.ACCESS_TOKEN);
+                if (accessToken != null)
+                {
+                    ctxPath += tokenList.get(AuthConstants.ACCESS_TOKEN);
+                }
+                else
+                {
+                    LOG.warn(AuthConstants.ACCESS_TOKEN + " is not set!");
+                }
             }
 
             builder.setScheme(this.PROTOCOL).setHost(this.HOST).setPort(this.PORT).setPath(ctxPath);
