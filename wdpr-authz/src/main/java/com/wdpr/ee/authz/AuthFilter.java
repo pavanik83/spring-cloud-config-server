@@ -1,7 +1,6 @@
 package com.wdpr.ee.authz;
 
 import com.wdpr.ee.authz.model.AuthDO;
-import com.wdpr.ee.authz.model.TokenDO;
 import com.wdpr.ee.authz.util.AuthConstants;
 import com.wdpr.ee.authz.util.JSONConfigLoader;
 import java.io.IOException;
@@ -121,10 +120,11 @@ public class AuthFilter implements Filter
 
         try
         {
+            String json = null;
             if (authRequired)
             {
                 // HTTP TOKEN authentication: External OAuth call to URL /validate
-                authSuccess = this.connector.callGoDotComValidateToken(tokenList);
+                json = this.connector.callGoDotComValidateToken(tokenList);
             }
 
             /*
@@ -133,13 +133,13 @@ public class AuthFilter implements Filter
              * scope.json the filter will get uses scope and check uses has all
              * required scope.
              */
-            if (scopeRequired)
+            if (json != null && scopeRequired)
             {
                 // TODO Validate returned scopes from /validate against required scopes in configuration
-                scopeValid = validateScope(tokenList, scopeItem, res);
+                scopeValid = validateScope(tokenList, scopeItem, json);
             }
 
-            if ((authSuccess && (!scopeRequired || scopeValid)) || (scopeItem == null))
+            if ((json != null && (!scopeRequired || scopeValid)) || (scopeItem == null))
             {
                 LOG.info("Success- Auth/Scope : scopeRequired=" + scopeRequired);// TODO:TBR
                 chain.doFilter(request, response);
@@ -200,25 +200,34 @@ public class AuthFilter implements Filter
      * @throws IOException
      */
     private boolean validateScope(Map<String, String> tokenList, AuthDO scopeItem,
-            HttpServletResponse res) throws IOException
+            String json) throws IOException
     {
         boolean isScopeValid = false;
         //TODO This is only needed if token has not been validated
-        TokenDO respObj = this.connector.callGoDotComValidateScope(tokenList);
-        if (respObj != null && respObj.getScope() != null)
+        //TokenDO respObj = this.connector.callGoDotComValidateScope(tokenList);
+        /*HttpEntity entity = json.getEntity();
+        String json = EntityUtils.toString(entity);
+        LOG.info("Response SC:" + json.getStatusLine().getStatusCode() + " response=" + EntityUtils.toString(entity));*/
+        LOG.info("json: " + json);
+        List<String> allowedScopes = null;
+        try
         {
-            for (String scope : scopeItem.getScopesRequired())
+            allowedScopes = (new KeystoneDeserializer()).abilities(json);
+            LOG.info("Abilities: " + allowedScopes);
+            for (String allowed : allowedScopes)
             {
-                if (respObj.getScope().contains(scope))
+                for (String scope : scopeItem.getScopesRequired())
                 {
-                    isScopeValid = true;
+                    if (allowed.contains(scope))
+                    {
+                        isScopeValid = true;
+                    }
                 }
-                else
-                {
-                    return false;
-                }
-
             }
+        }
+        catch (Exception ex)
+        {
+            LOG.error(ex);
         }
         return isScopeValid;
     }

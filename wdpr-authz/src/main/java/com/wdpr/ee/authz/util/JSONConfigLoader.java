@@ -21,7 +21,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  ********************************************************************************************************/
 public class JSONConfigLoader
 {
-    private static final Logger logger = LogManager.getLogger(JSONConfigLoader.class);
+    private static final Logger LOG = LogManager.getLogger(JSONConfigLoader.class);
     private final String JSON_FILE_NAME = "scope.json";
     /**
      * File containing JSON configuration
@@ -72,15 +72,15 @@ public class JSONConfigLoader
         }
         catch (JsonGenerationException ex)
         {
-            logger.error(ex);
+            LOG.error(ex);
         }
         catch (JsonMappingException ex)
         {
-            logger.error(ex);
+            LOG.error(ex);
         }
         catch (IOException ex)
         {
-            logger.error(ex);
+            LOG.error(ex);
         }
     }
 

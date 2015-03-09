@@ -36,9 +36,10 @@ public class SecurityCheckMain
                 String token = generateSessionKey();
                 tokenList.put("access_token", token);
                 LOG.info(++i + " " + token);
-                if (connector.callGoDotComValidateToken(tokenList))
+                String resp = connector.callGoDotComValidateToken(tokenList);
+                if (resp != null)
                 {
-                    LOG.info("Suthenticated");
+                    LOG.info("Authenticated");
                 }
                 i++;
             }

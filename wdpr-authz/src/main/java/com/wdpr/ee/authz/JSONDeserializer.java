@@ -20,8 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 public class JSONDeserializer
 {
-
-    private static final Logger logger = LogManager.getLogger(JSONDeserializer.class);
+    private static final Logger LOG = LogManager.getLogger(JSONDeserializer.class);
     /**
      * @see org.codehaus.jackson.map.ObjectMapper
      */
@@ -32,6 +31,8 @@ public class JSONDeserializer
      */
     JSONDeserializer()
     {
+        // See https://github.com/FasterXML/jackson-datatype-json-org
+        //mapper.registerModule(new JsonOrgModule());
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(DeserializationConfig.Feature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
         mapper.configure(DeserializationConfig.Feature.READ_ENUMS_USING_TO_STRING, true);
@@ -52,23 +53,22 @@ public class JSONDeserializer
         try
         {
             dataObj = mapper.readValue(is, Object.class);
-
         }
         catch (JsonParseException ex)
         {
-            logger.error(ex);
+            LOG.error(ex);
             // throw new ConfigurationException("The input is not valid JSON",
             // ex);
         }
         catch (JsonMappingException ex)
         {
-            logger.error(ex);
+            LOG.error(ex);
             // throw new ConfigurationException("The input JSON doesn't match ",
             // ex);
         }
         catch (IOException ex)
         {
-            logger.error(ex);
+            LOG.error(ex);
             // throw new
             // ConfigurationException("IO error while reading the JSON",ex);
         }
@@ -87,34 +87,29 @@ public class JSONDeserializer
         T theObject = null;
         try
         {
-
             theObject = mapper.readValue(content, objectType);
         }
         catch (JsonParseException e)
         {
-            logger.error(e);
-
+            LOG.error(e);
             // throw
             // ApplicationExceptionFactory.create(HttpErrorType.INTERNAL_SERVER_ERROR,
             // ErrorTypeEnum.SYSTEM_ERROR,
             // ProductErrorCode.JSON_RESPONSE_PARSING_ERROR ,
             // "JsonParseException " );
-
         }
         catch (JsonMappingException e)
         {
-
-            logger.error(e);
+            LOG.error(e);
             // throw
             // ApplicationExceptionFactory.create(HttpErrorType.INTERNAL_SERVER_ERROR,
             // ErrorTypeEnum.SYSTEM_ERROR,
             // ProductErrorCode.JSON_RESPONSE_PARSING_ERROR ,
             // "JsonMappingException " );
-
         }
         catch (IOException e)
         {
-            logger.error(e);
+            LOG.error(e);
             // throw
             // ApplicationExceptionFactory.create(HttpErrorType.INTERNAL_SERVER_ERROR,
             // ErrorTypeEnum.SYSTEM_ERROR,
@@ -123,7 +118,7 @@ public class JSONDeserializer
 
         if (theObject == null)
         {
-            logger.error("Unable to load Object" + objectType.getCanonicalName());
+            LOG.error("Unable to load Object" + objectType.getCanonicalName());
             // throw
             // ApplicationExceptionFactory.create(HttpErrorType.INTERNAL_SERVER_ERROR,
             // ErrorTypeEnum.SYSTEM_ERROR,
@@ -133,5 +128,4 @@ public class JSONDeserializer
 
         return theObject;
     }
-
 }

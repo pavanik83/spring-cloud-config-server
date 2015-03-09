@@ -23,7 +23,7 @@
       "urlPattern": "/customer-service*",
       "id": 3,
       "authToken":true,
-      "scopesRequired": [
+      "scopesRequired": [ "eTagMCOGreet"
             ]
     },
     null

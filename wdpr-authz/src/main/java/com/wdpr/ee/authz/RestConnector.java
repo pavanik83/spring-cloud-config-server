@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -15,6 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -104,15 +106,10 @@ public class RestConnector
      * @return  http response valid
      * @throws IOException
      */
-    public boolean callGoDotComValidateToken(Map<String, String> tokenList) throws IOException
+    public String callGoDotComValidateToken(Map<String, String> tokenList) throws IOException
     {
-        HttpResponse response = callGoDotComGet(tokenList, this.AUTH_PATH);
-        int stausCode = response.getStatusLine().getStatusCode();
-        if (stausCode == HttpServletResponse.SC_OK)
-        {
-            return true;
-        }
-        return false;
+        // We need the response to validate scope authorizations
+        return callGoDotComGet(tokenList, this.AUTH_PATH);
     }
 
     /**
@@ -132,11 +129,11 @@ public class RestConnector
      * @return http response
      * @throws IOException
      */
-    public HttpResponse callGoDotComGet(Map<String, String> tokenList, String ctxPath)
+    public String callGoDotComGet(Map<String, String> tokenList, String ctxPath)
             throws IOException
     {
         HttpGet getRequest = new HttpGet();
-        HttpResponse response = null;
+        String json = null;
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(defaultRequestConfig).build();
         try
@@ -169,9 +166,15 @@ public class RestConnector
 
             builder.setScheme(this.PROTOCOL).setHost(this.HOST).setPort(this.PORT).setPath(ctxPath);
             getRequest = new HttpGet(builder.build());
-            response = httpClient.execute(getRequest);
-            LOG.info("Response SC:" + response.getStatusLine().getStatusCode() + ", from (GET)"
-                    + getRequest.getURI().toString());
+            HttpResponse response = httpClient.execute(getRequest);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpServletResponse.SC_OK)
+            {
+                HttpEntity entity = response.getEntity();
+                json = EntityUtils.toString(entity);
+                LOG.info("Response SC:" + response.getStatusLine().getStatusCode() + ", from (GET)"
+                        + getRequest.getURI().toString() + " response=" + EntityUtils.toString(entity));
+            }
         }
         catch (URISyntaxException | IOException ex)
         {
@@ -191,7 +194,7 @@ public class RestConnector
                 }
             }
         }
-        return response;
+        return json;
     }
 
     /**
@@ -241,15 +244,15 @@ public class RestConnector
 
             @SuppressWarnings("resource")
             HttpResponse response = httpClient.execute(postRequest);
-            int stausCode = response.getStatusLine().getStatusCode();
+            int statusCode = response.getStatusLine().getStatusCode();
 
-            if (stausCode == HttpServletResponse.SC_OK)
+            if (statusCode == HttpServletResponse.SC_OK)
             {
                 InputStream iStream = response.getEntity().getContent();
                 tokenResp = this.mapper.readValue(iStream, objectType);
                 iStream.close();
             }
-            LOG.info("Response SC:" + stausCode + ", from (POST)"
+            LOG.info("Response SC:" + statusCode + ", from (POST)"
                     + postRequest.getURI().toString());
         }
         catch (URISyntaxException | IOException ex)
