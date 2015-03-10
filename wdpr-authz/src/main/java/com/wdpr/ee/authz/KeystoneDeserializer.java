@@ -34,36 +34,31 @@ public class KeystoneDeserializer
         try
         {
             jso = mapper.readValue(json, JSONObject.class);
-        /*Iterator<String> it = jso.keys();
-        while (it.hasNext())
-        {
-            LOG.info(it.next());
-        }*/
-        // Scope Roles
+        // Scope Roles - would have to parse out single String
         //String scope = (String)jso.get("scope");
         //LOG.info(scope);
         JSONObject kresp = (JSONObject)jso.get("keystone_response");
-        LOG.info("keystone_response=" + kresp);
+        //LOG.info("keystone_response=" + kresp);
         JSONObject ass = (JSONObject)kresp.get("GetKeystoneAssertionBySessionResult");
-        LOG.info("ass=" + ass);
+        //LOG.info("ass=" + ass);
         JSONArray roles = ass.getJSONArray("Roles");
-        LOG.info("roles=" + roles);
+        //LOG.info("roles=" + roles);
         JSONObject role = (JSONObject)roles.get(0);
-        LOG.info("role=" + role);
-        LOG.info("roleNames=" + JSONObject.getNames(role));
+        //LOG.info("role=" + role);
+        //LOG.info("roleNames=" + JSONObject.getNames(role));
         JSONArray role0 = role.getJSONArray("Role");
-        LOG.info("role0=" + role0);
+        //LOG.info("role0=" + role0);
         // Anonymous array, can't get by name, need to use mapper parser
         JSONArray role01 = mapper.readValue(role0.toString(), JSONArray.class);
-        LOG.info("role01=" + role01.get(0));
+        //LOG.info("role01=" + role01.get(0));
         JSONObject fabs = (JSONObject)((JSONObject)role01.get(0)).get("FunctionalAbilities");
-        LOG.info("fabs=" + fabs);
+        //LOG.info("fabs=" + fabs);
         JSONArray fab = fabs.getJSONArray("FunctionalAbility");
-        LOG.info("fab=" + fab);
+        //LOG.info("fab=" + fab);
         for (int i=0; i< fab.length(); i++)
         {
             String name = (String)((JSONObject)fab.get(i)).get("Name");
-            LOG.info("name=" + name);
+            //LOG.info("name=" + name);
             abilities.add(name);
         }
         }
