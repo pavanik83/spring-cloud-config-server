@@ -74,7 +74,9 @@ public class AuthFilter implements Filter
             throws IOException, ServletException
     {
 
-        boolean authRequired = false, authSuccess = false, scopeRequired = false, scopeValid = false;
+        boolean authRequired = false;
+        boolean scopeRequired = false;
+        boolean scopeValid = false;
         Map<String, String> cookieMap = new ConcurrentHashMap<>();
         Map<String, String> tokenList = new HashMap<>();
 
@@ -89,7 +91,7 @@ public class AuthFilter implements Filter
         }
 
         tokenList = loadHeaders(req);
-        LOG.info(req.getHeaderNames());
+        //LOG.info(req.getHeaderNames());
         String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
         if (token == null)
         {
@@ -208,18 +210,19 @@ public class AuthFilter implements Filter
         /*HttpEntity entity = json.getEntity();
         String json = EntityUtils.toString(entity);
         LOG.info("Response SC:" + json.getStatusLine().getStatusCode() + " response=" + EntityUtils.toString(entity));*/
-        LOG.info("json: " + json);
+        //LOG.info("json: " + json);
         List<String> allowedScopes = null;
         try
         {
             allowedScopes = (new KeystoneDeserializer()).abilities(json);
-            LOG.info("Abilities: " + allowedScopes);
+            //LOG.info("Abilities: " + allowedScopes);
             for (String allowed : allowedScopes)
             {
                 for (String scope : scopeItem.getScopesRequired())
                 {
                     if (allowed.contains(scope))
                     {
+                        LOG.info("Abilities: " + allowedScopes + " is valid");
                         isScopeValid = true;
                     }
                 }

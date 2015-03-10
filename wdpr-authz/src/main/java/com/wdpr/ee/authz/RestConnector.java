@@ -158,10 +158,10 @@ public class RestConnector
                 {
                     ctxPath += tokenList.get(AuthConstants.ACCESS_TOKEN);
                 }
-                else
+                /*else
                 {
                     LOG.warn(AuthConstants.ACCESS_TOKEN + " is not set!");
-                }
+                }*/
             }
 
             builder.setScheme(this.PROTOCOL).setHost(this.HOST).setPort(this.PORT).setPath(ctxPath);
