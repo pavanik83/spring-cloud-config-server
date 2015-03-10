@@ -1,7 +1,6 @@
 package com.wdpr.ee.authz;
 
 import com.wdpr.ee.authz.model.AuthDO;
-import com.wdpr.ee.authz.model.TokenDO;
 import com.wdpr.ee.authz.util.AuthConstants;
 import com.wdpr.ee.authz.util.JSONConfigLoader;
 import java.io.IOException;
@@ -89,8 +88,20 @@ public class AuthFilter implements Filter
             scopeRequired = scopeItem.getScopesAllowed().length > 0;
         }
 
+        tokenList = loadHeaders(req);
         LOG.info(req.getHeaderNames());
-        if (req.getHeader(AuthConstants.ACCESS_TOKEN) == null && authRequired == true)
+        String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
+        if (token == null)
+        {
+            token = req.getHeader(AuthConstants.AUTHORIZATION);
+            if (token != null && token.indexOf(AuthConstants.BEARER)>-1)
+            {
+                // Authorization value: 'BEARER <access token>'
+                token = token.substring(token.indexOf(AuthConstants.BEARER)+7);
+                tokenList.put(AuthConstants.ACCESS_TOKEN, token);
+            }
+        }
+        if (token == null && authRequired == true)
         {
             loadCookieData(req, cookieMap);// TODO: TBD if the request params
                                            // through cookie (UI apps)
@@ -101,8 +112,6 @@ public class AuthFilter implements Filter
             }
         }
 
-        tokenList = loadHeaders(req);
-
         if (tokenList.size() == 0 && (authRequired || scopeRequired))
         {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -111,10 +120,11 @@ public class AuthFilter implements Filter
 
         try
         {
-            // Proceeding with HTTP TOKEN authentication
+            String json = null;
             if (authRequired)
             {
-                authSuccess = this.connector.callGoDotComValidateToken(tokenList);
+                // HTTP TOKEN authentication: External OAuth call to URL /validate
+                json = this.connector.callGoDotComValidateToken(tokenList);
             }
 
             /*
@@ -123,12 +133,13 @@ public class AuthFilter implements Filter
              * scope.json the filter will get uses scope and check uses has all
              * required scope.
              */
-            if (scopeRequired)
+            if (json != null && scopeRequired)
             {
-                scopeValid = validateScope(tokenList, scopeItem, res);
+                // TODO Validate returned scopes from /validate against required scopes in configuration
+                scopeValid = validateScope(tokenList, scopeItem, json);
             }
 
-            if ((authSuccess && (!scopeRequired || scopeValid)) || (scopeItem == null))
+            if ((json != null && (!scopeRequired || scopeValid)) || (scopeItem == null))
             {
                 LOG.info("Success- Auth/Scope : scopeRequired=" + scopeRequired);// TODO:TBR
                 chain.doFilter(request, response);
@@ -189,24 +200,34 @@ public class AuthFilter implements Filter
      * @throws IOException
      */
     private boolean validateScope(Map<String, String> tokenList, AuthDO scopeItem,
-            HttpServletResponse res) throws IOException
+            String json) throws IOException
     {
         boolean isScopeValid = false;
-        TokenDO respObj = this.connector.callGoDotComValidateScope(tokenList);
-        if (respObj != null && respObj.getScope() != null)
+        //TODO This is only needed if token has not been validated
+        //TokenDO respObj = this.connector.callGoDotComValidateScope(tokenList);
+        /*HttpEntity entity = json.getEntity();
+        String json = EntityUtils.toString(entity);
+        LOG.info("Response SC:" + json.getStatusLine().getStatusCode() + " response=" + EntityUtils.toString(entity));*/
+        LOG.info("json: " + json);
+        List<String> allowedScopes = null;
+        try
         {
-            for (String scope : scopeItem.getScopesRequired())
+            allowedScopes = (new KeystoneDeserializer()).abilities(json);
+            LOG.info("Abilities: " + allowedScopes);
+            for (String allowed : allowedScopes)
             {
-                if (respObj.getScope().contains(scope))
+                for (String scope : scopeItem.getScopesRequired())
                 {
-                    isScopeValid = true;
+                    if (allowed.contains(scope))
+                    {
+                        isScopeValid = true;
+                    }
                 }
-                else
-                {
-                    return false;
-                }
-
             }
+        }
+        catch (Exception ex)
+        {
+            LOG.error(ex);
         }
         return isScopeValid;
     }

@@ -20,7 +20,7 @@
     },
         {
       "authType": "pattern",
-      "urlPattern": "/CustomerOrder*",
+      "urlPattern": "/customer-service*",
       "id": 3,
       "authToken":true,
       "scopesRequired": ["AUTHZ_PUBLIC-INSECURE"

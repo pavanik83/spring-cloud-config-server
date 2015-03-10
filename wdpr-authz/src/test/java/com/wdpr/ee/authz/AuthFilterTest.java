@@ -96,7 +96,7 @@ public class AuthFilterTest
         AuthFilter mockFilter = Mockito.mock(AuthFilter.class);
         // Mockito.when(mockFilter.loadHeaders(request)).thenReturn(tokenList);
         Mockito.doReturn(this.tokenList).when(mockFilter).loadHeaders(request);
-        Mockito.when(request.getContextPath()).thenReturn("/CustomerOrder");
+        Mockito.when(request.getContextPath()).thenReturn("/customer-service");
         filter.doFilter(request, response, chain);
         assertNotNull(response.getStatus());
     }
@@ -171,7 +171,7 @@ public class AuthFilterTest
         // Map.Entry<String, String> entrySet = tokenList;
 
         // loadHeaders();
-        Mockito.when(request.getContextPath()).thenReturn("/CustomerOrder");
+        Mockito.when(request.getContextPath()).thenReturn("/customer-service");
         filter.doFilter(request, response, chain);
         assertNotNull(response.getStatus());
     }
