@@ -1,5 +1,7 @@
 package com.wdpr.ee.authz.model;
 
+import java.util.Arrays;
+
 /**
  * Authorization Object with configuration
  */
@@ -24,7 +26,23 @@ public class AuthDO
     /**
      *
      */
-    String[] scopesRequired;
+    Scope[] scopes;
+
+    /**
+     * @return the scopesRequired
+     */
+    public Scope[] getScopes()
+    {
+        return this.scopes;
+    }
+
+    /**
+     * @param scopes the scopesRequired to set
+     */
+    public void setScopesRequired(Scope[] scopes)
+    {
+        this.scopes = scopes;
+    }
 
     /**
      * @return id
@@ -98,27 +116,78 @@ public class AuthDO
         this.authToken = authTokenParam;
     }
 
-    /**
-     * @return scopesRequired
-     */
-    public String[] getScopesRequired()
+    public static class Scope
     {
-        return this.scopesRequired;
+        /**
+         * @see Object#toString()
+         */
+        @Override
+        public String toString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Scope [method=").append(this.method).append(", scopesRequired=")
+                    .append(Arrays.toString(this.scopesRequired)).append("]");
+            return builder.toString();
+        }
+
+        String method;
+        /**
+         *
+         */
+        String[] scopesRequired;
+
+        /**
+         * @return the method
+         */
+        public String getMethod()
+        {
+            return this.method;
+        }
+
+        /**
+         * @param method the method to set
+         */
+        public void setMethod(String method)
+        {
+            this.method = method;
+        }
+
+        /**
+         * @return scopesRequired
+         */
+        public String[] getScopesRequired()
+        {
+            return this.scopesRequired;
+        }
+
+        /**
+         * @return scopesRequired
+         */
+        public String[] getScopesAllowed()
+        {
+            return this.scopesRequired;
+        }
+
+        /**
+         * @param scopesRequiredParam
+         */
+        public void setScopesRequired(String[] scopesRequiredParam)
+        {
+            this.scopesRequired = scopesRequiredParam;
+        }
     }
 
     /**
-     * @return scopesRequired
+     * @see Object#toString()
      */
-    public String[] getScopesAllowed()
+    @Override
+    public String toString()
     {
-        return this.scopesRequired;
-    }
-
-    /**
-     * @param scopesRequiredParam
-     */
-    public void setScopesRequired(String[] scopesRequiredParam)
-    {
-        this.scopesRequired = scopesRequiredParam;
+        StringBuilder builder = new StringBuilder();
+        builder.append("AuthDO [id=").append(this.id).append(", authType=").append(this.authType)
+                .append(", urlPattern=").append(this.urlPattern).append(", authToken=")
+                .append(this.authToken).append(", scopes=").append(Arrays.toString(this.scopes))
+                .append("]");
+        return builder.toString();
     }
 }

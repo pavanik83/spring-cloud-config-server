@@ -1,7 +1,9 @@
 package com.wdpr.ee.authz;
 
+import static org.junit.Assert.fail;
 import com.wdpr.ee.authz.model.AuthDO;
-import com.wdpr.ee.authz.model.Scope;
+import com.wdpr.ee.authz.model.AuthDO.Scope;
+import com.wdpr.ee.authz.model.ScopeRequired;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +38,7 @@ public class ScopeTest
         sc.met();
 
         // TODO Auto-generated method stub
-        Scope sd = new Scope();
+        ScopeRequired sd = new ScopeRequired();
         // AuthDO pattern= (new Scope()).new AuthDO();
         AuthDO pattern = new AuthDO();
         pattern.setId(01);
@@ -45,7 +47,11 @@ public class ScopeTest
         pattern.setAuthType("pattern");
         String[] required_scopes =
         { "content-access", "attractions" };
-        pattern.setScopesRequired(required_scopes);
+        Scope required = new Scope();
+        required.setMethod("GET");
+        required.setScopesRequired(required_scopes);
+        Scope[] requireds = {required};
+        pattern.setScopesRequired(requireds);
         pattern.setUrlPattern("/attractions*");
 
         List<AuthDO> pats = new ArrayList<>();
@@ -55,7 +61,11 @@ public class ScopeTest
 
         String[] required_scopes2 =
         { "authenticated" };
-        pattern.setScopesRequired(required_scopes2);
+        Scope required2 = new Scope();
+        required2.setMethod("GET");
+        required2.setScopesRequired(required_scopes);
+        Scope[] requireds2 = {required2};
+        pattern.setScopesRequired(requireds2);
         pattern.setUrlPattern("/profile*");
         pattern.setAuthToken(true);
         pats.add(pattern);
@@ -64,13 +74,14 @@ public class ScopeTest
 
         ObjectMapper mapper = new ObjectMapper();
 
+        InputStream scopeStream = null;
         try
         {
-            InputStream scopeStream = ScopeTest.class.getClassLoader().getResourceAsStream("scope.json");
+            scopeStream = ScopeTest.class.getClassLoader().getResourceAsStream("scope.json");
             //File jsonFile = new File(jsonFilePath);
             File jsonFile2 = new File(jsonFilePath2);
 
-            Scope scope = mapper.readValue(scopeStream, Scope.class);
+            ScopeRequired scope = mapper.readValue(scopeStream, ScopeRequired.class);
 
             Map<String, AuthDO> scopeMAp = new HashMap<>();
 
@@ -91,14 +102,32 @@ public class ScopeTest
         catch (JsonGenerationException ex)
         {
             LOG.error(ex);
+            fail(ex.getMessage());
         }
         catch (JsonMappingException ex)
         {
             LOG.error(ex);
+            fail(ex.getMessage());
         }
         catch (IOException ex)
         {
             LOG.error(ex);
+            fail(ex.getMessage());
+        }
+        finally
+        {
+            if (scopeStream != null)
+            {
+                try
+                {
+                    scopeStream.close();
+                }
+                catch (Exception ex)
+                {
+                    LOG.error(ex);
+                    fail(ex.getMessage());
+                }
+            }
         }
     }
 
@@ -115,7 +144,7 @@ public class ScopeTest
 
             Map<String, AuthDO> scopeMAp = new HashMap<>();
 
-            Scope scope = mapper.readValue(jsonFile, Scope.class);
+            ScopeRequired scope = mapper.readValue(jsonFile, ScopeRequired.class);
 
             LOG.info(" path :" + jsonFile.getAbsolutePath());
 
@@ -133,18 +162,22 @@ public class ScopeTest
         catch (JsonGenerationException ex)
         {
             LOG.error(ex);
+            fail(ex.getMessage());
         }
         catch (JsonMappingException ex)
         {
             LOG.error(ex);
+            fail(ex.getMessage());
         }
         catch (IOException ex)
         {
             LOG.error(ex);
+            fail(ex.getMessage());
         }
         catch (Exception e)
         {
             LOG.info(e);
+            fail(e.getMessage());
         }
     }
 }

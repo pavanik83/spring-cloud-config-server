@@ -172,8 +172,8 @@ public class RestConnector
             {
                 HttpEntity entity = response.getEntity();
                 json = EntityUtils.toString(entity);
-                LOG.info("Response SC:" + response.getStatusLine().getStatusCode() + ", from (GET)"
-                        + getRequest.getURI().toString() + " response=" + EntityUtils.toString(entity));
+                LOG.info("Response SC:" + statusCode + ", from (GET)"
+                        + getRequest.getURI().toString() + " response=" + json);
             }
         }
         catch (URISyntaxException | IOException ex)

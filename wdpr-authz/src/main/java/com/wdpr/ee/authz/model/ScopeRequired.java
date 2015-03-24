@@ -6,8 +6,19 @@ import java.util.List;
 /**
  * Authorization scope
  */
-public class Scope
+public class ScopeRequired
 {
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ScopeRequired [authorization=").append(this.authorization).append("]");
+        return builder.toString();
+    }
+
     /**
      * authorization
      */
