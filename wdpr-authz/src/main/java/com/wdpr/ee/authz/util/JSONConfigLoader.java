@@ -1,7 +1,7 @@
 package com.wdpr.ee.authz.util;
 
 import com.wdpr.ee.authz.model.AuthDO;
-import com.wdpr.ee.authz.model.Scope;
+import com.wdpr.ee.authz.model.ScopeRequired;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public class JSONConfigLoader
     {
         try
         {
-            Scope scope = this.mapper.readValue(this.jsonFile, Scope.class);
+            ScopeRequired scope = this.mapper.readValue(this.jsonFile, ScopeRequired.class);
 
             for (AuthDO patt : scope.getAuthorization())
             {

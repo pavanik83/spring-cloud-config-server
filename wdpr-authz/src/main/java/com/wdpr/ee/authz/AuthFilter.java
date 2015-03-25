@@ -1,6 +1,7 @@
 package com.wdpr.ee.authz;
 
 import com.wdpr.ee.authz.model.AuthDO;
+import com.wdpr.ee.authz.model.AuthDO.Scope;
 import com.wdpr.ee.authz.util.AuthConstants;
 import com.wdpr.ee.authz.util.JSONConfigLoader;
 import java.io.IOException;
@@ -87,11 +88,12 @@ public class AuthFilter implements Filter
         if (scopeItem != null)
         {
             authRequired = scopeItem.isAuthTokenRequired();
-            scopeRequired = scopeItem.getScopesAllowed().length > 0;
+            scopeRequired = scopeItem.getScopes().length > 0;
         }
 
         tokenList = loadHeaders(req);
         //LOG.info(req.getHeaderNames());
+        String method = req.getMethod();
         String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
         if (token == null)
         {
@@ -138,7 +140,7 @@ public class AuthFilter implements Filter
             if (json != null && scopeRequired)
             {
                 // TODO Validate returned scopes from /validate against required scopes in configuration
-                scopeValid = validateScope(tokenList, scopeItem, json);
+                scopeValid = validateScope(tokenList, method, scopeItem, json);
             }
 
             if ((json != null && (!scopeRequired || scopeValid)) || (scopeItem == null))
@@ -195,13 +197,14 @@ public class AuthFilter implements Filter
     }
 
     /**
-     * @param tokenList
-     * @param scopeItem
-     * @param res
-     * @return
+     * @param tokenList The authentication tokens contained in the response
+     * @param method The method (GET, POST, PUT, DELETE) called
+     * @param scopeItem Scope being validated
+     * @return true if the required scope has been met
      * @throws IOException
      */
-    private boolean validateScope(Map<String, String> tokenList, AuthDO scopeItem,
+    @SuppressWarnings("boxing")
+    private boolean validateScope(Map<String, String> tokenList, String method, AuthDO scopeItem,
             String json) throws IOException
     {
         boolean isScopeValid = false;
@@ -218,12 +221,18 @@ public class AuthFilter implements Filter
             //LOG.info("Abilities: " + allowedScopes);
             for (String allowed : allowedScopes)
             {
-                for (String scope : scopeItem.getScopesRequired())
+                for (Scope scope : scopeItem.getScopes())
                 {
-                    if (allowed.contains(scope))
+                    if (method.equalsIgnoreCase(scope.getMethod()) || scope.getMethod().equals('*'))
                     {
-                        LOG.info("Abilities: " + allowedScopes + " is valid");
-                        isScopeValid = true;
+                        for (String allowedScope : scope.getScopesAllowed())
+                        {
+                            if (allowed.contains(allowedScope))
+                            {
+                                LOG.info("Abilities: " + allowedScopes + " is valid");
+                                isScopeValid = true;
+                            }
+                        }
                     }
                 }
             }

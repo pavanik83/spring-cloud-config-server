@@ -29,7 +29,7 @@
       "authToken":true,
       "scopes": [
           {"method":"GET",
-           "scopesRequired": ["eTagMCOGreet" ]
+           "scopesRequired": ["authenticated" ]
           },
            {"method":"POST",
            "scopesRequired": ["AUTHZ_PUBLIC", "ADMIN"]

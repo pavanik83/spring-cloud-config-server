@@ -85,4 +85,17 @@ public class TokenDO
     {
         this.expires_in = expires_inParam;
     }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("TokenDO [access_token=").append(this.access_token).append(", token_type=")
+                .append(this.token_type).append(", scope=").append(this.scope)
+                .append(", expires_in=").append(this.expires_in).append("]");
+        return builder.toString();
+    }
 }
