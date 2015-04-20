@@ -136,6 +136,7 @@ public class RestConnector
         String json = null;
         CloseableHttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(defaultRequestConfig).build();
+        String accessToken = null;
         try
         {
             URIBuilder builder = new URIBuilder();
@@ -143,7 +144,7 @@ public class RestConnector
             {
                 LOG.info(tokenList);
                 // Some confusion between header value access_token and authorization
-                String accessToken = tokenList.get(AuthConstants.ACCESS_TOKEN);
+                 accessToken = tokenList.get(AuthConstants.ACCESS_TOKEN);
                 if (accessToken == null)
                 {
                     accessToken = tokenList.get(AuthConstants.AUTHORIZATION);
@@ -168,13 +169,22 @@ public class RestConnector
             getRequest = new HttpGet(builder.build());
             HttpResponse response = httpClient.execute(getRequest);
             int statusCode = response.getStatusLine().getStatusCode();
+            StringBuilder authZcallMsg = new StringBuilder();
+            
             if (statusCode == HttpServletResponse.SC_OK)
             {
-                HttpEntity entity = response.getEntity();
-                json = EntityUtils.toString(entity);
-                LOG.info("Response SC:" + statusCode + ", from (GET)"
-                        + getRequest.getURI().toString() + " response=" + json);
+            	authZcallMsg.append("Validation SUCCESSFUL for token ");
+            	authZcallMsg.append(accessToken);
+               json = EntityUtils.toString(response.getEntity());
+                
             }
+            else {
+            	authZcallMsg.append("Validation FAILED for token ");
+            	authZcallMsg.append(accessToken);
+            }
+            authZcallMsg.append("Response SC:" + statusCode + ", from (GET)"
+                    + getRequest.getURI().toString() + " response=" + json);
+            LOG.info(authZcallMsg.toString());
         }
         catch (URISyntaxException | IOException ex)
         {
