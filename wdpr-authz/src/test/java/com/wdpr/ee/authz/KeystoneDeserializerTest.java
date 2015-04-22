@@ -4,10 +4,14 @@
 package com.wdpr.ee.authz;
 
 import static org.junit.Assert.fail;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.wdpr.ee.authz.scopevalidation.KeystoneDeserializer;
+
 import java.io.IOException;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -57,7 +61,7 @@ public class KeystoneDeserializerTest
     }
 
     /**
-     * Test method for {@link com.wdpr.ee.authz.KeystoneDeserializer#KeystoneDeserializer()}.
+     * Test method for {@link com.wdpr.ee.authz.scopevalidation.KeystoneDeserializer#KeystoneDeserializer()}.
      */
     //@Test
     public void testKeystoneDeserializer()
@@ -66,7 +70,7 @@ public class KeystoneDeserializerTest
     }
 
     /**
-     * Test method for {@link com.wdpr.ee.authz.KeystoneDeserializer#abilities(String)}.
+     * Test method for {@link com.wdpr.ee.authz.scopevalidation.KeystoneDeserializer#abilities(String)}.
      * @throws JSONException
      * @throws IOException
      * @throws JsonMappingException

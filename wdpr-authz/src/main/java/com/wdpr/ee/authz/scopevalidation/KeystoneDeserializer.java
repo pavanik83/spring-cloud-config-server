@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.wdpr.ee.authz;
+package com.wdpr.ee.authz.scopevalidation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
