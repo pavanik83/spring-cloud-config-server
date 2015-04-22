@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 import com.wdpr.ee.authz.model.AuthDO;
 import com.wdpr.ee.authz.model.AuthDO.Scope;
 import com.wdpr.ee.authz.scopevalidation.ClientIdValidator;
-import com.wdpr.ee.authz.scopevalidation.KeystoneDeserializer;
 import com.wdpr.ee.authz.util.AuthConstants;
 import com.wdpr.ee.authz.util.JSONConfigLoader;
 
@@ -197,21 +196,11 @@ public class AuthFilter implements Filter {
 	private boolean validateScope(Map<String, String> tokenList, String method,
 			AuthDO configScopes, String json) throws IOException {
 		boolean isScopeValid = false;
-		// TODO This is only needed if token has not been validated
-		// TokenDO respObj =
-		// this.connector.callGoDotComValidateScope(tokenList);
-		/*
-		 * HttpEntity entity = json.getEntity(); String json =
-		 * EntityUtils.toString(entity); LOG.info("Response SC:" +
-		 * json.getStatusLine().getStatusCode() + " response=" +
-		 * EntityUtils.toString(entity));
-		 */
-		// LOG.info("json: " + json);
+		
 		List<String> authZScopes = null;
 		ClientIdValidator validator = new ClientIdValidator();
 		try {
 			authZScopes = validator.validateScopes(json);
-			// LOG.info("Abilities: " + allowedScopes);
 			StringBuilder msg = new StringBuilder();
 
 			for (String authZScope : authZScopes) {
