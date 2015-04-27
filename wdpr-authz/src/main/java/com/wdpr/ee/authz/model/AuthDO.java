@@ -116,6 +116,10 @@ public class AuthDO
         this.authToken = authTokenParam;
     }
 
+    /**
+     * Static class containing method, scopesRequired, scopesAllowed
+     *
+     */
     public static class Scope
     {
         /**
@@ -130,9 +134,12 @@ public class AuthDO
             return builder.toString();
         }
 
+        /**
+         * Method(s) to be secured. Use * for all
+         */
         String method;
         /**
-         *
+         * Scopes required for access to URL/method
          */
         String[] scopesRequired;
 

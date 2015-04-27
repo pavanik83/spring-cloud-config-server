@@ -43,7 +43,7 @@ public class AuthFilter implements Filter {
 	private static final Logger LOG = LogManager.getLogger(AuthFilter.class);
 	private ServletContext context;
 	/**
-	 * Singleton instance of Resr Connector
+	 * Singleton instance of Rest Connector
 	 */
 	RestConnector connector = RestConnector.getInstance();
 	/**
@@ -92,7 +92,7 @@ public class AuthFilter implements Filter {
 		}
 
 		tokenList = loadHeaders(req);
-		LOG.info(req.getHeaderNames());
+		LOG.debug(req.getHeaderNames());
 		String method = req.getMethod();
 		String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
 		if (token == null) {
@@ -196,7 +196,7 @@ public class AuthFilter implements Filter {
 	private boolean validateScope(Map<String, String> tokenList, String method,
 			AuthDO configScopes, String json) throws IOException {
 		boolean isScopeValid = false;
-		
+
 		List<String> authZScopes = null;
 		ClientIdValidator validator = new ClientIdValidator();
 		try {
@@ -223,7 +223,7 @@ public class AuthFilter implements Filter {
 					for (String allowedScope : configScope.getScopesAllowed()) {
 						if (allowedScope.equals("*")) {
 							msg.append("Configured scope did not requrie AuthZ scope (configured scope = *) . Token is valid");
-							LOG.info(msg.toString());
+							LOG.debug(msg.toString());
 							isScopeValid = true;
 							break;
 						}
@@ -232,7 +232,7 @@ public class AuthFilter implements Filter {
 							msg.append(allowedScope);
 							msg.append((" found in configured scopes of:"));
 							msg.append(authZScope);
-							LOG.info(msg.toString());
+							LOG.debug(msg.toString());
 							isScopeValid = true;
 							break;
 						}
@@ -264,7 +264,8 @@ public class AuthFilter implements Filter {
 				cookieMap.put(cookie.getName(), cookie.getValue());
 			}
 		} else {
-			LOG.info("No cookies found");
+            LOG.warn("No cookies found for " + request);
+			LOG.warn("No cookies found for " + request.getRequestURL());
 		}
 	}
 

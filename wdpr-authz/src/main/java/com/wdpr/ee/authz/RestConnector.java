@@ -4,21 +4,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.http.HttpResponse;
+import org.apache.http.client.cache.CacheResponseStatus;
+import org.apache.http.client.cache.HttpCacheContext;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.cache.CacheConfig;
+import org.apache.http.impl.client.cache.CachingHttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
-
 import com.wdpr.ee.authz.model.TokenDO;
 import com.wdpr.ee.authz.util.AuthConfig;
 import com.wdpr.ee.authz.util.AuthConstants;
@@ -69,13 +71,21 @@ public class RestConnector {
 	int TIME_OUT;
 
 	/**
-     *
+     * Maps from JSON response to Java object AuthDO
      */
 	ObjectMapper mapper = new ObjectMapper();
 	/**
-     *
+     * Configures timeouts and stale connection check
      */
 	static RequestConfig defaultRequestConfig;
+    /**
+    * Configures max cache entries, size
+    */
+    static CacheConfig cacheConfig;
+    /**
+    * Adds cache config and request config to Apache http client
+    */
+    static CloseableHttpClient httpClient;
 
 	@SuppressWarnings("deprecation")
 	private RestConnector() {
@@ -92,6 +102,14 @@ public class RestConnector {
 		this.HOST = config.getPropertyVal(AuthConstants.HOST);
 		this.AUTH_PATH = config.getPropertyVal(AuthConstants.AUTH_CTX_PATH);
 		this.SCOPE_PATH = config.getPropertyVal(AuthConstants.SCOPE_CTX_PATH);
+        cacheConfig = CacheConfig.custom()
+                .setMaxCacheEntries(1000)
+                .setMaxObjectSize(8192)
+                .build();
+        httpClient = CachingHttpClients.custom()
+                .setCacheConfig(cacheConfig)
+                .setDefaultRequestConfig(defaultRequestConfig)
+                .build();
 	}
 
 	/**
@@ -135,15 +153,13 @@ public class RestConnector {
 	 */
 	public String callGoDotComGet(Map<String, String> tokenList, String ctxPath)
 			throws IOException {
-		HttpGet getRequest = new HttpGet();
 		String json = null;
-		CloseableHttpClient httpClient = HttpClients.custom()
-				.setDefaultRequestConfig(defaultRequestConfig).build();
 		String accessToken = null;
+        CloseableHttpResponse response = null;
 		try {
 			URIBuilder builder = new URIBuilder();
-			if (ctxPath == this.AUTH_PATH) {
-				LOG.info(tokenList);
+			if (ctxPath.equals(this.AUTH_PATH)) {
+				LOG.debug(tokenList);
 				// Some confusion between header value access_token and
 				// authorization
 				accessToken = tokenList.get(AuthConstants.ACCESS_TOKEN);
@@ -168,8 +184,11 @@ public class RestConnector {
 
 			builder.setScheme(this.PROTOCOL).setHost(this.HOST)
 					.setPort(this.PORT).setPath(ctxPath);
-			getRequest = new HttpGet(builder.build());
-			HttpResponse response = httpClient.execute(getRequest);
+
+			HttpCacheContext context = HttpCacheContext.create();
+	        HttpGet getRequest = new HttpGet(builder.build());
+			//HttpResponse response = httpClient.execute(getRequest);
+			response = httpClient.execute(getRequest, context);
 			int statusCode = response.getStatusLine().getStatusCode();
 			StringBuilder authZcallMsg = new StringBuilder();
 
@@ -177,24 +196,41 @@ public class RestConnector {
 				authZcallMsg.append("Validation SUCCESSFUL for token ");
 				authZcallMsg.append(accessToken);
 				json = EntityUtils.toString(response.getEntity());
+			    CacheResponseStatus responseStatus = context.getCacheResponseStatus();
+			    switch (responseStatus) {
+			        case CACHE_HIT:
+			            LOG.debug("Cache Hit: A response was generated from the cache with " +
+			                    "no requests sent upstream");
+			            break;
+			        case CACHE_MODULE_RESPONSE:
+			            LOG.debug("Cache Response: The response was generated directly by the " +
+			                    "caching module");
+			            break;
+			        case CACHE_MISS:
+			            LOG.debug("Cache Miss: The response came from an upstream server");
+			            break;
+			        case VALIDATED:
+			            LOG.debug("Cache Validated: The response was generated from the cache " +
+			                    "after validating the entry with the origin server");
+			            break;
+                    default:
+                        LOG.warn("No response cache status: " +
+                                responseStatus);
+                        break;
+			    }
+
 
 			} else {
 				authZcallMsg.append("Validation FAILED for token ");
 				authZcallMsg.append(accessToken);
 			}
-			authZcallMsg.append("Response SC:" + statusCode + ", from (GET)"
+			authZcallMsg.append(" Response SC:" + statusCode + ", from (GET)"
 					+ getRequest.getURI().toString() + " response=" + json);
-			LOG.info(authZcallMsg.toString());
+			LOG.debug(authZcallMsg.toString());
 		} catch (URISyntaxException | IOException ex) {
 			LOG.error(ex);
 		} finally {
-			if (httpClient != null) {
-				try {
-					httpClient.close();
-				} catch (Exception ex) {
-					LOG.error(ex);
-				}
-			}
+            HttpClientUtils.closeQuietly(response);
 		}
 		return json;
 	}
@@ -206,17 +242,17 @@ public class RestConnector {
 	 * @return token response
 	 * @throws IOException
 	 */
-	public <T> T callGoDotComPost(Map<String, String> tokenList,
+	@SuppressWarnings("resource")
+    public <T> T callGoDotComPost(Map<String, String> tokenList,
 			String ctxPath, Class<T> objectType) throws IOException {
+        HttpResponse response = null;
 		HttpPost postRequest = new HttpPost();
-		CloseableHttpClient httpClient = HttpClients.custom()
-				.setDefaultRequestConfig(defaultRequestConfig).build();
 		T tokenResp = null;
 		try {
 			URIBuilder builder = new URIBuilder();
 			builder.setScheme(config.getPropertyVal(AuthConstants.PROTOCOL))
 					.setHost(this.HOST).setPort(this.PORT).setPath(ctxPath);
-			if (ctxPath == this.SCOPE_PATH) {
+			if (ctxPath.equals(this.SCOPE_PATH)) {
 				if (tokenList.get(AuthConstants.CLIENT_ID) != null) {
 					builder.setParameter(AuthConstants.CLIENT_ID,
 							tokenList.get(AuthConstants.CLIENT_ID));
@@ -233,30 +269,43 @@ public class RestConnector {
 					builder.setParameter(AuthConstants.USER_NAME,
 							tokenList.get(AuthConstants.USER_NAME));
 				}
+                if (tokenList.get(AuthConstants.SCOPE) != null) {
+                    builder.setParameter(AuthConstants.SCOPE,
+                            tokenList.get(AuthConstants.SCOPE));
+                }
+                if (tokenList.get(AuthConstants.CLIENT_SECRET) != null) {
+                    builder.setParameter(AuthConstants.CLIENT_SECRET,
+                            tokenList.get(AuthConstants.CLIENT_SECRET));
+                }
 			}
 
 			postRequest = new HttpPost(builder.build());
 
-			HttpResponse response = httpClient.execute(postRequest);
+			response = httpClient.execute(postRequest);
 			int statusCode = response.getStatusLine().getStatusCode();
 
 			if (statusCode == HttpServletResponse.SC_OK) {
 				InputStream iStream = response.getEntity().getContent();
-				tokenResp = this.mapper.readValue(iStream, objectType);
+				if (objectType != null)
+				{
+				    // If return type is String, return the json response, otherwise parse into tokens
+	                if (objectType.getName().equals("java.lang.String"))
+	                {
+	                    tokenResp = (T) EntityUtils.toString(response.getEntity());
+	                }
+	                else
+	                {
+	                    tokenResp = this.mapper.readValue(iStream, objectType);
+	                }
+				}
 				iStream.close();
 			}
-			LOG.info("Response SC:" + statusCode + ", from (POST)"
+			LOG.info("Response SC:" + statusCode + ", from (POST) "
 					+ postRequest.getURI().toString());
 		} catch (URISyntaxException | IOException ex) {
 			LOG.error(ex);
 		} finally {
-			if (httpClient != null) {
-				try {
-					httpClient.close();
-				} catch (Exception ex) {
-					LOG.error(ex);
-				}
-			}
+			HttpClientUtils.closeQuietly(response);
 		}
 		return tokenResp;
 	}

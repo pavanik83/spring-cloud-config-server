@@ -51,6 +51,11 @@ public final class AuthConstants
      * BEARER part of access token value: "BEARER <access token>"
      */
     public static final String BEARER = "BEARER";
+    /**
+     * Optional, for different authentication servers.
+     * scope part of access token value: "scope=RETURN_ALL_CLIENT_SCOPES"
+     */
+    public static final String SCOPE = "scope";
 
     /**
      * grant_type

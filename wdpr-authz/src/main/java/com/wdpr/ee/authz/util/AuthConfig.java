@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  ********************************************************************************************************/
 public class AuthConfig
 {
-    private static final Logger LOGGER = LogManager.getLogger(AuthConfig.class);
+    private static final Logger LOG = LogManager.getLogger(AuthConfig.class);
     private static AuthConfig instance;
     private static final List<String> propKeys = new ArrayList<>();
     private static final Map<String, String> propertyMap = new HashMap<>();
@@ -116,12 +116,12 @@ public class AuthConfig
                 }
                 inputStream.close();
             }
-            LOGGER.info(" property invoked");
+            LOG.debug(" property invoked");
 
         }
         catch (IOException | NullPointerException | IllegalArgumentException e)
         {
-            LOGGER.error(e);
+            LOG.error(e);
         }
         finally
         {
@@ -133,7 +133,7 @@ public class AuthConfig
                 }
                 catch (Exception ex)
                 {
-                    LOGGER.error(ex);
+                    LOG.error(ex);
                 }
             }
         }

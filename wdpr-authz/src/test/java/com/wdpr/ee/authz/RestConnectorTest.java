@@ -41,7 +41,8 @@ public class RestConnectorTest
     @Before
     public void setUp() throws Exception
     {
-        this.tokenList.put("access_token", "uz3588_tywiTt0a9l9MROA");
+        this.tokenList.put("access_token", "HUX8dgEzP91Z4RgTrCuMfw");
+        this.tokenList.put("token_type", "BEARER");
         this.tokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
         this.tokenList.put("username", "api");
         this.tokenList.put("assertion_type", "public");
