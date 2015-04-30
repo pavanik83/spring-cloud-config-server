@@ -169,18 +169,32 @@ public class AuthFilter implements Filter {
 	}
 
 	/**
-	 * @param ctxPath
-	 * @return
+	 * Loads the scopes defined in the scope.json document that match/apply to the incoming request URL context
+	 * @param reqCtx The context  of the URL for the incoming request
+	 * @return A collection of scopes for the incoming URL to be validated against the token for the incoming reuqest
 	 */
-	private AuthDO loadScopeItem(String ctxPath) {
+	private AuthDO loadScopeItem(String reqCtx) {
 		AuthDO scopeItem = null;
-		for (String key : this.scopeMap.keySet()) {
-			if (Pattern.matches(key, ctxPath)) {
-				scopeItem = this.scopeMap.get(key);
+		StringBuilder msg = new StringBuilder();
+		for (String scopeCtx : this.scopeMap.keySet()) {
+			msg.delete(0, msg.length());
+			if (Pattern.matches(scopeCtx,reqCtx)) {
+				scopeItem = this.scopeMap.get(scopeCtx);
+				msg.append("#### Matched the incoming request context ");
+				msg.append(reqCtx);
+				msg.append(" with the configured scope context ");
+				msg.append(scopeCtx);
+				LOG.debug(msg.toString());
 				return scopeItem;
+			} else {
+				msg.append("#### Unseccessful match of configured scope context");
+				msg.append(scopeCtx);
+				msg.append(" with the incoming request context ");
+				msg.append(reqCtx);				
+				LOG.debug(msg.toString());				
 			}
 		}
-		LOG.debug("#### Context path from request = " + ctxPath);
+		LOG.debug("#### Context  from request = " + context);
 		LOG.debug("#### Scope Items (AthDO object)   from context path = "
 				+ scopeItem);
 		return scopeItem;
