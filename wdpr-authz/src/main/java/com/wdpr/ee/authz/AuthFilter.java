@@ -90,10 +90,11 @@ public class AuthFilter implements Filter {
 			authRequired = scopeItem.isAuthTokenRequired();
 			scopeRequired = scopeItem.getScopes().length > 0;
 		}
-
+		LOG.debug("#### Request headers = " + req.getHeaderNames());
 		tokenList = loadHeaders(req);
-		LOG.debug(req.getHeaderNames());
+		LOG.debug("#### Request headers = " + req.getHeaderNames());
 		String method = req.getMethod();
+		LOG.debug("#### Request Method = " + method);
 		String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
 		if (token == null) {
 			token = req.getHeader(AuthConstants.AUTHORIZATION);
@@ -179,6 +180,9 @@ public class AuthFilter implements Filter {
 				return scopeItem;
 			}
 		}
+		LOG.debug("#### Context path from request = " + ctxPath);
+		LOG.debug("#### Scope Items (AthDO object)   from context path = "
+				+ scopeItem);
 		return scopeItem;
 	}
 
@@ -264,7 +268,7 @@ public class AuthFilter implements Filter {
 				cookieMap.put(cookie.getName(), cookie.getValue());
 			}
 		} else {
-            LOG.warn("No cookies found for " + request);
+			LOG.warn("No cookies found for " + request);
 			LOG.warn("No cookies found for " + request.getRequestURL());
 		}
 	}

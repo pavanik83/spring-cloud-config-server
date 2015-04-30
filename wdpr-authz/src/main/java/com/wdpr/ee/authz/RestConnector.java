@@ -110,6 +110,14 @@ public class RestConnector {
                 .setCacheConfig(cacheConfig)
                 .setDefaultRequestConfig(defaultRequestConfig)
                 .build();
+        StringBuilder settings = new StringBuilder("####The setting for the RestConnection in the AuthZ Filter are:");
+        settings.append("AUTH_PATH = ");
+        settings.append(this.AUTH_PATH + "; ");
+        settings.append("SCOPE_PATH = ");
+        settings.append(this.SCOPE_PATH + "; ");
+        settings.append("HOST = ");
+        settings.append(this.HOST + "; ");
+        LOG.debug(settings.toString());
 	}
 
 	/**
@@ -130,6 +138,7 @@ public class RestConnector {
 	public String callGoDotComValidateToken(Map<String, String> tokenList)
 			throws IOException {
 		// We need the response to validate scope authorizations
+		LOG.debug("####Token list in callGoDotComValidateToken() = " + tokenList.toString());
 		return callGoDotComGet(tokenList, this.AUTH_PATH);
 	}
 
@@ -140,6 +149,8 @@ public class RestConnector {
 	 */
 	public TokenDO callGoDotComValidateScope(Map<String, String> tokenList)
 			throws IOException {
+		LOG.debug("####Token list in callGoDotComValidateScope() = " + tokenList.toString());
+
 		TokenDO tokenObj = callGoDotComPost(tokenList, this.SCOPE_PATH,
 				TokenDO.class);
 		return tokenObj;
