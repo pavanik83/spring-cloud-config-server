@@ -207,34 +207,32 @@ public class RestConnector {
 				authZcallMsg.append("Validation SUCCESSFUL for token ");
 				authZcallMsg.append(accessToken);
 				json = EntityUtils.toString(response.getEntity());
-			    CacheResponseStatus responseStatus = context.getCacheResponseStatus();
-			    switch (responseStatus) {
-			        case CACHE_HIT:
-			            LOG.debug("Cache Hit: A response was generated from the cache with " +
-			                    "no requests sent upstream");
-			            break;
-			        case CACHE_MODULE_RESPONSE:
-			            LOG.debug("Cache Response: The response was generated directly by the " +
-			                    "caching module");
-			            break;
-			        case CACHE_MISS:
-			            LOG.debug("Cache Miss: The response came from an upstream server");
-			            break;
-			        case VALIDATED:
-			            LOG.debug("Cache Validated: The response was generated from the cache " +
-			                    "after validating the entry with the origin server");
-			            break;
-                    default:
-                        LOG.warn("No response cache status: " +
-                                responseStatus);
-                        break;
-			    }
-
-
 			} else {
 				authZcallMsg.append("Validation FAILED for token ");
 				authZcallMsg.append(accessToken);
 			}
+            CacheResponseStatus responseStatus = context.getCacheResponseStatus();
+            switch (responseStatus) {
+                case CACHE_HIT:
+                    LOG.debug("Cache Hit: A response was generated from the cache with " +
+                            "no requests sent upstream");
+                    break;
+                case CACHE_MODULE_RESPONSE:
+                    LOG.debug("Cache Response: The response was generated directly by the " +
+                            "caching module");
+                    break;
+                case CACHE_MISS:
+                    LOG.debug("Cache Miss: The response came from an upstream server");
+                    break;
+                case VALIDATED:
+                    LOG.debug("Cache Validated: The response was generated from the cache " +
+                            "after validating the entry with the origin server");
+                    break;
+                default:
+                    LOG.warn("No response cache status: " +
+                            responseStatus);
+                    break;
+            }
 			authZcallMsg.append(" Response SC:" + statusCode + ", from (GET)"
 					+ getRequest.getURI().toString() + " response=" + json);
 			LOG.debug(authZcallMsg.toString());

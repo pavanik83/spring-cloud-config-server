@@ -132,6 +132,7 @@ public class RestAuthIntegrationTest
             LOG.info(token);
             if (token != null)
             {
+                System.out.println("token: " + token.getAccess_token());
                 this.validateTokens.put("access_token", token.getAccess_token());
                 long now = System.currentTimeMillis();
                 String rtn = this.connector.callGoDotComValidateToken(this.validateTokens);

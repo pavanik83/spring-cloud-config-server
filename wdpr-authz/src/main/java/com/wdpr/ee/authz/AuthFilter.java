@@ -86,15 +86,16 @@ public class AuthFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		AuthDO scopeItem = loadScopeItem(req.getContextPath());
+        LOG.debug("#### scopeItem = " + scopeItem + " context = " + req.getContextPath());
 		if (scopeItem != null) {
 			authRequired = scopeItem.isAuthTokenRequired();
 			scopeRequired = scopeItem.getScopes().length > 0;
 		}
-		LOG.debug("#### Request headers = " + req.getHeaderNames());
+		//LOG.debug("#### Request headers = " + req.getHeaderNames());
 		tokenList = loadHeaders(req);
-		LOG.debug("#### Request headers = " + req.getHeaderNames());
+		//LOG.debug("#### Request headers = " + req.getHeaderNames());
 		String method = req.getMethod();
-		LOG.debug("#### Request Method = " + method);
+		//LOG.debug("#### Request Method = " + method);
 		String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
 		if (token == null) {
 			token = req.getHeader(AuthConstants.AUTHORIZATION);
@@ -105,6 +106,7 @@ public class AuthFilter implements Filter {
 				tokenList.put(AuthConstants.ACCESS_TOKEN, token);
 			}
 		}
+        LOG.debug("#### token = " + token + " authRequired = " + authRequired + " scopeRequired = " + scopeRequired);
 		if (token == null && authRequired == true) {
 			loadCookieData(req, cookieMap);// TODO: TBD if the request params
 											// through cookie (UI apps)
