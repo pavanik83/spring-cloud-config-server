@@ -1,19 +1,27 @@
 Security-Filter
 =========
-	Cusomer order: POC rest service for client implementation
-	wdpr-authz :POC for Auth Filtering
+	Cusomer order: POC rest service for client implementation using Keystone as credentials supplier
+	wdpr-authz : Auth Filtering Component
 
+[OAuthFilterTestService2: POC for client id / client secret version of wdpr-authz filter](https://github.disney.com/WDPR-ReferenceArchitecture/OauthHTTPFilterTest)
+	
 ###Introduction
 
 [Security : Auth filter Architecture](https://github.disney.com/WDPR-RA-UI/Security-Filter/blob/master/Auth-Filter.png)
 
 [Demo: UI snaps with header & params](https://github.disney.com/WDPR-RA-UI/Security-Filter/blob/master/Snaps.png)
 
-wdpr-authz is the maven ServletFilter project which is  plugged into the CustomerOrder (Rest service) sample. 
+wdpr-authz is the maven ServletFilter project, supporting an HTTP Filter-based option for  OAuth style protection for web services. There are two current test services supporting two different client authentication/authorization methods:
+	
+-  The CustomerOrder service, which uses the Keystone security service to authenticate a client and provide the clients credentials which include 'scopes', used by an AuthZ server to authorize endpoint access.
+-  The OAuthFilterTestService2, which uses client id / client secret to perform authentication and provide 'scopes' (authorization levels) as stored on the AuthZ server.
 
-During the service invocation, the Filter is invoked, and based on the Auth & scope status (ref: scope.json), the appropriate go.authentication service will be invoked 
 
-Token Validation is being done against authorization.go.com, configured through /resources/auth-config.properties.
+Several properties are configurable:
+
+1.  The target AuthZ server (via HTTP URL )
+2.  Timeout duration for the filter's AuthZ server call 
+3.  Scopes to be matched in any returned scopes from the AuthZ server, using regex patterns against the context of the incoming URL request 	
 
 ###REST service invocation URI: 
 
@@ -21,7 +29,7 @@ Example customer creation which requires an existing valid token:
 
     http://localhost:8080/customer-service/customer-services/customer-create?firstName=NixonDion&lastName=Forward&gender=M&firstAddressLine=9414+Easy+Subdivision&city=Fort+Dix&state=Mississippi&zip=39956-1447
 
-###Client Dependency
+###Client Dependency/Configuration
 (pom.xml)
 
 		<dependency>
