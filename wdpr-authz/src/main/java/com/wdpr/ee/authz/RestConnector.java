@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.cache.HttpCacheContext;
@@ -21,6 +23,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+
 import com.wdpr.ee.authz.model.TokenDO;
 import com.wdpr.ee.authz.util.AuthConfig;
 import com.wdpr.ee.authz.util.AuthConstants;
@@ -199,7 +202,10 @@ public class RestConnector {
 			HttpCacheContext context = HttpCacheContext.create();
 	        HttpGet getRequest = new HttpGet(builder.build());
 			//HttpResponse response = httpClient.execute(getRequest);
+	        long start = System.currentTimeMillis();
 			response = httpClient.execute(getRequest, context);
+			LOG.info(("#### Time in milliseconds for call to CUR AuthZ server is ")
+					+ (System.currentTimeMillis() - start));
 			int statusCode = response.getStatusLine().getStatusCode();
 			StringBuilder authZcallMsg = new StringBuilder();
 
