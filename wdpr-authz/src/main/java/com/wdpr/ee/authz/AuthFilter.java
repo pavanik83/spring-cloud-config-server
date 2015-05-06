@@ -75,7 +75,7 @@ public class AuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-
+		long start = System.currentTimeMillis();
 		boolean authRequired = false;
 		boolean scopeRequired = false;
 		boolean scopeValid = false;
@@ -86,16 +86,17 @@ public class AuthFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		AuthDO scopeItem = loadScopeItem(req.getContextPath());
-        LOG.debug("#### scopeItem = " + scopeItem + " context = " + req.getContextPath());
+		LOG.debug("#### scopeItem = " + scopeItem + " context = "
+				+ req.getContextPath());
 		if (scopeItem != null) {
 			authRequired = scopeItem.isAuthTokenRequired();
 			scopeRequired = scopeItem.getScopes().length > 0;
 		}
-		//LOG.debug("#### Request headers = " + req.getHeaderNames());
+		// LOG.debug("#### Request headers = " + req.getHeaderNames());
 		tokenList = loadHeaders(req);
-		//LOG.debug("#### Request headers = " + req.getHeaderNames());
+		// LOG.debug("#### Request headers = " + req.getHeaderNames());
 		String method = req.getMethod();
-		//LOG.debug("#### Request Method = " + method);
+		// LOG.debug("#### Request Method = " + method);
 		String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
 		if (token == null) {
 			token = req.getHeader(AuthConstants.AUTHORIZATION);
@@ -106,7 +107,8 @@ public class AuthFilter implements Filter {
 				tokenList.put(AuthConstants.ACCESS_TOKEN, token);
 			}
 		}
-        LOG.debug("#### token = " + token + " authRequired = " + authRequired + " scopeRequired = " + scopeRequired);
+		LOG.debug("#### token = " + token + " authRequired = " + authRequired
+				+ " scopeRequired = " + scopeRequired);
 		if (token == null && authRequired == true) {
 			loadCookieData(req, cookieMap);// TODO: TBD if the request params
 											// through cookie (UI apps)
@@ -144,13 +146,18 @@ public class AuthFilter implements Filter {
 			if ((json != null && (!scopeRequired || scopeValid))
 					|| (scopeItem == null)) {
 				LOG.info("Success- Auth/Scope : scopeRequired=" + scopeRequired);// TODO:TBR
-				chain.doFilter(request, response);
+				LOG.info(("#### Time in milliseconds for authorized authz filter exectuion is ")
+						+ (System.currentTimeMillis() - start));
+				chain.doFilter(request, response);				
 			} else {
 				res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				LOG.info(("#### Time in milliseconds for unauthorized authz filter exectuion is ")
+						+ (System.currentTimeMillis() - start));
 				return;
 			}
 		} finally {
-			// Avoid compiler warning
+			// Finish timing measurement
+
 		}
 	}
 
@@ -171,16 +178,20 @@ public class AuthFilter implements Filter {
 	}
 
 	/**
-	 * Loads the scopes defined in the scope.json document that match/apply to the incoming request URL context
-	 * @param reqCtx The context  of the URL for the incoming request
-	 * @return A collection of scopes for the incoming URL to be validated against the token for the incoming reuqest
+	 * Loads the scopes defined in the scope.json document that match/apply to
+	 * the incoming request URL context
+	 * 
+	 * @param reqCtx
+	 *            The context of the URL for the incoming request
+	 * @return A collection of scopes for the incoming URL to be validated
+	 *         against the token for the incoming reuqest
 	 */
 	private AuthDO loadScopeItem(String reqCtx) {
 		AuthDO scopeItem = null;
 		StringBuilder msg = new StringBuilder();
 		for (String scopeCtx : this.scopeMap.keySet()) {
 			msg.delete(0, msg.length());
-			if (Pattern.matches(scopeCtx,reqCtx)) {
+			if (Pattern.matches(scopeCtx, reqCtx)) {
 				scopeItem = this.scopeMap.get(scopeCtx);
 				msg.append("#### Matched the incoming request context ");
 				msg.append(reqCtx);
@@ -192,8 +203,8 @@ public class AuthFilter implements Filter {
 				msg.append("#### Unseccessful match of configured scope context");
 				msg.append(scopeCtx);
 				msg.append(" with the incoming request context ");
-				msg.append(reqCtx);				
-				LOG.debug(msg.toString());				
+				msg.append(reqCtx);
+				LOG.debug(msg.toString());
 			}
 		}
 		LOG.debug("#### Context  from request = " + context);
