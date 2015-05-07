@@ -75,7 +75,7 @@ public class AuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		long start = System.currentTimeMillis();
+		double start = System.nanoTime();
 		boolean authRequired = false;
 		boolean scopeRequired = false;
 		boolean scopeValid = false;
@@ -86,8 +86,8 @@ public class AuthFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		AuthDO scopeItem = loadScopeItem(req.getContextPath());
-		LOG.debug("#### scopeItem = " + scopeItem + " context = "
-				+ req.getContextPath());
+//		LOG.debug("#### scopeItem = " + scopeItem + " context = "
+//				+ req.getContextPath());
 		if (scopeItem != null) {
 			authRequired = scopeItem.isAuthTokenRequired();
 			scopeRequired = scopeItem.getScopes().length > 0;
@@ -107,8 +107,9 @@ public class AuthFilter implements Filter {
 				tokenList.put(AuthConstants.ACCESS_TOKEN, token);
 			}
 		}
-		LOG.debug("#### token = " + token + " authRequired = " + authRequired
-				+ " scopeRequired = " + scopeRequired);
+		
+//		LOG.debug("#### token = " + token + " authRequired = " + authRequired
+//				+ " scopeRequired = " + scopeRequired);
 		if (token == null && authRequired == true) {
 			loadCookieData(req, cookieMap);// TODO: TBD if the request params
 											// through cookie (UI apps)
@@ -142,17 +143,19 @@ public class AuthFilter implements Filter {
 				// scopes in configuration
 				scopeValid = validateScope(tokenList, method, scopeItem, json);
 			}
-
+			double end = System.nanoTime();
+			double elapsed = end - start;
+			
 			if ((json != null && (!scopeRequired || scopeValid))
 					|| (scopeItem == null)) {
 				LOG.info("Success- Auth/Scope : scopeRequired=" + scopeRequired);// TODO:TBR
-				LOG.info(("#### Time in milliseconds for authorized authz filter exectuion is ")
-						+ (System.currentTimeMillis() - start));
+				LOG.debug(("#### Time for authz filter exectuion with VALID token is ")
+						+ Double.toString(elapsed / 1000000) + " milliseconds");
 				chain.doFilter(request, response);				
 			} else {
 				res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				LOG.info(("#### Time in milliseconds for unauthorized authz filter exectuion is ")
-						+ (System.currentTimeMillis() - start));
+			LOG.debug(("#### Time for authz filter execution with INVALID token is ")
+						+ Double.toString(elapsed / 1000000) + " milliseconds");
 				return;
 			}
 		} finally {
@@ -197,7 +200,7 @@ public class AuthFilter implements Filter {
 				msg.append(reqCtx);
 				msg.append(" with the configured scope context ");
 				msg.append(scopeCtx);
-				LOG.debug(msg.toString());
+//				LOG.debug(msg.toString());
 				return scopeItem;
 			} else {
 				msg.append("#### Unseccessful match of configured scope context");
@@ -207,9 +210,9 @@ public class AuthFilter implements Filter {
 				LOG.debug(msg.toString());
 			}
 		}
-		LOG.debug("#### Context  from request = " + context);
-		LOG.debug("#### Scope Items (AthDO object)   from context path = "
-				+ scopeItem);
+//		LOG.debug("#### Context  from request = " + context);
+//		LOG.debug("#### Scope Items (AthDO object)   from context path = "
+//				+ scopeItem);
 		return scopeItem;
 	}
 
@@ -254,7 +257,7 @@ public class AuthFilter implements Filter {
 					for (String allowedScope : configScope.getScopesAllowed()) {
 						if (allowedScope.equals("*")) {
 							msg.append("Configured scope did not requrie AuthZ scope (configured scope = *) . Token is valid");
-							LOG.debug(msg.toString());
+//							LOG.debug(msg.toString());
 							isScopeValid = true;
 							break;
 						}
@@ -263,7 +266,7 @@ public class AuthFilter implements Filter {
 							msg.append(allowedScope);
 							msg.append((" found in configured scopes of:"));
 							msg.append(authZScope);
-							LOG.debug(msg.toString());
+//							LOG.debug(msg.toString());
 							isScopeValid = true;
 							break;
 						}

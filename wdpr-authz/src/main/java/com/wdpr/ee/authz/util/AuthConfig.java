@@ -116,7 +116,7 @@ public class AuthConfig
                 }
                 inputStream.close();
             }
-            LOG.debug(" property invoked");
+//            LOG.debug(" property invoked");
 
         }
         catch (IOException | NullPointerException | IllegalArgumentException e)

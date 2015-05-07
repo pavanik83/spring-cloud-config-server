@@ -120,7 +120,7 @@ public class RestConnector {
         settings.append(this.SCOPE_PATH + "; ");
         settings.append("HOST = ");
         settings.append(this.HOST + "; ");
-        LOG.debug(settings.toString());
+//        LOG.debug(settings.toString());
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class RestConnector {
 	public String callGoDotComValidateToken(Map<String, String> tokenList)
 			throws IOException {
 		// We need the response to validate scope authorizations
-		LOG.debug("####Token list in callGoDotComValidateToken() = " + tokenList.toString());
+//		LOG.debug("####Token list in callGoDotComValidateToken() = " + tokenList.toString());
 		return callGoDotComGet(tokenList, this.AUTH_PATH);
 	}
 
@@ -152,7 +152,7 @@ public class RestConnector {
 	 */
 	public TokenDO callGoDotComValidateScope(Map<String, String> tokenList)
 			throws IOException {
-		LOG.debug("####Token list in callGoDotComValidateScope() = " + tokenList.toString());
+//		LOG.debug("####Token list in callGoDotComValidateScope() = " + tokenList.toString());
 
 		TokenDO tokenObj = callGoDotComPost(tokenList, this.SCOPE_PATH,
 				TokenDO.class);
@@ -173,7 +173,7 @@ public class RestConnector {
 		try {
 			URIBuilder builder = new URIBuilder();
 			if (ctxPath.equals(this.AUTH_PATH)) {
-				LOG.debug(tokenList);
+//				LOG.debug(tokenList);
 				// Some confusion between header value access_token and
 				// authorization
 				accessToken = tokenList.get(AuthConstants.ACCESS_TOKEN);
@@ -202,10 +202,14 @@ public class RestConnector {
 			HttpCacheContext context = HttpCacheContext.create();
 	        HttpGet getRequest = new HttpGet(builder.build());
 			//HttpResponse response = httpClient.execute(getRequest);
-	        long start = System.currentTimeMillis();
-			response = httpClient.execute(getRequest, context);
-			LOG.info(("#### Time in milliseconds for call to CUR AuthZ server is ")
-					+ (System.currentTimeMillis() - start));
+	        double start = System.nanoTime();
+	        response = httpClient.execute(getRequest, context);
+			double end = System.nanoTime();
+			double elapsed = end - start;
+
+			LOG.debug( "#### Time for calling the AUTHZ server is: "
+					+ Double.toString(elapsed / 1000000) + " milliseconds");
+			
 			int statusCode = response.getStatusLine().getStatusCode();
 			StringBuilder authZcallMsg = new StringBuilder();
 
@@ -217,31 +221,31 @@ public class RestConnector {
 				authZcallMsg.append("Validation FAILED for token ");
 				authZcallMsg.append(accessToken);
 			}
-            CacheResponseStatus responseStatus = context.getCacheResponseStatus();
-            switch (responseStatus) {
-                case CACHE_HIT:
-                    LOG.debug("Cache Hit: A response was generated from the cache with " +
-                            "no requests sent upstream");
-                    break;
-                case CACHE_MODULE_RESPONSE:
-                    LOG.debug("Cache Response: The response was generated directly by the " +
-                            "caching module");
-                    break;
-                case CACHE_MISS:
-                    LOG.debug("Cache Miss: The response came from an upstream server");
-                    break;
-                case VALIDATED:
-                    LOG.debug("Cache Validated: The response was generated from the cache " +
-                            "after validating the entry with the origin server");
-                    break;
-                default:
-                    LOG.warn("No response cache status: " +
-                            responseStatus);
-                    break;
-            }
+//            CacheResponseStatus responseStatus = context.getCacheResponseStatus();
+//            switch (responseStatus) {
+//                case CACHE_HIT:
+//                    LOG.debug("Cache Hit: A response was generated from the cache with " +
+//                            "no requests sent upstream");
+//                    break;
+//                case CACHE_MODULE_RESPONSE:
+//                    LOG.debug("Cache Response: The response was generated directly by the " +
+//                            "caching module");
+//                    break;
+//                case CACHE_MISS:
+//                    LOG.debug("Cache Miss: The response came from an upstream server");
+//                    break;
+//                case VALIDATED:
+//                    LOG.debug("Cache Validated: The response was generated from the cache " +
+//                            "after validating the entry with the origin server");
+//                    break;
+//                default:
+//                    LOG.warn("No response cache status: " +
+//                            responseStatus);
+//                    break;
+//            }
 			authZcallMsg.append(" Response SC:" + statusCode + ", from (GET)"
 					+ getRequest.getURI().toString() + " response=" + json);
-			LOG.debug(authZcallMsg.toString());
+//			LOG.debug(authZcallMsg.toString());
 		} catch (URISyntaxException | IOException ex) {
 			LOG.error(ex);
 		} finally {

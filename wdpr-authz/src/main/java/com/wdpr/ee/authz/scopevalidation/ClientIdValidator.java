@@ -47,10 +47,10 @@ public class ClientIdValidator {
 			{
 				 abilities.add(scopeObj.toString());
 			}
-			LOG.info("Configured scopes = " + abilities);			
+			//LOG.info("Configured scopes = " + abilities);			
 			
 		} catch (IOException | JSONException ex) {
-			LOG.error(ex);
+			//LOG.error(ex);
 		}
 
 		return abilities;
