@@ -3,18 +3,21 @@
  */
 package com.wdpr.ee.authz;
 
-import static org.junit.Assert.*;
-import com.wdpr.ee.authz.model.TokenDO;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.wdpr.ee.authz.model.TokenDO;
 
 /**
  * Integration Test to validate authorization token against live server

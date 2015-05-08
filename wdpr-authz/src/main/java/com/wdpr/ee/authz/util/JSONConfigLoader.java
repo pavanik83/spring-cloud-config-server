@@ -1,16 +1,18 @@
 package com.wdpr.ee.authz.util;
 
-import com.wdpr.ee.authz.model.AuthDO;
-import com.wdpr.ee.authz.model.ScopeRequired;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import com.wdpr.ee.authz.model.AuthDO;
+import com.wdpr.ee.authz.model.ScopeRequired;
 
 /***************************************************************************************************
  * FileName - JSONConfigLoader.java Desc: used to Load JSON scope config

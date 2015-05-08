@@ -1,12 +1,14 @@
 package com.wdpr.ee.authz;
 
-import com.wdpr.ee.authz.util.AuthConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
+
+import com.wdpr.ee.authz.util.AuthConfig;
 
 /**
  * Test class for Security Check

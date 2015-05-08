@@ -5,21 +5,21 @@ package com.wdpr.ee.authz;
 
 import static org.junit.Assert.fail;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.wdpr.ee.authz.scopevalidation.KeystoneDeserializer;
-
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.wdpr.ee.authz.scopevalidation.KeystoneDeserializer;
 
 /**
  *

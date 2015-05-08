@@ -1,9 +1,7 @@
 package com.wdpr.ee.authz;
 
 import static org.junit.Assert.fail;
-import com.wdpr.ee.authz.model.AuthDO;
-import com.wdpr.ee.authz.model.AuthDO.Scope;
-import com.wdpr.ee.authz.model.ScopeRequired;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,12 +9,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+
+import com.wdpr.ee.authz.model.AuthDO;
+import com.wdpr.ee.authz.model.AuthDO.Scope;
+import com.wdpr.ee.authz.model.ScopeRequired;
 
 /**
  * Scope Test
