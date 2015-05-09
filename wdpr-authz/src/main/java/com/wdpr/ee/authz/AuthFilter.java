@@ -51,11 +51,19 @@ public class AuthFilter implements Filter {
 	 */
 	Map<String, AuthDO> scopeMap = JSONConfigLoader.getInstance()
 			.loadScopeData();
+	/**
+	 * Array of PAtterns from Scope URL, used to match request URLs to vlaidate
+	 * scope
+	 */
+	Pattern[] scopePatterns = new Pattern[scopeMap.size()];
 
 	/**
-	 * Authorization Filter class
+	 * Authorization Filter constructor. Load the required scopes from
+	 * scopes.json as regex patterns for matching with request URLs to validate
+	 * scopes
 	 */
 	public AuthFilter() {
+		loadScopePatterns();
 
 	}
 
@@ -79,6 +87,7 @@ public class AuthFilter implements Filter {
 		boolean authRequired = false;
 		boolean scopeRequired = false;
 		boolean scopeValid = false;
+		StringBuilder msg = new StringBuilder();
 		Map<String, String> cookieMap = new ConcurrentHashMap<>();
 		Map<String, String> tokenList = new HashMap<>();
 
@@ -86,17 +95,36 @@ public class AuthFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		AuthDO scopeItem = loadScopeItem(req.getContextPath());
-		LOG.debug("#### scopeItem = " + scopeItem + " context = "
-				+ req.getContextPath());
+		msg.delete(0, msg.length());
+		msg.append("#### scopeItem =  ");
+		msg.append(scopeItem);
+		msg.append(" context = ");
+		msg.append(req.getContextPath());
+		LOG.debug(msg.toString());
 		if (scopeItem != null) {
 			authRequired = scopeItem.isAuthTokenRequired();
 			scopeRequired = scopeItem.getScopes().length > 0;
 		}
-		LOG.debug("#### Request headers = " + req.getHeaderNames());
+
+		msg.delete(0, msg.length());
+		msg.append("#### Auth required = ");
+		msg.append(authRequired);
+		msg.append(", Scope required = ");
+		msg.append(scopeRequired);
+		LOG.debug(msg.toString());
+
 		tokenList = loadHeaders(req);
-		LOG.debug("#### Request headers = " + req.getHeaderNames());
+
+		msg.delete(0, msg.length());
+		msg.append("#### Request headers = ");
+		msg.append(req.getHeaderNames());
+		LOG.debug(msg.toString());
 		String method = req.getMethod();
-		LOG.debug("#### Request Method = " + method);
+		msg.delete(0, msg.length());
+		msg.append("#### Request method = ");
+		msg.append(method);
+		LOG.debug(msg.toString());
+
 		String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
 		if (token == null) {
 			token = req.getHeader(AuthConstants.AUTHORIZATION);
@@ -115,6 +143,11 @@ public class AuthFilter implements Filter {
 						cookieMap.get(AuthConstants.ACCESS_TOKEN));
 			}
 		}
+
+		msg.delete(0, msg.length());
+		msg.append("#### Token list = ");
+		msg.append(tokenList);
+		LOG.debug(msg.toString());
 
 		if (tokenList.size() == 0 && (authRequired || scopeRequired)) {
 			res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -137,9 +170,18 @@ public class AuthFilter implements Filter {
 
 		if ((json != null && (!scopeRequired || scopeValid))
 				|| (scopeItem == null)) {
-			LOG.info("Success- Auth/Scope : scopeRequired=" + scopeRequired);
-			LOG.debug(("#### Time for authz filter exectuion with VALID token is ")
-					+ Double.toString(elapsed / 1000000) + " milliseconds");
+			msg.delete(0, msg.length());
+			msg.append("Successful validation using token ");
+			msg.append(token);
+			msg.append("- Auth/Scope : scopeRequired=");
+			msg.append(scopeRequired);
+			LOG.info(msg.toString());
+			msg.delete(0, msg.length());
+			msg.append("#### Time for authz filter exectuion with VALID token is ");
+			msg.append(Double.toString(elapsed / 1000000));
+			msg.append(" milliseconds");
+			LOG.debug(msg.toString());
+
 			chain.doFilter(request, response);
 		} else {
 			res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -173,25 +215,50 @@ public class AuthFilter implements Filter {
 	 * @param reqCtx
 	 *            The context of the URL for the incoming request
 	 * @return A collection of scopes for the incoming URL to be validated
-	 *         against the token for the incoming reuqest
+	 *         against the token for the incoming request
+	 */
+	private void loadScopePatterns() {
+
+		StringBuilder msg = new StringBuilder();
+		int count = 0;
+		for (String scope : this.scopeMap.keySet()) {
+			scopePatterns[count] = Pattern.compile(scope);
+
+			msg.append("#### Loaded required scope ");
+			msg.append(scope);
+			LOG.debug(msg.toString());
+		}
+		return;
+	}
+
+	/**
+	 * finds the scopes defined in the scope.json document that match/apply to
+	 * the incoming request URL context, if any.
+	 * 
+	 * @param reqCtx
+	 *            The context of the URL for the incoming request
+	 * @return A collection of scopes for the incoming URL to be validated
+	 *         against the token for the incoming request or null if no matching
+	 *         scopes found
 	 */
 	private AuthDO loadScopeItem(String reqCtx) {
 		AuthDO scopeItem = null;
 		StringBuilder msg = new StringBuilder();
-		Pattern pattern = Pattern.compile(reqCtx);
-		for (String scopeCtx : this.scopeMap.keySet()) {
+
+		for (int i = 0; i < scopePatterns.length; i++) {
 			msg.delete(0, msg.length());
-			if (pattern.matcher(scopeCtx).matches()) {
-				scopeItem = this.scopeMap.get(scopeCtx);
+			String scopeKey = scopePatterns[i].pattern();
+			if (scopePatterns[i].matcher(reqCtx).matches()) {
+				scopeItem = this.scopeMap.get(scopeKey);
 				msg.append("#### Matched the incoming request context ");
 				msg.append(reqCtx);
 				msg.append(" with the configured scope context ");
-				msg.append(scopeCtx);
+				msg.append(scopeKey);
 				LOG.debug(msg.toString());
 				return scopeItem;
 			} else {
 				msg.append("#### Unsuccessful match of configured scope context");
-				msg.append(scopeCtx);
+				msg.append(scopeKey);
 				msg.append(" with the incoming request context ");
 				msg.append(reqCtx);
 				LOG.debug(msg.toString());
