@@ -86,17 +86,17 @@ public class AuthFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		AuthDO scopeItem = loadScopeItem(req.getContextPath());
-//		LOG.debug("#### scopeItem = " + scopeItem + " context = "
-//				+ req.getContextPath());
+		LOG.debug("#### scopeItem = " + scopeItem + " context = "
+				+ req.getContextPath());
 		if (scopeItem != null) {
 			authRequired = scopeItem.isAuthTokenRequired();
 			scopeRequired = scopeItem.getScopes().length > 0;
 		}
-		// LOG.debug("#### Request headers = " + req.getHeaderNames());
+		LOG.debug("#### Request headers = " + req.getHeaderNames());
 		tokenList = loadHeaders(req);
-		// LOG.debug("#### Request headers = " + req.getHeaderNames());
+		LOG.debug("#### Request headers = " + req.getHeaderNames());
 		String method = req.getMethod();
-		// LOG.debug("#### Request Method = " + method);
+		LOG.debug("#### Request Method = " + method);
 		String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
 		if (token == null) {
 			token = req.getHeader(AuthConstants.AUTHORIZATION);
@@ -107,12 +107,9 @@ public class AuthFilter implements Filter {
 				tokenList.put(AuthConstants.ACCESS_TOKEN, token);
 			}
 		}
-		
-//		LOG.debug("#### token = " + token + " authRequired = " + authRequired
-//				+ " scopeRequired = " + scopeRequired);
+
 		if (token == null && authRequired == true) {
-			loadCookieData(req, cookieMap);// TODO: TBD if the request params
-											// through cookie (UI apps)
+			loadCookieData(req, cookieMap);
 			if (cookieMap.get(AuthConstants.ACCESS_TOKEN) != null) {
 				tokenList.put(AuthConstants.ACCESS_TOKEN,
 						cookieMap.get(AuthConstants.ACCESS_TOKEN));
@@ -124,44 +121,33 @@ public class AuthFilter implements Filter {
 			return;
 		}
 
-		try {
-			String json = null;
-			if (authRequired) {
-				// HTTP TOKEN authentication: External OAuth call to URL
-				// /validate
-				json = this.connector.callGoDotComValidateToken(tokenList);
-			}
-
-			/*
-			 * Assumptions made that API(URI) & its required scope will be
-			 * defined in scope.json. If the incoming URI has entry in
-			 * scope.json the filter will get uses scope and check uses has all
-			 * required scope.
-			 */
-			if (json != null && scopeRequired) {
-				// TODO Validate returned scopes from /validate against required
-				// scopes in configuration
-				scopeValid = validateScope(tokenList, method, scopeItem, json);
-			}
-			double end = System.nanoTime();
-			double elapsed = end - start;
-			
-			if ((json != null && (!scopeRequired || scopeValid))
-					|| (scopeItem == null)) {
-				LOG.info("Success- Auth/Scope : scopeRequired=" + scopeRequired);// TODO:TBR
-				LOG.debug(("#### Time for authz filter exectuion with VALID token is ")
-						+ Double.toString(elapsed / 1000000) + " milliseconds");
-				chain.doFilter(request, response);				
-			} else {
-				res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			LOG.debug(("#### Time for authz filter execution with INVALID token is ")
-						+ Double.toString(elapsed / 1000000) + " milliseconds");
-				return;
-			}
-		} finally {
-			// Finish timing measurement
-
+		String json = null;
+		if (authRequired) {
+			// External AuthZ call to validate token/fetch any defined scopes
+			json = this.connector.callGoDotComValidateToken(tokenList);
 		}
+
+		// validate that token has required scope defined in scopes.json
+		if (json != null && scopeRequired) {
+			scopeValid = validateScope(tokenList, method, scopeItem, json);
+		}
+		// Capturing time spent in pass through the filter
+		double end = System.nanoTime();
+		double elapsed = end - start;
+
+		if ((json != null && (!scopeRequired || scopeValid))
+				|| (scopeItem == null)) {
+			LOG.info("Success- Auth/Scope : scopeRequired=" + scopeRequired);
+			LOG.debug(("#### Time for authz filter exectuion with VALID token is ")
+					+ Double.toString(elapsed / 1000000) + " milliseconds");
+			chain.doFilter(request, response);
+		} else {
+			res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			LOG.debug(("#### Time for authz filter execution with INVALID token is ")
+					+ Double.toString(elapsed / 1000000) + " milliseconds");
+		}
+		return;
+
 	}
 
 	/**
@@ -192,27 +178,25 @@ public class AuthFilter implements Filter {
 	private AuthDO loadScopeItem(String reqCtx) {
 		AuthDO scopeItem = null;
 		StringBuilder msg = new StringBuilder();
+		Pattern pattern = Pattern.compile(reqCtx);
 		for (String scopeCtx : this.scopeMap.keySet()) {
 			msg.delete(0, msg.length());
-			if (Pattern.matches(scopeCtx, reqCtx)) {
+			if (pattern.matcher(scopeCtx).matches()) {
 				scopeItem = this.scopeMap.get(scopeCtx);
 				msg.append("#### Matched the incoming request context ");
 				msg.append(reqCtx);
 				msg.append(" with the configured scope context ");
 				msg.append(scopeCtx);
-//				LOG.debug(msg.toString());
+				LOG.debug(msg.toString());
 				return scopeItem;
 			} else {
-				msg.append("#### Unseccessful match of configured scope context");
+				msg.append("#### Unsuccessful match of configured scope context");
 				msg.append(scopeCtx);
 				msg.append(" with the incoming request context ");
 				msg.append(reqCtx);
 				LOG.debug(msg.toString());
 			}
 		}
-//		LOG.debug("#### Context  from request = " + context);
-//		LOG.debug("#### Scope Items (AthDO object)   from context path = "
-//				+ scopeItem);
 		return scopeItem;
 	}
 
@@ -257,7 +241,7 @@ public class AuthFilter implements Filter {
 					for (String allowedScope : configScope.getScopesAllowed()) {
 						if (allowedScope.equals("*")) {
 							msg.append("Configured scope did not requrie AuthZ scope (configured scope = *) . Token is valid");
-//							LOG.debug(msg.toString());
+							// LOG.debug(msg.toString());
 							isScopeValid = true;
 							break;
 						}
@@ -266,7 +250,7 @@ public class AuthFilter implements Filter {
 							msg.append(allowedScope);
 							msg.append((" found in configured scopes of:"));
 							msg.append(authZScope);
-//							LOG.debug(msg.toString());
+							// LOG.debug(msg.toString());
 							isScopeValid = true;
 							break;
 						}
