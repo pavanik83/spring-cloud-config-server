@@ -29,10 +29,29 @@
       "authToken":true,
       "scopes": [
           {"method":"GET",
-           "scopesRequired": ["authenticated" ]
-          },
-           {"method":"POST",
-           "scopesRequired": ["AUTHZ_PUBLIC", "ADMIN"]
+           "scopesRequired": ["wdpro-payment-general-crud" ]
+          }
+      ]
+    },
+    {
+      "authType": "pattern",
+      "urlPattern": "/test-service*",
+      "id": 3,
+      "authToken":true,
+      "scopes": [
+          {"method":"POST",
+           "scopesRequired": ["wdpro-payment-general-crud" ]
+          }
+      ]
+    },
+    {
+      "authType": "pattern",
+      "urlPattern": "/star-service*",
+      "id": 3,
+      "authToken":true,
+      "scopes": [
+          {"method":"GET",
+           "scopesRequired": ["*" ]
           }
       ]
     }

@@ -227,6 +227,7 @@ public class AuthFilter implements Filter {
 			msg.append("#### Loaded required scope ");
 			msg.append(scope);
 			LOG.debug(msg.toString());
+			count++;
 		}
 		return;
 	}
@@ -368,31 +369,31 @@ public class AuthFilter implements Filter {
  * have an HttpServletReuest, not needed for now
  *
  */
-class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
-	/**
+/*class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
+	*//**
 	 * construct a wrapper for this request
 	 *
 	 * @param request
-	 */
+	 *//*
 	public HeaderMapRequestWrapper(HttpServletRequest request) {
 		super(request);
 	}
 
 	private Map<String, String> headerMap = new HashMap<>();
 
-	/**
+	*//**
 	 * add a header with given name and value
 	 *
 	 * @param name
 	 * @param value
-	 */
+	 *//*
 	public void addHeader(String name, String value) {
 		this.headerMap.put(name, value);
 	}
 
-	/**
+	*//**
 	 * replace the normal get header
-	 */
+	 *//*
 	@Override
 	public String getHeader(String name) {
 		String headerValue = super.getHeader(name);
@@ -402,9 +403,9 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
 		return headerValue;
 	}
 
-	/**
+	*//**
 	 * get the Header names
-	 */
+	 *//*
 	@Override
 	public Enumeration<String> getHeaderNames() {
 		List<String> names = Collections.list(super.getHeaderNames());
@@ -414,9 +415,9 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
 		return Collections.enumeration(names);
 	}
 
-	/**
+	*//**
 	 * @see javax.servlet.http.HttpServletRequestWrapper#getHeaders(String)
-	 */
+	 *//*
 	@Override
 	public Enumeration<String> getHeaders(String name) {
 		List<String> values = Collections.list(super.getHeaders(name));
@@ -426,11 +427,11 @@ class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
 		return Collections.enumeration(values);
 	}
 
-	/**
+	*//**
 	 * @see Object#toString()
-	 */
+	 *//*
 	@Override
 	public String toString() {
 		return "HeaderMapRequestWrapper [headerMap=" + this.headerMap + "]";
 	}
-}
+}*/

@@ -3,9 +3,12 @@
  */
 package com.wdpr.ee.authz;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -25,6 +28,8 @@ public class RestConnectorTest
      * token list
      */
     Map<String, String> tokenList = new HashMap<>();
+    Map<String, String> tokenListBlank = new HashMap<>();
+    Map<String, String> bearertokenList = new HashMap<>();
 
     /**
      * @throws Exception
@@ -41,11 +46,19 @@ public class RestConnectorTest
     @Before
     public void setUp() throws Exception
     {
-        this.tokenList.put("access_token", "HUX8dgEzP91Z4RgTrCuMfw");
+        this.tokenList.put("access_token", "BEARERHUX8dgEzP91Z4RgTrCuMfw");
         this.tokenList.put("token_type", "BEARER");
         this.tokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
         this.tokenList.put("username", "api");
         this.tokenList.put("assertion_type", "public");
+        
+        
+        
+        this.bearertokenList.put("authorization", "BEARERHUX8dgEzP91Z4RgTrCuMfw");
+        this.bearertokenList.put("token_type", "BEARER");
+        this.bearertokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
+        this.bearertokenList.put("username", "api");
+        this.bearertokenList.put("assertion_type", "public");
     }
 
     /**
@@ -54,8 +67,21 @@ public class RestConnectorTest
     @After
     public void tearDown() throws Exception
     {
+    	
+    	
     }
-
+    @Test
+    public void testCallGoDotComGetBlankToken() throws IOException
+    {
+    	RestConnector connector	=	 RestConnector.getInstance();
+    	connector.callGoDotComGet(tokenListBlank, "/validate/");
+    }
+    @Test
+    public void testCallGoDotComGetwithbearer() throws IOException
+    {
+    	RestConnector connector	=	 RestConnector.getInstance();
+    	connector.callGoDotComGet(bearertokenList, "/validate/");
+    }
     /**
      * @throws IOException
      */

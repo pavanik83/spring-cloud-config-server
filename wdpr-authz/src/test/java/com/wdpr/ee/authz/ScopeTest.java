@@ -16,6 +16,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.wdpr.ee.authz.model.AuthDO;
 import com.wdpr.ee.authz.model.AuthDO.Scope;
@@ -133,7 +134,12 @@ public class ScopeTest
             }
         }
     }
-
+    @Test
+    public void testtoString()
+    {
+    	ScopeRequired scopeRequired	=	new ScopeRequired();
+    	scopeRequired.toString();
+    }
     /**
      *
      */
