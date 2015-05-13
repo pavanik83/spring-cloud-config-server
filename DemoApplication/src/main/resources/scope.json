@@ -2,7 +2,7 @@
   "authorization": [
     {
       "authType": "pattern",
-      "urlPattern": "/OAuthFilter.*",
+      "urlPattern": "/DemoApplication.*",
       "id": 2,
       "authToken":true,
       "scopes": [
