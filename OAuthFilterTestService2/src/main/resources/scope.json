@@ -1,0 +1,15 @@
+{
+  "authorization": [
+    {
+      "authType": "pattern",
+      "urlPattern": "/OAuthFilter.*",
+      "id": 2,
+      "authToken":true,
+      "scopes": [
+          {"method":"GET",
+           "scopesRequired": ["wdpro-payment-general-crud" ]
+          }
+      ]
+    }
+  ]
+}

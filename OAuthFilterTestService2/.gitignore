@@ -1,0 +1,14 @@
+.gradle/
+gradle/
+gradlew
+target/
+gradlew.bat
+build/
+logs/
+log/
+bin/
+.classpath
+.project
+.settings/
+gradle-app-setting
+.DS_Store
