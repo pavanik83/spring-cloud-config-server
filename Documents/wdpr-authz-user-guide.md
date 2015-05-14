@@ -2,6 +2,7 @@
 
 - [WDPR Auth Filter Quick Start Guide](#wdpr-Auth Filter-quick-start-guide)
 - [How Auth Filter works](#how-auth-filter-works)
+- [How to use demo application using auth filter](#How-to-use-demo-application-using-auth-filter)
 
 
 # WDPR Auth Filter Quick Start Guide
@@ -56,3 +57,17 @@ Using the Authz Filters requires the below steps:
 The following diagram shows the flow of execution for the auth filter api.
 
 ![WDPR Filter Sequence](./WDPR-Auth-Filter-Sequence-Diagram.png)
+
+# How to use demo application using auth filter
+
+
+
+1.) Open DHC Apps in Google Chrome.
+
+2.) Add the URL localhost:8080/DemoApplication/ in Request text in DHC and chose the method as GET.
+
+3.) Add the Headers "access_token" and value as the new valid Token values.Hit the Send button.
+
+4.) in case of valid entry the response status will be return as 200  for invalid toke or not matching scope the response status will be 401.
+
+5.) for the first time the request will be going to the Authz to do the validation for any subsequent hits the value will be pulled from HttpCacheContext.
