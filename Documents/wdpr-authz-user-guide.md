@@ -45,9 +45,9 @@ Using the Authz Filters requires the below steps:
 
 3.) Add the below (.properties,.json) file in web project class path same can be retrived from the git Location(https://github.disney.com/WDPR-RA-UI/Security-Filter/tree/shanghai/DemoApplication/src/main/resources)
 
-	*scope.json
-	*WdprLogAppender.properties
-	*auth-config.properties
+	* scope.json
+	* WdprLogAppender.properties
+	* auth-config.properties
 	
 	
 # How Auth Filter works](#how-auth-filter-works)
@@ -55,6 +55,4 @@ Using the Authz Filters requires the below steps:
 	
 The following diagram shows the flow of execution for the auth filter api.
 
-![WDPR Filter Sequence](./WDPR-Auth-Filter-Sequence-Diagram)
-
-<!--[WDPR Auth Filter API Sequence Diagram PDF file](./Documents/WDPR-Auth-Filter-Sequence-Diagram)-->
+![WDPR Filter Sequence](./WDPR-Auth-Filter-Sequence-Diagram.png)
