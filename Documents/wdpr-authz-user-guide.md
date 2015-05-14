@@ -54,7 +54,7 @@ Using the Authz Filters requires the below steps:
 # How Auth Filter works
 	
 	
-The following diagram shows the flow of execution for the auth filter api.
+The following sequence diagram shows the flow of execution for the auth filter api.
 
 ![WDPR Filter Sequence](./WDPR-Auth-Filter-Sequence-Diagram.png)
 
