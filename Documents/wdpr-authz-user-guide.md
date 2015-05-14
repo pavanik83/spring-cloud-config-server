@@ -2,7 +2,7 @@
 
 - [WDPR Auth Filter Quick Start Guide](#wdpr-Auth Filter-quick-start-guide)
 - [How Auth Filter works](#how-auth-filter-works)
-- [How to use demo application using auth filter](#How-to-use-demo-application-using-auth-filter)
+- [How to use demo application using auth filter](#how-to-use-demo-application-using-auth-filter)
 
 
 # WDPR Auth Filter Quick Start Guide
