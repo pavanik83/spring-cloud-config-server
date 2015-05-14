@@ -50,7 +50,7 @@ Using the Authz Filters requires the below steps:
 	* auth-config.properties
 	
 	
-# How Auth Filter works](#how-auth-filter-works)
+# How Auth Filter works
 	
 	
 The following diagram shows the flow of execution for the auth filter api.
