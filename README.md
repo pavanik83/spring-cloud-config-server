@@ -1,67 +1,36 @@
-Security-Filter
+WDPR AuthZ Filter
 =========
-	Cusomer order: POC rest service for client implementation using Keystone as credentials supplier
-	wdpr-authz : Auth Filtering Component
 
-[OAuthFilterTestService2: POC for client id / client secret version of wdpr-authz filter](https://github.disney.com/WDPR-ReferenceArchitecture/OauthHTTPFilterTest)
+This component is an HTTP 'filter', e.g., it intercepts calls into a web app container (e.g., Tomcat, WAS, etc) and performs  a function prior to passing on to the  request to the real endpoint.  In this case, t**he filter's function is to act as a security gate using the OAuth security protocol**. More information on OAuth can be found at the following links:
+
+* [OAuth Defined](http://en.wikipedia.org/wiki/OAuth)
+* [OAuth Community Site](http://oauth.net/)
+
+## OAuth Sequence using the WDPR AuthZ Filter
+
+
+The OAuth '2' 'protocol is the current standard for WDPR. This protocol involves the following steps:
+
+1. A client requests access to a protected resource from the resource owner. Usually this involves calling an authenticating./authorization site (e.g., Keystone), but this function can also be handled directly by the OAuth server (called 'AuthZ' server), which can function as a basic password/secret validation service.
+2.  The AuthZ server provides a token after the client is authenticated, either by checking it's own id/secret database for a match or by sending the credentials returned by the Resource owner when the client authenticated with the owner. If the latter case, AuthZ calls the Resource owner to verify the credentials are authentic.  Assuming things go well, AuthZ returns a token to the client that include any 'scopes' (authorizations ), either  defined by the Resource owner or held by AuthZ for the given client id. 
+3.  Assuming t a token was granted, the client makes a request to an endpoint protected by the  AuthZ server and includes the token. In the case of web services, this is usually done via an HTTP header.
+4.  When the client request reaches the endpoint server, the servlet container (Tomcat, WAS, etc.) will invoke any and all filters defined for that endpoint.  Each filter is called in succession, thus the term 'chained' filters.
+5.  When a request reaches the AuthZ filter, it has two functions:
+	*  Call the AuthZ server and validate that the token carried in the request is valid/still active
+	*  Compare any 'scopes' (think permissions or roles) in the token with scope required by the** endpoint. 
+
+Failure of step 5 for any reason results in the request being terminated and a '401' returned to the client. 
+
+**A detailed discussion of how to use the AuthZ Filter is available at [AuthZ Usage Guide](https://github.disney.com/WDPR-RA-UI/Security-Filter/blob/shanghai/Documents/wdpr-authz-user-guide.md)**
+ 
+##Example Implementations
+
+The WDPR AuthZ filter repo contains two example implementations of using the filter:
+
+1. [Customer order: POC rest service for client implementation using Keystone as credentials supplier](https://github.disney.com/WDPR-RA-UI/Security-Filter/tree/shanghai/CustomerOrder)
+2. [DemoApplication: POC for client id / client secret version of wdpr-authz filter](https://github.disney.com/WDPR-ReferenceArchitecture/OauthHTTPFilterTest)
 	
-###Introduction
-
-[Security : Auth filter Architecture](https://github.disney.com/WDPR-RA-UI/Security-Filter/blob/master/Auth-Filter.png)
-
-[Demo: UI snaps with header & params](https://github.disney.com/WDPR-RA-UI/Security-Filter/blob/master/Snaps.png)
-
-wdpr-authz is the maven ServletFilter project, supporting an HTTP Filter-based option for  OAuth style protection for web services. There are two current test services supporting two different client authentication/authorization methods:
-	
--  The CustomerOrder service, which uses the Keystone security service to authenticate a client and provide the clients credentials which include 'scopes', used by an AuthZ server to authorize endpoint access.
--  The OAuthFilterTestService2, which uses client id / client secret to perform authentication and provide 'scopes' (authorization levels) as stored on the AuthZ server.
 
 
-Several properties are configurable:
 
-1.  The target AuthZ server (via HTTP URL )
-2.  Timeout duration for the filter's AuthZ server call 
-3.  Scopes to be matched in any returned scopes from the AuthZ server, using regex patterns against the context of the incoming URL request 	
 
-###REST service invocation URI: 
-
-Example customer creation which requires an existing valid token:
-
-    http://localhost:8080/customer-service/customer-services/customer-create?firstName=NixonDion&lastName=Forward&gender=M&firstAddressLine=9414+Easy+Subdivision&city=Fort+Dix&state=Mississippi&zip=39956-1447
-
-###Client Dependency/Configuration
-(pom.xml)
-
-		<dependency>
-			<groupId>com.wdpr.ee</groupId>
-			<artifactId>wdpr-authz</artifactId>
-			<version>1.0.1-SNAPSHOT</version>	
-		</dependency> 
-
-Client (web.xml)
-#     
-    <web-app>
-    ..
-       <filter>
-        <filter-name>AuthFilter</filter-name>
-        <filter-class>com.wdpr.ee.authz.AuthFilter</filter-class>
-       </filter>
-       <filter-mapping>
-        <filter-name>AuthFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-       </filter-mapping>
-     </web-app #
-
-Note: Rest service(customer-service) Client should pass necessary headers as part of request for new token 
-eg: access_token, client_id etc.
-
-Sample logs from Client:
-
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':4e548cf6-9de8-42af-9b9c-ab2b79e556a0 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.loggingapi.filter.HttpLoggingFilter - X-CorrelationId Received: 5fac9a52-d477-4698-8758-c48e97b28be7
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - AuthFilter.............IN
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - scopeMap 2
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - key:/CustomerOrder*,path:/CustomerOrder
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - isMatch:true
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - authRequired:true, scopeRequired :true
-    KPL-VM-NARAA011 2015-02-11 04:35:18,570 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.RestConnector - URI   >>>https://stg.authorization.go.com:443/validate/_CHyXsQ1sPUDDkmBMI-NqQ
-    KPL-VM-NARAA011 2015-02-11 04:35:19,306 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - authSuccess:true

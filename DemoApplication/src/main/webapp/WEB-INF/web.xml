@@ -6,7 +6,7 @@
 	<servlet>
 		<display-name>CallableServlet</display-name>
 		<servlet-name>CallableServlet</servlet-name>
-		<servlet-class>com.wdpr.ee.loggingapi.servlet.CallableTestService</servlet-class>
+		<servlet-class>com.wdpr.ee.authzfilter.servlet.CallableTestService</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>CallableServlet</servlet-name>

@@ -3,7 +3,7 @@
  * @copyright Disney 2014
  * @author archj009
  */
-package com.wdpr.ee.loggingapi.servlet;
+package com.wdpr.ee.authzfilter.servlet;
 
 /**
  * A very simple servlet to test the WDPR Http Logging Filter's passing
