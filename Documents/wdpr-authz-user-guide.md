@@ -62,7 +62,7 @@ Using the Authz Filters requires completing  these steps:
 	
 The following diagram shows the flow of execution for the auth filter api:
 
-![WDPR-Auth-Filter-Sequence-Diagram](./WDPR-Auth-Filter-Sequence-Diagram.pdf)
+![WDPR-Auth-Filter-Sequence-Diagram](./WDPR-Auth-Filter-Sequence-Diagram.png)
 
 ## <a name="config"></a>Configuring the Filter
 
