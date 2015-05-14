@@ -6,6 +6,7 @@
 * [WDPR Auth Filter Quick Start Guide](#quickstart)
 - [How Auth Filter works](#how)
 -  [Configuring the Filter](#config) 
+-  [Running the Demo Application Using Auth Filter](#demo)
 
 
 ## <a name="quickstart"></a>WDPR Auth Filter Quick Start Guide
@@ -49,11 +50,12 @@ Using the Authz Filters requires completing  these steps:
 
 3. Add the following  files below to your web project class path. Example scope.json and auth-config.proprerty files can be retrieved from [WDPR AuthZ Filter git repo](https://github.disney.com/WDPR-RA-UI/Security-Filter/tree/shanghai/DemoApplication/src/main/resources). See section [Configuring the Filter ](#config)for an explanation of the expected entries for each file.
 
-	* scope.json 
-	* WdprLogAppender.properties
-	* auth-config.properties
+
+	* **scope.json**
+	* **WdprLogAppender.properties**
+	* **auth-config.properties**
 	
-	
+
 ##<a name="how"></a>How Auth Filter works
 	
 	
@@ -126,4 +128,18 @@ The following example would connect to the AuthZ server at stg.authorization.go.
 ### WdprLogAppender.properties
 
 This file is for setting the logging entry properties that the filter will make (every request is logged with the time the request took as well whether the request was VALID or INVALID. ). Please see the [WDPR logging API site](https://github.disney.com/WDPR-RA/wdpr-loggingapi) for information on configuring this file / WDPR logging policy.
+
+
+
+##<a name="demo"></a> Running the Demo Application Using Auth Filter
+
+
+
+1.  Create the war file of the Demo Application lying in(https://github.disney.com/WDPR-RA-UI/Security-Filter/tree/shanghai/DemoApplication).
+2. Deploy the war file in a Tomcat server.3.
+3. Open DHC  (Developer Tool Extension from Chrome)  in Google Chrome.
+4. Add the URL localhost:8080/DemoApplication/ in Request text in DHC and chose the method as GET.
+5. Add the Headers "access_token" and value as the new valid Token value (from a call to your AuthZ server),Hit the Send button.
+6. In case of valid entry the response status will be return as 200  for invalid toke or not matching scope the response status will be 401.
+7. For the first time the request will be going to the Authz to do the validation for any subsequent hits the value will be pulled from HttpCacheContext till the time the token has valid TTL.
 
