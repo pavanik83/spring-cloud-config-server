@@ -72,8 +72,8 @@ The following sequence diagram shows the flow of execution for the auth filter a
 
 4.) Add the URL localhost:8080/DemoApplication/ in Request text in DHC and chose the method as GET.
 
-5.) Add the Headers "access_token" and value as the new valid Token values.Hit the Send button.
+5.) Add the Headers "access_token" and value as the new valid Token values,Hit the Send button.
 
-6.) in case of valid entry the response status will be return as 200  for invalid toke or not matching scope the response status will be 401.
+6.) In case of valid entry the response status will be return as 200  for invalid toke or not matching scope the response status will be 401.
 
-7.) for the first time the request will be going to the Authz to do the validation for any subsequent hits the value will be pulled from HttpCacheContext till the time the token has valid ttl.
+7.) For the first time the request will be going to the Authz to do the validation for any subsequent hits the value will be pulled from HttpCacheContext till the time the token has valid ttl.
