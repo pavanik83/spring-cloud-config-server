@@ -7,7 +7,6 @@
 - [How Auth Filter works](#how)
 -  [Configuring the Filter](#config) 
 -  [Running the Demo Application Using Auth Filter](#demo)
--   [Running the Customer Order Application Using Auth Filter](#custdemo)
 
 
 ## <a name="quickstart"></a>WDPR Auth Filter Quick Start Guide
@@ -138,15 +137,17 @@ This file is for setting the logging entry properties that the filter will make 
 
 	http://]localhost:8080/DemoApplication/CallableServlet
 	
-####Steps:
+####Steps For Running The Demo:
 
-1.  Create the war file of the Demo Application lying in(https://github.disney.com/WDPR-RA-UI/Security-Filter/tree/shanghai/DemoApplication).
-2. Deploy the war file in a Tomcat server.3.
-3. Open DHC  (Developer Tool Extension from Chrome)  in Google Chrome.
-4. Add the URL localhost:8080/DemoApplication/ in Request text in DHC and chose the method as GET.
-5. Add the Headers "access_token" and value as the new valid Token value (from a call to your AuthZ server),Hit the Send button.
-6. In case of valid entry the response status will be return as 200  for invalid toke or not matching scope the response status will be 401.
-7. For the first time the request will be going to the Authz to do the validation for any subsequent hits the value will be pulled from HttpCacheContext till the time the token has valid TTL.
+	1. Download the Demo Application project and build  the war file from the git repo(https://github.disney.com/WDPR-RA-UI/Security-Filter/tree/shanghai/DemoApplication).
+	2. Change the scope.json file to contain at least one scope associated with the requesting client.
+	3. Change the auth-config.properties entries to point to the AuthZ server you wish the filter to use.
+	4. Build the Demo Application war file and deploy it to a Tomcat server
+	5. Open DHC  (Developer Tool Extension from Chrome)  in Google Chrome and do the following:
+	6. Obtain a fresh token from the AuthZ server (this can be done by calling the AuthZ server using curl or DHC with the url  https://<stg.authorization.go.com>your authz host ip or DNS>:443/token?grant_type=client_credentials&client_id=<some authz client id>&client_secret=<some AuthZ secret>)
+	7. Add the URL localhost:8080/DemoApplication/ in Request text in DHC and chose the method as GET.
+	8. Add the Headers "access_token" and value as the new valid Token value (from a call to your AuthZ server),Hit the Send button.
+	9. In case of valid entry the response status will be 200 and you will get a return value from the Demo Application  of "You have reached the Callable Service Test endpoint! @ Fri May 15 15:23:01 EDT 2015". If the token is expired or a required scope (as configured in scopes. json )  is not found  in the passed-token, the response status will be 401 with no returned body..
 
 #### Sample logs from Client:
 
@@ -166,19 +167,3 @@ This file is for setting the logging entry properties that the filter will make 
 	WW-AM04020514 2015-05-14 15:23:20,241 [tomcat-http--3] ['App-Name':DemoAuthZApp 'Correlation-Id':c1ae741e-639e-4b54-a51c-900a190e6958 'Session-Id':D1F36E72A2A4E828F59AF215FCA06C2A 'Thread-Group':main 'Thread-Id':25 'Version':"1.0"  'X-Message-Id': 'X-User-Id':] DEBUG com.wdpr.ee.authz.AuthFilter - #### Time for authz filter exectuion with VALID token is 2590.468096 milliseconds
 	WW-AM04020514 2015-05-14 15:23:20,248 [tomcat-http--3] ['App-Name':DemoAuthZApp 'Correlation-Id':c1ae741e-639e-4b54-a51c-900a190e6958 'Session-Id':D1F36E72A2A4E828F59AF215FCA06C2A 'Thread-Group':main 'Thread-Id':25 'Version':"1.0"  'X-Message-Id': 'X-User-Id':] PERF  com.wdpr.ee.loggingapi.filter.HttpLoggingFilter -  Boundary Time :2603748000 (ns), Taken for functionality DemoAuthZApp_/DemoApplication/CallableServlet
 
-## <a name="custdemo"></a>Customer Order Example 	
-####Steps:
-
-#### Rest Service example invocation:    
-	http://localhost:8080/customer-service/customer-services/customer-create?firstName=NixonDion&lastName=Forward&gender=M&firstAddressLine=9414+Easy+Subdivision&city=Fort+Dix&state=Mississippi&zip=39956-1447
-
-#### Sample logs from Client:
-
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':4e548cf6-9de8-42af-9b9c-ab2b79e556a0 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.loggingapi.filter.HttpLoggingFilter - X-CorrelationId Received: 5fac9a52-d477-4698-8758-c48e97b28be7
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - AuthFilter.............IN
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - scopeMap 2
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - key:/CustomerOrder*,path:/CustomerOrder
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - isMatch:true
-    KPL-VM-NARAA011 2015-02-11 04:35:17,977 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - authRequired:true, scopeRequired :true
-    KPL-VM-NARAA011 2015-02-11 04:35:18,570 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.RestConnector - URI   >>>https://stg.authorization.go.com:443/validate/_CHyXsQ1sPUDDkmBMI-NqQ
-    KPL-VM-NARAA011 2015-02-11 04:35:19,306 [http-8080-1] ['App-Name':CustomerService 'Correlation-Id':5fac9a52-d477-4698-8758-c48e97b28be7 'Session-Id':0C0217D2C4EF96BC6BEC1E3E3680B60F 'Thread-Group':main 'Thread-Id':1 'Version':"1.0"] INFO  com.wdpr.ee.authz.AuthFilter - authSuccess:true
