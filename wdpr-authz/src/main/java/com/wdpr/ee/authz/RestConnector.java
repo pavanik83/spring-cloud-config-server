@@ -219,23 +219,22 @@ public class RestConnector {
 		CloseableHttpResponse response = null;
 		try {
 			URIBuilder builder = new URIBuilder();
-			if (ctxPath.equals(this.AUTH_PATH)) {
+			if (ctxPath.equals(this.AUTH_PATH)) 
+			{
 				// LOG.debug(tokenList);
 				// Some confusion between header value access_token and
 				// authorization
-				accessToken = tokenList.get(AuthConstants.ACCESS_TOKEN);
-				if (accessToken == null) {
-					accessToken = tokenList.get(AuthConstants.AUTHORIZATION);
+				    accessToken = tokenList.get(AuthConstants.AUTHORIZATION);
 					if (accessToken != null
 							&& accessToken.indexOf(AuthConstants.BEARER) > -1) {
 						// Authorization value: 'BEARER <access token>'
 						accessToken = accessToken.substring(accessToken
 								.indexOf(AuthConstants.BEARER) + 7);
-						tokenList.put(AuthConstants.ACCESS_TOKEN, accessToken);
+						tokenList.put(AuthConstants.AUTHORIZATION, accessToken);
 					}
-				}
-				if (accessToken != null) {
-					ctxPath += tokenList.get(AuthConstants.ACCESS_TOKEN);
+				if (accessToken != null) 
+				{
+					ctxPath += tokenList.get(AuthConstants.AUTHORIZATION);
 				}
 				/*
 				 * else { LOG.warn(AuthConstants.ACCESS_TOKEN + " is not set!");

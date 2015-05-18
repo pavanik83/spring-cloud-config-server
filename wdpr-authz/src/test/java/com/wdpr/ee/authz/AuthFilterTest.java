@@ -75,14 +75,14 @@ public class AuthFilterTest
     @Before
     public void setUp() throws Exception
     {
-        this.tokenList.put(AuthConstants.AUTHORIZATIONS, "BEARER uz3588_tywiTt0a9l9MROA");
+        this.tokenList.put(AuthConstants.AUTHORIZATION, "BEARER uz3588_tywiTt0a9l9MROA");
         this.tokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
         this.tokenList.put("username", "api");
         this.tokenList.put("assertion_type", "public");
         this.tokenList.put("grant_type", "assertion");
         cookieMap.put("access_token", "uz3588_tywiTt0a9l9MROA");
         
-        this.bearertokenList.put(AuthConstants.AUTHORIZATIONS, "BEARER HUX8dgEzP91Z4RgTrCuMfw");
+        this.bearertokenList.put(AuthConstants.AUTHORIZATION, "BEARER HUX8dgEzP91Z4RgTrCuMfw");
         this.bearertokenList.put("token_type", "BEARER");
         this.bearertokenList.put("client_id", "WDPRO-NGE.PEPCOM-STAGE");
         this.bearertokenList.put("username", "api");
@@ -123,7 +123,7 @@ public class AuthFilterTest
     	MockHttpServletResponse response = new MockHttpServletResponse();
     	MockFilterChain chain = new MockFilterChain();
         AuthFilter mockFilter = Mockito.mock(AuthFilter.class);
-        request.addHeader(AuthConstants.AUTHORIZATIONS, "BEARER Un6LHVsOtTphTEANANz0UQ");
+        request.addHeader(AuthConstants.AUTHORIZATION, "BEARER Un6LHVsOtTphTEANANz0UQ");
         Mockito.doReturn(this.tokenList).when(mockFilter).loadHeaders(request);
         mockFilter.doFilter(request, response, chain);
         assertNotNull(response.getStatus());
@@ -142,7 +142,7 @@ public class AuthFilterTest
         StringBuilder tokens	=	 new StringBuilder();
     	tokens.append("BEARER ");
     	tokens.append(RestConnector.getInstance().callGoDotComPost(this.grantTokens, "/token", TokenDO.class).getAccess_token());
-        request.addHeader(AuthConstants.AUTHORIZATIONS, tokens.toString());
+        request.addHeader(AuthConstants.AUTHORIZATION, tokens.toString());
         request.setContextPath("/customer-service");
         AuthFilter filter = new AuthFilter();
         filter.doFilter(request, response, chain);
@@ -160,7 +160,7 @@ public class AuthFilterTest
     	StringBuilder tokens	=	 new StringBuilder();
     	tokens.append("BEARER ");
     	tokens.append(RestConnector.getInstance().callGoDotComPost(this.grantTokens, "/token", TokenDO.class).getAccess_token());
-        request.addHeader(AuthConstants.AUTHORIZATIONS, tokens.toString());
+        request.addHeader(AuthConstants.AUTHORIZATION, tokens.toString());
         AuthFilter filter = new AuthFilter();
         filter.doFilter(request, response, chain);
     }

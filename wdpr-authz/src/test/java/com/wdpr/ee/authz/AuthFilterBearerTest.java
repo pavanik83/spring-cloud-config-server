@@ -29,7 +29,7 @@ public class AuthFilterBearerTest {
     public void testDoFilterWithBearerToken() throws IOException, ServletException
     {
     	MockHttpServletRequest request = new MockHttpServletRequest();
-    	request.addHeader(AuthConstants.AUTHORIZATIONS, "BEARER HUX8dgEzP91Z4RgTrCuMfw");
+    	request.addHeader(AuthConstants.AUTHORIZATION, "BEARER HUX8dgEzP91Z4RgTrCuMfw");
     	request.addHeader("token_type", "BEARER");
     	request.setContextPath("/customer-service");
     	MockHttpServletResponse response	=	new MockHttpServletResponse();
