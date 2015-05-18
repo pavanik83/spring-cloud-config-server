@@ -75,7 +75,7 @@ The following items are configurable:
 
 * **urlPattern** - A scope is linked to an endpoint using all or part of the context portion of the  URL used to access the endpoint, .  This field contains a regex-compliant entry to match the  URL context to be protected.  An entry of ["*"] will allows any scope coming from the AuthZ server to pass, including an empty string ("") scope  (so only a token is required)***A ''no match' assumes there is no protection for the incoming endpoint context***
 * **authToken** - a value of 'true' requires that the filter find a town (in the token header accept_token or "BEARER")
-* **scopes** - An array of scopes for the related URL context
+* **scopes** - An array of scopes for the related URL context. Note that scopes are generally text strings that represent a role or authorization level. Scopes in the scopes.json file must match exactly to at least one scope associated with the incoming AuthZ token, else a request will be terminated with a 401. For example, a scope based on a Keystone role (the user authenticated with Keystone before getting the AuthZ token) will contain the role AND an authorization, separated by a colon, e.g., "DRC Agent : cancelTicketsUI".
 *  **scopesRequired** - One or more of the scope strings listed here must match exactly for the filter to allow the request to proceed.
 *   **method** - The HTTP method (GET, POST, PUT, DELETE, PATCH) that the request must match for the scopes to apply. An "*" indicates the entry applies to all HTTP methods.
 
