@@ -14,7 +14,7 @@
     {
       "authType": "pattern",
       "urlPattern": "/profile*",
-      "id": 2,
+      "id": 3,
       "authToken":true,
       "scopes": [
           {"method":"GET",
@@ -25,7 +25,7 @@
     {
       "authType": "pattern",
       "urlPattern": "/customer-service*",
-      "id": 3,
+      "id": 4,
       "authToken":true,
       "scopes": [
           {"method":"GET",
@@ -36,7 +36,7 @@
     {
       "authType": "pattern",
       "urlPattern": "/test-service*",
-      "id": 3,
+      "id": 5,
       "authToken":true,
       "scopes": [
           {"method":"POST",
@@ -47,11 +47,22 @@
     {
       "authType": "pattern",
       "urlPattern": "/star-service*",
-      "id": 3,
+      "id": 6,
       "authToken":true,
       "scopes": [
           {"method":"GET",
            "scopesRequired": ["*" ]
+          }
+      ]
+    },
+    {
+      "authType": "pattern",
+      "urlPattern": "/keystone-service*",
+      "id": 7,
+      "authToken":true,
+      "scopes": [
+          {"method":"GET",
+           "scopesRequired": ["wdpro-payment-general-crud","DRC Agent:DMEAdvSearchByAgencyIATA#OrCLIA#" ]
           }
       ]
     }

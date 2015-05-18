@@ -125,16 +125,16 @@ public class AuthFilter implements Filter {
 		msg.append(method);
 		LOG.debug(msg.toString());
 
-		String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
-		if (token == null) {
-			token = req.getHeader(AuthConstants.AUTHORIZATION);
+		//String token = req.getHeader(AuthConstants.ACCESS_TOKEN);
+		String token = req.getHeader(AuthConstants.AUTHORIZATIONS);
+		//if (token == null) {
+			//token = req.getHeader(AuthConstants.AUTHORIZATION);
 			if (token != null && token.indexOf(AuthConstants.BEARER) > -1) {
 				// Authorization value: 'BEARER <access token>'
-				token = token
-						.substring(token.indexOf(AuthConstants.BEARER) + 7);
+				token = token.substring(token.indexOf(AuthConstants.BEARER) + 7);
 				tokenList.put(AuthConstants.ACCESS_TOKEN, token);
 			}
-		}
+		//}
 
 		if (token == null && authRequired == true) {
 			loadCookieData(req, cookieMap);
