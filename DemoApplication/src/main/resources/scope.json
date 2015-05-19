@@ -7,7 +7,7 @@
       "authToken":true,
       "scopes": [
           {"method":"GET",
-           "scopesRequired": ["wdpro-payment-general-crud" ]
+           "scopesRequired": ["abc","wdpro-payment-general-crud" ]
           }
       ]
     }
