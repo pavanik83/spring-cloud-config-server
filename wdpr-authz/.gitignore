@@ -3,4 +3,5 @@ log/
 .classpath
 .project
 .settings/
+scope-out.json
 .DS_Store
