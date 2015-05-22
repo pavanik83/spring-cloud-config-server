@@ -150,7 +150,7 @@ public class AuthFilter implements Filter
 
   if (tokenList.size() == 0 && (authRequired || scopeRequired))
   {
-   res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+   res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
    return;
   }
 
