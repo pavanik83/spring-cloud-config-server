@@ -74,15 +74,15 @@ public class JSONConfigLoader
         }
         catch (JsonGenerationException ex)
         {
-            LOG.error(ex);
+            LOG.error("****Check the scope.json****", ex);
         }
         catch (JsonMappingException ex)
         {
-            LOG.error(ex);
+         LOG.error("****Check the scope.json for the mapping element****", ex);
         }
         catch (IOException ex)
         {
-            LOG.error(ex);
+         LOG.error("****Check the scope.json if that is properly written****", ex);
         }
     }
 

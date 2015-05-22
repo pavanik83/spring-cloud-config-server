@@ -303,10 +303,16 @@ public class RestConnector
    authZcallMsg.append(" Response SC:" + statusCode + ", from (GET)"
      + getRequest.getURI().toString() + " response=" + json);
    // LOG.debug(authZcallMsg.toString());
-  } catch (URISyntaxException | IOException ex)
+  } 
+  catch (URISyntaxException ex)
   {
-   LOG.error(ex);
-  } finally
+   LOG.error("****Check if auth-config.properties has entry as per the standard****",ex);
+  }
+  catch (IOException ex)
+  {
+   LOG.error("****Generic IO exception has occured****",ex);
+  }
+  finally
   {
    HttpClientUtils.closeQuietly(response);
   }
