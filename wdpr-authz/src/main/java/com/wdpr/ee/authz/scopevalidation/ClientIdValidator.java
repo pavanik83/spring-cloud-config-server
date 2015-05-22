@@ -58,11 +58,15 @@ public class ClientIdValidator
    }
    // LOG.info("Configured scopes = " + abilities);
 
-  } catch (IOException | JSONException ex)
+  } 
+  catch(JSONException ex)
   {
-   // LOG.error(ex);
+     LOG.error("****Check the scopes attribute in scope.json file****",ex);
   }
-
+  catch (IOException ex)
+  {
+    LOG.error("****Error reading json attribute****",ex);
+  }
   return abilities;
  }
 
