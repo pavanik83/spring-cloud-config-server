@@ -12,3 +12,4 @@ bin/
 .settings/
 gradle-app-setting
 .DS_Store
+scope-out.json
