@@ -120,9 +120,9 @@ public class AuthConfig
 //            LOG.debug(" property invoked");
 
         }
-        catch (IOException | NullPointerException | IllegalArgumentException e)
+        catch (IOException  e)
         {
-            LOG.error(e);
+            LOG.error("****Generic exception has occured****",e);
         }
         finally
         {
@@ -134,7 +134,7 @@ public class AuthConfig
                 }
                 catch (Exception ex)
                 {
-                    LOG.error(ex);
+                    LOG.error("error closing the stream for auth-config.properties file",ex);
                 }
             }
         }

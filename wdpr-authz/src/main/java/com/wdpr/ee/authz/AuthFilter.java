@@ -349,7 +349,7 @@ public class AuthFilter implements Filter
 
   } catch (Exception ex)
   {
-   LOG.error(ex);
+   LOG.error("****Check if the scope returned from scope.json are as per the standard for the filter****",ex);
   }
   return isScopeValid;
  }
