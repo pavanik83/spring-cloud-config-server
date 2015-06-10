@@ -25,10 +25,9 @@ Failure of step 5 for any reason results in the request being terminated and a '
  
 ##Example Implementations
 
-The WDPR AuthZ filter repo contains two example implementations of using the filter:
+The WDPR AuthZ filter repo contains an example implementations of using the filter:
 
-1. [Customer order: POC rest service for client implementation using Keystone as credentials supplier](https://github.disney.com/WDPR-RA-UI/Security-Filter/tree/shanghai/CustomerOrder)
-2. [DemoApplication: POC for client id / client secret version of wdpr-authz filter](https://github.disney.com/WDPR-ReferenceArchitecture/OauthHTTPFilterTest)
+[DemoApplication: POC for client id / client secret version of wdpr-authz filter](https://github.disney.com/WDPR-ReferenceArchitecture/OauthHTTPFilterTest)
 	
 
 
