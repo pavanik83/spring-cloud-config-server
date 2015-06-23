@@ -8,21 +8,8 @@ import java.util.List;
  */
 public class ScopeRequired
 {
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ScopeRequired [authorization=").append(this.authorization).append("]");
-        return builder.toString();
-    }
 
-    /**
-     * authorization
-     */
-    List<AuthDO> authorization = new ArrayList<>();
+    private List<AuthDO> authorization = new ArrayList<>();
 
     /**
      * @return authorization
@@ -38,5 +25,16 @@ public class ScopeRequired
     public void setAuthorization(List<AuthDO> authorizationIn)
     {
         this.authorization = authorizationIn;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ScopeRequired [authorization=").append(this.authorization).append("]");
+        return builder.toString();
     }
 }

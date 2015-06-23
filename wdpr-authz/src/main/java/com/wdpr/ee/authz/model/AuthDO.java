@@ -37,10 +37,9 @@ public class AuthDO
     }
 
     /**
-     * @param scopes the scopesRequired to set
+     * @param scopes the scopes to set
      */
-    public void setScopesRequired(Scope[] scopes)
-    {
+    public void setScopes(Scope[] scopes) {
         this.scopes = scopes;
     }
 
@@ -130,7 +129,7 @@ public class AuthDO
         {
             StringBuilder builder = new StringBuilder();
             builder.append("Scope [method=").append(this.method).append(", scopesRequired=")
-                    .append(Arrays.toString(this.scopesRequired)).append("]");
+            .append(Arrays.toString(this.scopesRequired)).append("]");
             return builder.toString();
         }
 
@@ -192,9 +191,10 @@ public class AuthDO
     {
         StringBuilder builder = new StringBuilder();
         builder.append("AuthDO [id=").append(this.id).append(", authType=").append(this.authType)
-                .append(", urlPattern=").append(this.urlPattern).append(", authToken=")
-                .append(this.authToken).append(", scopes=").append(Arrays.toString(this.scopes))
-                .append("]");
+        .append(", urlPattern=").append(this.urlPattern).append(", authToken=")
+        .append(this.authToken).append(", scopes=").append(Arrays.toString(this.scopes))
+        .append("]");
         return builder.toString();
     }
+
 }
