@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.wdpr.ee.authz.model.AuthDO;
+import com.wdpr.ee.authz.model.AuthDO.Scope;
 import com.wdpr.ee.authz.model.ScopeRequired;
 
 /***************************************************************************************************
@@ -32,7 +33,7 @@ public class JSONConfigLoader
     /**
      * Map of scope key/value
      */
-    Map<String, AuthDO> scopeMap = new HashMap<>();
+    Map<ScopeKeyClass, AuthDO> scopeMap = new HashMap<>();
     /**
      * Maps json value to scope
      */
@@ -66,9 +67,22 @@ public class JSONConfigLoader
 
             for (AuthDO patt : scope.getAuthorization())
             {
+                String urlPattern   =   patt.getUrlPattern();
+                ScopeKeyClass scopeKeyClass =   new ScopeKeyClass();
+                if(urlPattern.contains(".*") || urlPattern.contains("*"))
+                {
+                    urlPattern = urlPattern.replace(".*", "");
+                    urlPattern = urlPattern.replace("*", "");
+                }
+                scopeKeyClass.setUrl(urlPattern);
+                Scope[] localScope   =   patt.getScopes();
+                for (Scope scopes : localScope)
+                {
+                    scopeKeyClass.setMethod(scopes.getMethod());
+                }
                 if (patt != null)
                 {
-                    this.scopeMap.put(patt.getUrlPattern(), patt);
+                    this.scopeMap.put(scopeKeyClass, patt);
                 }
             }
         }
@@ -85,11 +99,10 @@ public class JSONConfigLoader
          LOG.error("****Check the scope.json if that is properly written****", ex);
         }
     }
-
     /**
      * @return scopeMap
      */
-    public Map<String, AuthDO> loadScopeData()
+    public Map<ScopeKeyClass, AuthDO> loadScopeData()
     {
         // File jsonFile = new File(jsonFilePath);
         return this.scopeMap;

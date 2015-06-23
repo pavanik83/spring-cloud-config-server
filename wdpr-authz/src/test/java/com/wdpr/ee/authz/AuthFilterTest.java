@@ -32,6 +32,7 @@ import com.wdpr.ee.authz.model.AuthDO;
 import com.wdpr.ee.authz.model.TokenDO;
 import com.wdpr.ee.authz.util.AuthConstants;
 import com.wdpr.ee.authz.util.JSONConfigLoader;
+import com.wdpr.ee.authz.util.ScopeKeyClass;
 
 /**
  * AuthFilterTest
@@ -46,7 +47,7 @@ public class AuthFilterTest
     Map<String, String> tokenList = new HashMap<>();
     Map<String, String> grantTokens = new HashMap<>();
     Map<String, String> bearertokenList = new HashMap<>();
-    Map<String, AuthDO> scopeMap = JSONConfigLoader.getInstance()
+    Map<ScopeKeyClass, AuthDO> scopeMap = JSONConfigLoader.getInstance()
 			.loadScopeData();
     Map<String, String> cookieMap = new HashMap<>();;
     Pattern[] scopePatterns = new Pattern[scopeMap.size()];
@@ -196,20 +197,29 @@ public class AuthFilterTest
         Map<String, String> tokenListMock	=	filter.loadHeaders(request);
         assertNotNull(tokenListMock);
     }
-    private void loadScopePatterns() {
+    private void loadScopePatterns()
+    {
 
-		StringBuilder msg = new StringBuilder();
-		int count = 0;
-		for (String scope : this.scopeMap.keySet()) {
-			scopePatterns[count] = Pattern.compile(scope);
+        StringBuilder msg = new StringBuilder();
+        int count = 0;
+        /*
+         * for (String scope : this.scopeMap.keySet()) { scopePatterns[count] =
+         * Pattern.compile(scope);
+         * 
+         * msg.append("#### Loaded required scope "); msg.append(scope);
+         * LOG.debug(msg.toString()); count++; }
+         */
+        for (ScopeKeyClass scopeKeyClass : this.scopeMap.keySet())
+        {
+            scopePatterns[count] = Pattern.compile(scopeKeyClass.getUrl());
 
-			msg.append("#### Loaded required scope ");
-			msg.append(scope);
-			LOG.debug(msg.toString());
-			count++;
-		}
-		return;
-	}
+            msg.append("#### Loaded required scope ");
+            msg.append(scopeKeyClass.getUrl());
+            LOG.debug(msg.toString());
+            count++;
+        }
+        return;
+    }
 	/**
 	 * finds the scopes defined in the scope.json document that match/apply to
 	 * the incoming request URL context, if any.
