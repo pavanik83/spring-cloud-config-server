@@ -77,7 +77,7 @@ The following items are configurable:
 * **authToken** - a value of `true` indicate that proper authentication is required if set to `false` authentication is not mandatory and the auth filter will chain the request to next page. 
 * **scopes** - An array of scopes for the related URL context. Note that scopes are generally text strings that represent a role or authorization level. Scopes in the scopes.json file must match exactly to at least one scope associated with the incoming AuthZ token, else a request will be terminated with a 401. For example, a scope based on a Keystone role (the user authenticated with Keystone before getting the AuthZ token) will contain the role AND an authorization, separated by a colon, e.g., "DRC Agent : cancelTicketsUI".
 *  **scopesRequired** - One or more of the scope strings listed here must match exactly for the filter to allow the request to proceed.
-*   **method** - The HTTP method (GET, POST, PUT, DELETE, PATCH) that the request must match for the scopes to apply. An "*" indicates the entry applies to all HTTP methods, if both * and HTTP method are used  "*" will take the precedence.
+*   **method** - The HTTP method (GET, POST, PUT, DELETE, PATCH) that the request must match for the scopes to apply. An "*" indicates the entry applies to all HTTP methods, if both * and HTTP method are used  * will take the precedence.
 
 The following example indicates that any endpoint context that contains the string 'OAuthFilterTest' is required to one of the listed scopes ("read" and write") where the HTTP method is GET. Note that a context of any of the following would pass: OAuthFilterTest2, OAuthFilterTestMyFavorite, OAuthFilterTest, OAuthFilterTest2,anything else>.
 
