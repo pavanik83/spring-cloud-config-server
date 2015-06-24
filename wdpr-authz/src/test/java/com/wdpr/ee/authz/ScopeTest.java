@@ -16,7 +16,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.wdpr.ee.authz.model.AuthDO;
 import com.wdpr.ee.authz.model.AuthDO.Scope;
@@ -50,12 +49,12 @@ public class ScopeTest
 
         pattern.setAuthType("pattern");
         String[] required_scopes =
-        { "content-access", "attractions" };
+            { "content-access", "attractions" };
         Scope required = new Scope();
         required.setMethod("GET");
         required.setScopesRequired(required_scopes);
         Scope[] requireds = {required};
-        pattern.setScopesRequired(requireds);
+        pattern.setScopes(requireds);
         pattern.setUrlPattern("/attractions*");
 
         List<AuthDO> pats = new ArrayList<>();
@@ -64,12 +63,12 @@ public class ScopeTest
         pattern.setId(02);
 
         String[] required_scopes2 =
-        { "authenticated" };
+            { "authenticated" };
         Scope required2 = new Scope();
         required2.setMethod("GET");
         required2.setScopesRequired(required_scopes);
         Scope[] requireds2 = {required2};
-        pattern.setScopesRequired(requireds2);
+        pattern.setScopes(requireds2);
         pattern.setUrlPattern("/profile*");
         pattern.setAuthToken(true);
         pats.add(pattern);
@@ -137,8 +136,8 @@ public class ScopeTest
     @Test
     public void testtoString()
     {
-    	ScopeRequired scopeRequired	=	new ScopeRequired();
-    	scopeRequired.toString();
+        ScopeRequired scopeRequired	=	new ScopeRequired();
+        scopeRequired.toString();
     }
     /**
      *
