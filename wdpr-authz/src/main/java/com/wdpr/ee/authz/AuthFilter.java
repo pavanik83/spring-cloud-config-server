@@ -89,21 +89,15 @@ public class AuthFilter implements Filter
         boolean authRequired = false;
         boolean scopeRequired = false;
         boolean scopeValid = false;
-        boolean allMethod = false;
         StringBuilder msg = new StringBuilder();
         Map<String, String> cookieMap = new ConcurrentHashMap<>();
         Map<String, String> tokenList = new HashMap<>();
         AuthDO scopeItem = null;
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        ScopeKeyClass scopeKeyClass = new ScopeKeyClass();
-        scopeKeyClass.setUrl(req.getContextPath());
-        scopeKeyClass.setMethod("*");
-        if (scopeMap.containsKey(scopeKeyClass))
-        {
-            allMethod = true;
-        }
-        scopeItem = loadScopeItem(req.getContextPath(), req.getMethod(), allMethod);
+        
+        scopeItem = retrieveScopeItemFromURIandMethod(scopeItem, req);
+
         msg.delete(0, msg.length());
         msg.append("#### scopeItem =  ");
         msg.append(scopeItem);
@@ -203,6 +197,33 @@ public class AuthFilter implements Filter
         return;
 
     }
+    /**
+     * 
+     * @param scopeItem
+     * @param req
+     * @return
+     */
+    private AuthDO retrieveScopeItemFromURIandMethod(AuthDO scopeItem, HttpServletRequest req)
+    {
+        for (int i = 0; i < scopePatterns.length; i++)
+        {
+            
+            if(scopePatterns[i].matcher(req.getRequestURI()).matches())
+            {
+                String configuredURI = scopePatterns[i].pattern();
+                ScopeKeyClass scopeKeyClass = new ScopeKeyClass();
+                scopeKeyClass.setUrl(configuredURI);
+                scopeKeyClass.setMethod("*");
+                scopeItem = this.scopeMap.get(scopeKeyClass);
+                if(scopeItem==null)
+                {
+                    scopeItem = loadScopeItem(configuredURI, req.getMethod());
+                }
+                break;
+            }
+        }
+        return scopeItem;
+    }
 
     /**
      * @param req
@@ -255,7 +276,7 @@ public class AuthFilter implements Filter
         return;
     }
 
-    /**
+  /*  *//**
      * finds the scopes defined in the scope.json document that match/apply to
      * the incoming request URL context, if any.
      * 
@@ -264,7 +285,7 @@ public class AuthFilter implements Filter
      * @return A collection of scopes for the incoming URL to be validated
      *         against the token for the incoming request or null if no matching
      *         scopes found
-     */
+     *//*
     private AuthDO loadScopeItem(String reqCtx)
     {
         AuthDO scopeItem = null;
@@ -294,28 +315,26 @@ public class AuthFilter implements Filter
             }
         }
         return scopeItem;
-    }
+    }*/
 
     /**
      * 
+     * finds the scopes defined in the scope.json document that match/apply to
+     * the incoming request URL context, if any.
+     * 
      * @param reqCtx
-     * @param method
-     * @return
+     *            The URI of the URL for the incoming request
+     * @return A collection of scopes for the incoming URL to be validated
+     *         against the token for the incoming request or null if no matching
+     *         scopes found
      */
-    private AuthDO loadScopeItem(String reqCtx, String method,boolean allMethod)
+    private AuthDO loadScopeItem(String reqCtx, String method)
     {
         AuthDO scopeItem = null;
         StringBuilder msg = new StringBuilder();
         ScopeKeyClass scopeKeyClass = new ScopeKeyClass();
         scopeKeyClass.setUrl(reqCtx);
-        if(allMethod)
-        {
-            scopeKeyClass.setMethod("*");
-        }
-        else
-        {
-            scopeKeyClass.setMethod(method);
-        }
+        scopeKeyClass.setMethod(method);
         for (int i = 0; i < scopePatterns.length; i++)
         {
             msg.delete(0, msg.length());

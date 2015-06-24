@@ -24,7 +24,7 @@
     },
     {
       "authType": "pattern",
-      "urlPattern": "/customer-service*",
+      "urlPattern": "/customer-service.*",
       "id": 4,
       "authToken":true,
       "scopes": [
@@ -35,7 +35,7 @@
     },
     {
       "authType": "pattern",
-      "urlPattern": "/test-service*",
+      "urlPattern": "/test-service.*",
       "id": 5,
       "authToken":true,
       "scopes": [
@@ -46,7 +46,7 @@
     },
     {
       "authType": "pattern",
-      "urlPattern": "/star-service*",
+      "urlPattern": "/star-service.*",
       "id": 6,
       "authToken":true,
       "scopes": [
@@ -57,7 +57,7 @@
     },
     {
       "authType": "pattern",
-      "urlPattern": "/keystone-service*",
+      "urlPattern": "/keystone-service.*",
       "id": 7,
       "authToken":true,
       "scopes": [
@@ -68,7 +68,7 @@
     },
     {
       "authType": "pattern",
-      "urlPattern": "/new-service*",
+      "urlPattern": "/new-service.*",
       "id": 8,
       "authToken":true,
       "scopes": [
@@ -76,6 +76,40 @@
            "scopesRequired": ["wdpro-payment-general-crud","DRC Agent:DMEAdvSearchByAgencyIATA#OrCLIA#" ]
           }
       ]
-    }
+    },
+    {
+        "authType": "pattern",
+        "urlPattern": "/DemoApplication/abc/bcd.*",
+        "id": 9,
+        "authToken":true,
+        "scopes": [
+            {"method":"GET",
+             "scopesRequired": ["wdpro-payment-general-crud","DRC Agent:DMEAdvSearchByAgencyIATA#OrCLIA#" ]
+            }
+        ]
+      } 
+    ,
+    {
+        "authType": "pattern",
+        "urlPattern": "/DemoApplication/abc/xyz.*",
+        "id": 10,
+        "authToken":true,
+        "scopes": [
+            {"method":"*",
+             "scopesRequired": ["wdpro-payment-general-crud","DRC Agent:DMEAdvSearchByAgencyIATA#OrCLIA#" ]
+            }
+        ]
+      },
+      {
+          "authType": "pattern",
+          "urlPattern": "/MethodCheck/abc/xyz.*",
+          "id": 11,
+          "authToken":true,
+          "scopes": [
+              {"method":"TEST",
+               "scopesRequired": ["wdpro-payment-general-crud","DRC Agent:DMEAdvSearchByAgencyIATA#OrCLIA#" ]
+              }
+          ]
+        }
   ]
 }

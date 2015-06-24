@@ -64,16 +64,10 @@ public class JSONConfigLoader
         try
         {
             ScopeRequired scope = this.mapper.readValue(this.jsonFile, ScopeRequired.class);
-
             for (AuthDO patt : scope.getAuthorization())
             {
                 String urlPattern   =   patt.getUrlPattern();
                 ScopeKeyClass scopeKeyClass =   new ScopeKeyClass();
-                if(urlPattern.contains(".*") || urlPattern.contains("*"))
-                {
-                    urlPattern = urlPattern.replace(".*", "");
-                    urlPattern = urlPattern.replace("*", "");
-                }
                 scopeKeyClass.setUrl(urlPattern);
                 Scope[] localScope   =   patt.getScopes();
                 for (Scope scopes : localScope)
