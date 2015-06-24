@@ -28,7 +28,7 @@ public class JSONConfigLoader
 
     private static String scopeJsonFileName = "scope.json";
     private File jsonFile; // File containing JSON configuration
-    Map<ScopeKeyClass, AuthDO> scopeMap = new HashMap<>();  // Map of scope key/value
+    private Map<ScopeKeyClass, AuthDO> scopeMap = new HashMap<>();  // Map of scope key/value
     private ObjectMapper mapper = new ObjectMapper();  //  Maps json value to scope
 
     private static JSONConfigLoader instance;
