@@ -34,7 +34,7 @@ import com.wdpr.ee.authz.util.ScopeKeyClass;
  * FileName - AuthFilter.java Desc: Security filter servlet class to validate
  * header parameters , Client app can directly plug-in filter-mapping in their
  * web.xml (c) Disney. All rights reserved.
- *
+ * 
  * $Author: $nixon $Revision: $ $Change: $ $Date: $
  ********************************************************************************************************/
 @WebFilter("/AuthFilter")
@@ -42,6 +42,7 @@ public class AuthFilter implements Filter
 {
     private static final Logger LOG = LogManager.getLogger(AuthFilter.class);
     private ServletContext context;
+
     /**
      * Singleton instance of Rest Connector
      */
@@ -50,6 +51,7 @@ public class AuthFilter implements Filter
      * Map<String, AuthDO> containing scope data
      */
     Map<ScopeKeyClass, AuthDO> scopeMap = JSONConfigLoader.getInstance().loadScopeData();
+
     /**
      * Array of PAtterns from Scope URL, used to match request URLs to vlaidate
      * scope
@@ -223,6 +225,7 @@ public class AuthFilter implements Filter
             }
         }
         return scopeItem;
+    
     }
 
     /**
@@ -240,7 +243,6 @@ public class AuthFilter implements Filter
             tokenList.put(key, value);
         }
         return tokenList;
-
     }
 
     /**
@@ -275,47 +277,6 @@ public class AuthFilter implements Filter
         }
         return;
     }
-
-  /*  *//**
-     * finds the scopes defined in the scope.json document that match/apply to
-     * the incoming request URL context, if any.
-     * 
-     * @param reqCtx
-     *            The context of the URL for the incoming request
-     * @return A collection of scopes for the incoming URL to be validated
-     *         against the token for the incoming request or null if no matching
-     *         scopes found
-     *//*
-    private AuthDO loadScopeItem(String reqCtx)
-    {
-        AuthDO scopeItem = null;
-        StringBuilder msg = new StringBuilder();
-
-        for (int i = 0; i < scopePatterns.length; i++)
-        {
-            msg.delete(0, msg.length());
-            String scopeKey = scopePatterns[i].pattern();
-            if (scopePatterns[i].matcher(reqCtx).matches())
-            {
-                scopeItem = this.scopeMap.get(scopeKey);
-                msg.append("#### Matched the incoming request context ");
-                msg.append(reqCtx);
-                msg.append(" with the configured scope context ");
-                msg.append(scopeKey);
-                LOG.debug(msg.toString());
-                return scopeItem;
-            }
-            else
-            {
-                msg.append("#### Unsuccessful match of configured scope context");
-                msg.append(scopeKey);
-                msg.append(" with the incoming request context ");
-                msg.append(reqCtx);
-                LOG.debug(msg.toString());
-            }
-        }
-        return scopeItem;
-    }*/
 
     /**
      * 
@@ -408,6 +369,7 @@ public class AuthFilter implements Filter
                     {
                         if (allowedScope.equals("*"))
                         {
+
                             msg.append("Configured scope did not requrie AuthZ scope (configured scope = *) . Token is valid");
                             // LOG.debug(msg.toString());
                             isScopeValid = true;
@@ -446,6 +408,7 @@ public class AuthFilter implements Filter
         // Get an array of Cookies associated with this domain
         cookies = request.getCookies();
 
+
         if (cookies != null)
         {
 
@@ -472,59 +435,3 @@ public class AuthFilter implements Filter
     }
 }
 
-/**
- * allows adding additional header entries to a request This is used when you
- * have an HttpServletReuest, not needed for now
- *
- */
-/*
- * class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
- *//**
- * construct a wrapper for this request
- *
- * @param request
- */
-/*
- * public HeaderMapRequestWrapper(HttpServletRequest request) { super(request);
- * }
- * 
- * private Map<String, String> headerMap = new HashMap<>();
- *//**
- * add a header with given name and value
- *
- * @param name
- * @param value
- */
-/*
- * public void addHeader(String name, String value) { this.headerMap.put(name,
- * value); }
- *//**
- * replace the normal get header
- */
-/*
- * @Override public String getHeader(String name) { String headerValue =
- * super.getHeader(name); if (this.headerMap.containsKey(name)) { headerValue =
- * this.headerMap.get(name); } return headerValue; }
- *//**
- * get the Header names
- */
-/*
- * @Override public Enumeration<String> getHeaderNames() { List<String> names =
- * Collections.list(super.getHeaderNames()); for (String name :
- * this.headerMap.keySet()) { names.add(name); } return
- * Collections.enumeration(names); }
- *//**
- * @see javax.servlet.http.HttpServletRequestWrapper#getHeaders(String)
- */
-/*
- * @Override public Enumeration<String> getHeaders(String name) { List<String>
- * values = Collections.list(super.getHeaders(name)); if
- * (this.headerMap.containsKey(name)) { values.add(this.headerMap.get(name)); }
- * return Collections.enumeration(values); }
- *//**
- * @see Object#toString()
- */
-/*
- * @Override public String toString() { return
- * "HeaderMapRequestWrapper [headerMap=" + this.headerMap + "]"; } }
- */

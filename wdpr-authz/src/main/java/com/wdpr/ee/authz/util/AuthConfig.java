@@ -23,14 +23,25 @@ public class AuthConfig
     private static AuthConfig instance;
     private static final List<String> propKeys = new ArrayList<>();
     private static final Map<String, String> propertyMap = new HashMap<>();
-    /**
-     * auth-config.properties
-     */
-    public final String propFileName = "auth-config.properties";
+    private static String propFileName = "auth-config.properties";
+
+    static
+    {
+        propKeys.add(AuthConstants.PROTOCOL);
+        propKeys.add(AuthConstants.HOST);
+        propKeys.add(AuthConstants.PORT);
+        propKeys.add(AuthConstants.AUTH_CTX_PATH);
+        propKeys.add(AuthConstants.SCOPE_CTX_PATH);
+        propKeys.add(AuthConstants.TIME_OUT);
+    }
 
     private AuthConfig()
     {
-        loadAppLogEntryValues(this.propFileName);
+        if (System.getProperty("AUTH_FILTER_CONFIG_FILE_NAME") != null) {
+            propFileName = System.getProperty("AUTH_FILTER_CONFIG_FILE_NAME");
+        }
+
+        loadAppLogEntryValues(propFileName);
     }
 
     /**
@@ -45,22 +56,6 @@ public class AuthConfig
         return instance;
     }
 
-    static
-    {
-        propKeys.add(AuthConstants.PROTOCOL);
-        propKeys.add(AuthConstants.HOST);
-        propKeys.add(AuthConstants.PORT);
-        propKeys.add(AuthConstants.AUTH_CTX_PATH);
-        propKeys.add(AuthConstants.SCOPE_CTX_PATH);
-        propKeys.add(AuthConstants.TIME_OUT);
-    }
-
-    // static{
-    // Map<String, String> propertyMap = new HashMap<String, String>();
-    // propertyMap.put(LoggerConstants.APP_NAME, "DefaultApplication");
-    // propertyMap.put(LoggerConstants.VERSION, "1.0");
-    // defaultPropertyMap= propertyMap;
-    // }
     /**
      * @return property map
      */
@@ -96,14 +91,13 @@ public class AuthConfig
      *
      * @propFileName Name of the property file to fetch the app-specific values
      *               from
-     *
      */
-
     private void loadAppLogEntryValues(final String propFileNameParam)
     {
 
         Properties props = new Properties();
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileNameParam);
+
         try
         {
             if (inputStream != null)
@@ -117,8 +111,6 @@ public class AuthConfig
                 }
                 inputStream.close();
             }
-//            LOG.debug(" property invoked");
-
         }
         catch (IOException  e)
         {

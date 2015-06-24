@@ -25,25 +25,22 @@ import com.wdpr.ee.authz.model.ScopeRequired;
 public class JSONConfigLoader
 {
     private static final Logger LOG = LogManager.getLogger(JSONConfigLoader.class);
-    private final String JSON_FILE_NAME = "scope.json";
-    /**
-     * File containing JSON configuration
-     */
-    File jsonFile;
-    /**
-     * Map of scope key/value
-     */
-    Map<ScopeKeyClass, AuthDO> scopeMap = new HashMap<>();
-    /**
-     * Maps json value to scope
-     */
-    ObjectMapper mapper = new ObjectMapper();
+
+    private static String scopeJsonFileName = "scope.json";
+    private File jsonFile; // File containing JSON configuration
+    Map<ScopeKeyClass, AuthDO> scopeMap = new HashMap<>();  // Map of scope key/value
+    private ObjectMapper mapper = new ObjectMapper();  //  Maps json value to scope
 
     private static JSONConfigLoader instance;
 
     private JSONConfigLoader()
     {
-        this.jsonFile = new File(getClass().getClassLoader().getResource(this.JSON_FILE_NAME).getFile());
+        if (System.getProperty("AUTH_FILTER_SCOPE_FILE_NAME") != null) {
+            scopeJsonFileName = System.getProperty("AUTH_FILTER_SCOPE_FILE_NAME");
+        }
+
+        this.jsonFile = new File(getClass().getClassLoader().getResource(scopeJsonFileName).getFile());
+
         initializeMap();
     }
 
@@ -86,11 +83,11 @@ public class JSONConfigLoader
         }
         catch (JsonMappingException ex)
         {
-         LOG.error("****Check the scope.json for the mapping element****", ex);
+            LOG.error("****Check the scope.json for the mapping element****", ex);
         }
         catch (IOException ex)
         {
-         LOG.error("****Check the scope.json if that is properly written****", ex);
+            LOG.error("****Check the scope.json if that is properly written****", ex);
         }
     }
     /**
