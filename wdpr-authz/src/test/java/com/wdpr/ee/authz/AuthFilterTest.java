@@ -32,6 +32,7 @@ import com.wdpr.ee.authz.model.AuthDO;
 import com.wdpr.ee.authz.model.TokenDO;
 import com.wdpr.ee.authz.util.AuthConstants;
 import com.wdpr.ee.authz.util.JSONConfigLoader;
+import com.wdpr.ee.authz.util.ScopeKeyClass;
 
 /**
  * AuthFilterTest
@@ -46,7 +47,7 @@ public class AuthFilterTest
     Map<String, String> tokenList = new HashMap<>();
     Map<String, String> grantTokens = new HashMap<>();
     Map<String, String> bearertokenList = new HashMap<>();
-    Map<String, AuthDO> scopeMap = JSONConfigLoader.getInstance()
+    Map<ScopeKeyClass, AuthDO> scopeMap = JSONConfigLoader.getInstance()
 			.loadScopeData();
     Map<String, String> cookieMap = new HashMap<>();;
     Pattern[] scopePatterns = new Pattern[scopeMap.size()];
@@ -196,55 +197,59 @@ public class AuthFilterTest
         Map<String, String> tokenListMock	=	filter.loadHeaders(request);
         assertNotNull(tokenListMock);
     }
-    private void loadScopePatterns() {
-
-		StringBuilder msg = new StringBuilder();
-		int count = 0;
-		for (String scope : this.scopeMap.keySet()) {
-			scopePatterns[count] = Pattern.compile(scope);
-
-			msg.append("#### Loaded required scope ");
-			msg.append(scope);
-			LOG.debug(msg.toString());
-			count++;
-		}
-		return;
-	}
-	/**
-	 * finds the scopes defined in the scope.json document that match/apply to
-	 * the incoming request URL context, if any.
-	 * 
-	 * @param reqCtx
-	 *            The context of the URL for the incoming request
-	 * @return A collection of scopes for the incoming URL to be validated
-	 *         against the token for the incoming request or null if no matching
-	 *         scopes found
-	 */
-	private AuthDO loadScopeItem(String reqCtx) {
-		AuthDO scopeItem = null;
-		StringBuilder msg = new StringBuilder();
-		loadScopePatterns();
-		for (int i = 0; i < scopePatterns.length; i++) {
-			msg.delete(0, msg.length());
-			String scopeKey = scopePatterns[i].pattern();
-			if (scopePatterns[i].matcher(reqCtx).matches()) {
-				scopeItem = this.scopeMap.get(scopeKey);
-				msg.append("#### Matched the incoming request context ");
-				msg.append(reqCtx);
-				msg.append(" with the configured scope context ");
-				msg.append(scopeKey);
-				LOG.debug(msg.toString());
-				return scopeItem;
-			} else {
-				msg.append("#### Unsuccessful match of configured scope context");
-				msg.append(scopeKey);
-				msg.append(" with the incoming request context ");
-				msg.append(reqCtx);
-				LOG.debug(msg.toString());
-			}
-		}
-		return scopeItem;
-	}
-	
-	
+    @Test
+    public void testDoFilterWithContextMatchWithURI() throws IOException, ServletException
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+        FilterChain chain = Mockito.mock(FilterChain.class);
+        StringBuilder tokens    =    new StringBuilder();
+        tokens.append("BEARER ");
+        tokens.append(RestConnector.getInstance().callGoDotComPost(this.grantTokens, "/token", TokenDO.class).getAccess_token());
+        request.addHeader(AuthConstants.AUTHORIZATION, tokens.toString());
+        request.setContextPath("/DemoApplication");
+        request.setRequestURI("/DemoApplication/abc/bcd/23/34?fff=999");
+        request.setMethod("GET");
+        AuthFilter filter = new AuthFilter();
+        filter.doFilter(request, response, chain);
+        assertNotNull(response.getStatus());
+    }
+    @Test
+    public void testloadScopeItem() throws IOException, ServletException
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+        FilterChain chain = Mockito.mock(FilterChain.class);
+        StringBuilder tokens    =    new StringBuilder();
+        tokens.append("BEARER ");
+        tokens.append(RestConnector.getInstance().callGoDotComPost(this.grantTokens, "/token", TokenDO.class).getAccess_token());
+        
+        request.addHeader(AuthConstants.AUTHORIZATION, tokens.toString());
+        request.setContextPath("/DemoApplication");
+        request.setRequestURI("/DemoApplication/abc/bcd/yuu");
+        request.setMethod("GET");
+        AuthFilter filter = new AuthFilter();
+        filter.doFilter(request, response, chain);
+    }
+    /**
+     * 
+     * @throws IOException
+     * @throws ServletException
+     */
+    @Test
+    public void testDoFilterWithAuthFilterAsFalse() throws IOException, ServletException
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+        FilterChain chain = Mockito.mock(FilterChain.class);
+        StringBuilder tokens    =    new StringBuilder();
+        tokens.append("BEARER ");
+        tokens.append(RestConnector.getInstance().callGoDotComPost(this.grantTokens, "/token", TokenDO.class).getAccess_token());
+        request.addHeader(AuthConstants.AUTHORIZATION, tokens.toString());
+        request.setRequestURI("/CheckFalse/abc/xyz");
+        request.setMethod("GET");
+        AuthFilter filter = new AuthFilter();
+        filter.doFilter(request, response, chain);
+        assertNotNull(response.getStatus());
+    }
 }

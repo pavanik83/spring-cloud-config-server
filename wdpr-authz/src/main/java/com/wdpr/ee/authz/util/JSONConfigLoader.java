@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.wdpr.ee.authz.model.AuthDO;
+import com.wdpr.ee.authz.model.AuthDO.Scope;
 import com.wdpr.ee.authz.model.ScopeRequired;
 
 /***************************************************************************************************
@@ -24,9 +25,10 @@ import com.wdpr.ee.authz.model.ScopeRequired;
 public class JSONConfigLoader
 {
     private static final Logger LOG = LogManager.getLogger(JSONConfigLoader.class);
+
     private static String scopeJsonFileName = "scope.json";
     private File jsonFile; // File containing JSON configuration
-    private Map<String, AuthDO> scopeMap = new HashMap<>();  // Map of scope key/value
+    private Map<ScopeKeyClass, AuthDO> scopeMap = new HashMap<>();  // Map of scope key/value
     private ObjectMapper mapper = new ObjectMapper();  //  Maps json value to scope
 
     private static JSONConfigLoader instance;
@@ -59,12 +61,19 @@ public class JSONConfigLoader
         try
         {
             ScopeRequired scope = this.mapper.readValue(this.jsonFile, ScopeRequired.class);
-
             for (AuthDO patt : scope.getAuthorization())
             {
+                String urlPattern   =   patt.getUrlPattern();
+                ScopeKeyClass scopeKeyClass =   new ScopeKeyClass();
+                scopeKeyClass.setUrl(urlPattern);
+                Scope[] localScope   =   patt.getScopes();
+                for (Scope scopes : localScope)
+                {
+                    scopeKeyClass.setMethod(scopes.getMethod());
+                }
                 if (patt != null)
                 {
-                    this.scopeMap.put(patt.getUrlPattern(), patt);
+                    this.scopeMap.put(scopeKeyClass, patt);
                 }
             }
         }
@@ -81,11 +90,10 @@ public class JSONConfigLoader
             LOG.error("****Check the scope.json if that is properly written****", ex);
         }
     }
-
     /**
      * @return scopeMap
      */
-    public Map<String, AuthDO> loadScopeData()
+    public Map<ScopeKeyClass, AuthDO> loadScopeData()
     {
         // File jsonFile = new File(jsonFilePath);
         return this.scopeMap;
