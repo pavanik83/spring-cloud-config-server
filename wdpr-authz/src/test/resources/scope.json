@@ -110,6 +110,17 @@
                "scopesRequired": ["wdpro-payment-general-crud","DRC Agent:DMEAdvSearchByAgencyIATA#OrCLIA#" ]
               }
           ]
-        }
+        },
+        {
+            "authType": "pattern",
+            "urlPattern": "/CheckFalse/abc/xyz.*",
+            "id": 12,
+            "authToken":false,
+            "scopes": [
+                {"method":"GET",
+                 "scopesRequired": ["wdpro-payment-general-crud","DRC Agent:DMEAdvSearchByAgencyIATA#OrCLIA#" ]
+                }
+            ]
+          }
   ]
 }

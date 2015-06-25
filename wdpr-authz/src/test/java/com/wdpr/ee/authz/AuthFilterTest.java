@@ -231,5 +231,25 @@ public class AuthFilterTest
         AuthFilter filter = new AuthFilter();
         filter.doFilter(request, response, chain);
     }
-    
+    /**
+     * 
+     * @throws IOException
+     * @throws ServletException
+     */
+    @Test
+    public void testDoFilterWithAuthFilterAsFalse() throws IOException, ServletException
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+        FilterChain chain = Mockito.mock(FilterChain.class);
+        StringBuilder tokens    =    new StringBuilder();
+        tokens.append("BEARER ");
+        tokens.append(RestConnector.getInstance().callGoDotComPost(this.grantTokens, "/token", TokenDO.class).getAccess_token());
+        request.addHeader(AuthConstants.AUTHORIZATION, tokens.toString());
+        request.setRequestURI("/CheckFalse/abc/xyz");
+        request.setMethod("GET");
+        AuthFilter filter = new AuthFilter();
+        filter.doFilter(request, response, chain);
+        assertNotNull(response.getStatus());
+    }
 }
